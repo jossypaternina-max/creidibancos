@@ -31,56 +31,50 @@ import { SystemClock } from '../infrastructure/time/SystemClock.js';
 import { CryptoIdGenerator } from '../infrastructure/identity/CryptoIdGenerator.js';
 import { ConsoleLogger } from '../infrastructure/logging/ConsoleLogger.js';
 import { ToastNotifier } from '../infrastructure/notification/ToastNotifier.js';
-import { HistoryRouter } from '../infrastructure/routing/HistoryRouter.js';
 import { STATIC_TERM_OPTIONS } from '../infrastructure/persistence/datasources/StaticCreditProductDataSource.js';
-
-/* ---------- Presentación ---------- */
-import { IRouter } from '../presentation/contracts/IRouter.js';
-import { UrlBuilder } from '../presentation/shared/UrlBuilder.js';
-import { ViewRenderer } from '../presentation/shared/ViewRenderer.js';
-import { NavbarComponent } from '../presentation/components/NavbarComponent.js';
-import { FooterComponent } from '../presentation/components/FooterComponent.js';
-import { ProductCardComponent } from '../presentation/components/ProductCardComponent.js';
-import { AlertComponent } from '../presentation/components/AlertComponent.js';
-import { CatalogView } from '../presentation/views/CatalogView.js';
-import { SimulatorView } from '../presentation/views/SimulatorView.js';
-import { ApplicationView } from '../presentation/views/ApplicationView.js';
-import { NotFoundView } from '../presentation/views/NotFoundView.js';
-import { AccessRestrictedView } from '../presentation/views/AccessRestrictedView.js';
-import { CatalogController } from '../presentation/controllers/CatalogController.js';
-import { SimulatorController } from '../presentation/controllers/SimulatorController.js';
-import { ApplicationController } from '../presentation/controllers/ApplicationController.js';
-import { NotFoundController } from '../presentation/controllers/NotFoundController.js';
 
 /**
  * buildContainer — COMPOSITION ROOT.
  *
  * El único lugar del proyecto donde se hace `new` de una clase concreta y donde
- * se conocen simultáneamente las cuatro capas. Cambiar un adaptador (por
- * ejemplo, pasar de `InMemoryCreditProductRepository` a uno HTTP) es cambiar
- * una línea AQUÍ; ni el dominio ni la presentación se enteran.
+ * se conocen simultáneamente las capas. Cambiar un adaptador (por ejemplo,
+ * pasar de `InMemoryCreditProductRepository` a uno HTTP) es cambiar una línea
+ * AQUÍ; ni el dominio ni la interfaz se enteran.
  *
  * El grafo se declara de dentro hacia fuera:
- *   dominio ← infraestructura ← aplicación ← presentación
+ *   dominio ← infraestructura ← aplicación
  *
- * @param {{ config?: typeof AppConfig, rootElement: HTMLElement }} options
+ * La presentación NO se registra aquí. En la Actividad 1 el contenedor
+ * construía además vistas, controladores y router; en la Actividad 2 esa parte
+ * la construye React, que solo recibe los casos de uso a través de
+ * `DependenciesProvider`. Ahí está toda la diferencia entre las dos entregas:
+ * el hexágono no cambió, cambió el adaptador de interfaz.
+ *
+ * @param {{ config?: typeof AppConfig, notificationsElement?: HTMLElement|null }} [options]
  * @returns {Container}
  */
-export function buildContainer({ config = AppConfig, rootElement }) {
+export function buildContainer({ config = AppConfig, notificationsElement = null } = {}) {
   const container = new Container();
 
   /* ============================================================
      0. Valores de arranque
      ============================================================ */
   container.registerValue('config', config);
-  container.registerValue('rootElement', rootElement);
+  container.registerValue(
+    'notificationsElement',
+    notificationsElement ?? document.querySelector(config.selectors.notifications),
+  );
+  container.registerValue('termOptions', STATIC_TERM_OPTIONS);
 
   /* ============================================================
      1. Adaptadores técnicos (infraestructura)
      ============================================================ */
   container.register('logger', (c) =>
     assertImplements(
-      new ConsoleLogger({ level: c.resolve('config').logLevel, prefix: c.resolve('config').appName }),
+      new ConsoleLogger({
+        level: c.resolve('config').logLevel,
+        prefix: c.resolve('config').appName,
+      }),
       ILogger,
     ),
   );
@@ -88,7 +82,7 @@ export function buildContainer({ config = AppConfig, rootElement }) {
   container.register('notifier', (c) =>
     assertImplements(
       new ToastNotifier({
-        container: document.querySelector(c.resolve('config').selectors.notifications),
+        container: c.resolve('notificationsElement'),
         timeoutMs: c.resolve('config').toastTimeoutMs,
       }),
       INotifier,
@@ -132,168 +126,69 @@ export function buildContainer({ config = AppConfig, rootElement }) {
   /* ============================================================
      3. Aplicación (mappers + casos de uso)
      ============================================================ */
-  container.register('productMapper', (c) =>
-    new CreditProductMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
+  container.register(
+    'productMapper',
+    (c) => new CreditProductMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
   );
 
-  container.register('simulationMapper', (c) =>
-    new SimulationMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
+  container.register(
+    'simulationMapper',
+    (c) => new SimulationMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
   );
 
-  container.register('listCreditProductsUseCase', (c) =>
-    new ListCreditProductsUseCase({
-      productRepository: c.resolve('productRepository'),
-      productMapper: c.resolve('productMapper'),
-    }),
+  container.register(
+    'listCreditProductsUseCase',
+    (c) =>
+      new ListCreditProductsUseCase({
+        productRepository: c.resolve('productRepository'),
+        productMapper: c.resolve('productMapper'),
+      }),
   );
 
-  container.register('searchCreditProductsUseCase', (c) =>
-    new SearchCreditProductsUseCase({
-      productRepository: c.resolve('productRepository'),
-      productMapper: c.resolve('productMapper'),
-    }),
+  container.register(
+    'searchCreditProductsUseCase',
+    (c) =>
+      new SearchCreditProductsUseCase({
+        productRepository: c.resolve('productRepository'),
+        productMapper: c.resolve('productMapper'),
+        amountRangeProvider: c.resolve('amountRangeProvider'),
+      }),
   );
 
-  container.register('getAmountRangeFiltersUseCase', (c) =>
-    new GetAmountRangeFiltersUseCase({
-      amountRangeProvider: c.resolve('amountRangeProvider'),
-    }),
+  container.register(
+    'getAmountRangeFiltersUseCase',
+    (c) =>
+      new GetAmountRangeFiltersUseCase({
+        amountRangeProvider: c.resolve('amountRangeProvider'),
+      }),
   );
 
-  container.register('getCreditProductNamesUseCase', (c) =>
-    new GetCreditProductNamesUseCase({
-      productRepository: c.resolve('productRepository'),
-    }),
+  container.register(
+    'getCreditProductNamesUseCase',
+    (c) =>
+      new GetCreditProductNamesUseCase({
+        productRepository: c.resolve('productRepository'),
+      }),
   );
 
-  container.register('simulateCreditUseCase', (c) =>
-    new SimulateCreditUseCase({
-      productRepository: c.resolve('productRepository'),
-      simulationMapper: c.resolve('simulationMapper'),
-    }),
+  container.register(
+    'simulateCreditUseCase',
+    (c) =>
+      new SimulateCreditUseCase({
+        productRepository: c.resolve('productRepository'),
+        simulationMapper: c.resolve('simulationMapper'),
+      }),
   );
 
-  container.register('submitCreditApplicationUseCase', (c) =>
-    new SubmitCreditApplicationUseCase({
-      applicationRepository: c.resolve('applicationRepository'),
-      productRepository: c.resolve('productRepository'),
-      clock: c.resolve('clock'),
-      logger: c.resolve('logger'),
-    }),
-  );
-
-  /* ============================================================
-     4. Presentación (shared + componentes)
-     ============================================================ */
-  container.register('urlBuilder', (c) => {
-    const configured = c.resolve('config').basePath;
-    return new UrlBuilder({ basePath: configured ?? UrlBuilder.detectBasePath() });
-  });
-
-  container.register('viewRenderer', (c) =>
-    new ViewRenderer({ root: c.resolve('rootElement') }),
-  );
-
-  container.register('navbarComponent', (c) =>
-    new NavbarComponent({ urlBuilder: c.resolve('urlBuilder') }),
-  );
-
-  container.register('footerComponent', () => new FooterComponent());
-
-  container.register('alertComponent', () => new AlertComponent());
-
-  container.register('productCardComponent', (c) =>
-    new ProductCardComponent({ urlBuilder: c.resolve('urlBuilder') }),
-  );
-
-  /* ============================================================
-     5. Vistas
-     ============================================================ */
-  container.register('catalogView', (c) =>
-    new CatalogView({
-      navbar: c.resolve('navbarComponent'),
-      footer: c.resolve('footerComponent'),
-      productCard: c.resolve('productCardComponent'),
-      urlBuilder: c.resolve('urlBuilder'),
-    }),
-  );
-
-  container.register('simulatorView', (c) =>
-    new SimulatorView({
-      navbar: c.resolve('navbarComponent'),
-      footer: c.resolve('footerComponent'),
-      productCard: c.resolve('productCardComponent'),
-      alert: c.resolve('alertComponent'),
-    }),
-  );
-
-  container.register('applicationView', (c) =>
-    new ApplicationView({
-      navbar: c.resolve('navbarComponent'),
-      footer: c.resolve('footerComponent'),
-    }),
-  );
-
-  container.register('notFoundView', (c) =>
-    new NotFoundView({ urlBuilder: c.resolve('urlBuilder') }),
-  );
-
-  container.register('accessRestrictedView', () => new AccessRestrictedView());
-
-  /* ============================================================
-     6. Controladores
-     ============================================================ */
-  container.register('catalogController', (c) =>
-    new CatalogController({
-      view: c.resolve('catalogView'),
-      renderer: c.resolve('viewRenderer'),
-      listCreditProductsUseCase: c.resolve('listCreditProductsUseCase'),
-      notifier: c.resolve('notifier'),
-    }),
-  );
-
-  container.register('simulatorController', (c) =>
-    new SimulatorController({
-      view: c.resolve('simulatorView'),
-      renderer: c.resolve('viewRenderer'),
-      searchCreditProductsUseCase: c.resolve('searchCreditProductsUseCase'),
-      listCreditProductsUseCase: c.resolve('listCreditProductsUseCase'),
-      simulateCreditUseCase: c.resolve('simulateCreditUseCase'),
-      getAmountRangeFiltersUseCase: c.resolve('getAmountRangeFiltersUseCase'),
-      amountRangeProvider: c.resolve('amountRangeProvider'),
-      notifier: c.resolve('notifier'),
-    }),
-  );
-
-  container.register('applicationController', (c) =>
-    new ApplicationController({
-      view: c.resolve('applicationView'),
-      renderer: c.resolve('viewRenderer'),
-      submitCreditApplicationUseCase: c.resolve('submitCreditApplicationUseCase'),
-      getCreditProductNamesUseCase: c.resolve('getCreditProductNamesUseCase'),
-      notifier: c.resolve('notifier'),
-      termOptions: STATIC_TERM_OPTIONS,
-    }),
-  );
-
-  container.register('notFoundController', (c) =>
-    new NotFoundController({
-      view: c.resolve('notFoundView'),
-      renderer: c.resolve('viewRenderer'),
-    }),
-  );
-
-  /* ============================================================
-     7. Router
-     ============================================================ */
-  container.register('router', (c) =>
-    assertImplements(
-      new HistoryRouter({
-        urlBuilder: c.resolve('urlBuilder'),
+  container.register(
+    'submitCreditApplicationUseCase',
+    (c) =>
+      new SubmitCreditApplicationUseCase({
+        applicationRepository: c.resolve('applicationRepository'),
+        productRepository: c.resolve('productRepository'),
+        clock: c.resolve('clock'),
         logger: c.resolve('logger'),
       }),
-      IRouter,
-    ),
   );
 
   return container;
