@@ -298,6 +298,8 @@ Dónde está declarado cada nombre propio del proyecto.
 | `../src/config/AppConfig.js` | Todos los valores configurables del sistema |
 | `./iudigital_doc/EV1/CreditSmart_Arquitectura_EV1.docx` | Documento de arquitectura entregado en la Actividad 1 |
 | `./iudigital_doc/EV2/rubricaEV2.txt` | Rúbrica de la Actividad 2 |
+| `./iudigital_doc/EV2/CreditSmart_Arquitectura_EV2_generado.docx` | Documento técnico de la Actividad 2 (43 páginas). Lo produce su [generador](./iudigital_doc/EV2/generador/README.md) |
+| `./iudigital_doc/EV2/guion-sustentacion-EV2.md` | Guion del encuentro sincrónico: demo, archivos que se muestran y preguntas probables con respuesta |
 | `./iudigital_doc/EV1/generador/` | Scripts que generan ese documento y sus 8 gráficos. Escriben siempre en `..._generado.docx`, nunca sobre la copia editada. Ver su [`README.md`](./iudigital_doc/EV1/generador/README.md) |
 
 ---
