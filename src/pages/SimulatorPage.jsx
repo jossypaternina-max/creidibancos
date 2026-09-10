@@ -1,11 +1,13 @@
 import { ROUTES, ROUTE_TITLES } from '../config/routes.js';
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 import { useCreditSearch } from '../hooks/useCreditSearch.js';
+import { useProductSorting } from '../hooks/useProductSorting.js';
 import { Navbar } from '../components/Navbar.jsx';
 import { Footer } from '../components/Footer.jsx';
 import { Alert } from '../components/Alert.jsx';
 import { SearchBar } from '../components/SearchBar.jsx';
 import { AmountRangeFilter } from '../components/AmountRangeFilter.jsx';
+import { SortSelect } from '../components/SortSelect.jsx';
 import { CreditCard } from '../components/CreditCard.jsx';
 
 /**
@@ -35,6 +37,9 @@ export function SimulatorPage() {
     clearFilters,
   } = useCreditSearch();
 
+  const { sortBy, setSortBy, sortedProducts, options: sortOptions } =
+    useProductSorting(products);
+
   return (
     <div className="page">
       <Navbar />
@@ -56,6 +61,7 @@ export function SimulatorPage() {
           <div className="filters__grid">
             <SearchBar value={query} onChange={setQuery} />
             <AmountRangeFilter ranges={ranges} value={rangeIndex} onChange={setRangeIndex} />
+            <SortSelect options={sortOptions} value={sortBy} onChange={setSortBy} />
           </div>
 
           <div className="filters__actions">
@@ -76,13 +82,13 @@ export function SimulatorPage() {
           </p>
         )}
 
-        {products.length === 0 ? (
+        {sortedProducts.length === 0 ? (
           <Alert variant="empty" icon="🔎">
             Ningún producto coincide con los filtros aplicados.
           </Alert>
         ) : (
           <div className="grid-products">
-            {products.map((product) => (
+            {sortedProducts.map((product) => (
               <CreditCard key={product.id} product={product} variant="compact" />
             ))}
           </div>
