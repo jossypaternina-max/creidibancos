@@ -1,0 +1,21 @@
+{
+  "name": "creditsmart",
+  "private": true,
+  "version": "2.0.0",
+  "description": "CreditSmart — aplicacion web dinamica de consulta, simulacion y solicitud de creditos, construida con React sobre una arquitectura hexagonal.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  }
+}

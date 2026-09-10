@@ -1,7 +1,9 @@
-# Dependencias de PRUEBAS únicamente (jsdom, para tests/03-boot-jsdom.mjs).
-# La aplicación en sí no tiene dependencias de runtime: se sirve tal cual.
+# Dependencias de npm. package-lock.json SÍ se versiona: garantiza que la
+# instalación del evaluador resuelva exactamente las mismas versiones.
 node_modules/
-package-lock.json
+
+# Salida del empaquetado
+dist/
 
 # Sistema operativo / editores
 Thumbs.db
