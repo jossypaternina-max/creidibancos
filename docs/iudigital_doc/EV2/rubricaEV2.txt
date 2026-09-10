@@ -1,0 +1,194 @@
+S30 - EA2: Desarrollo de Aplicación Web Dinámica con React - CreditSmart
+Fecha de entrega Domingo a las 23:59 Puntos 100 Entregando una carga de archivo Disponible 24 de ago en 0:00 - 13 de sep en 23:59
+S30 - EA2: Desarrollo de Aplicación Web Dinámica con React - CreditSmart
+ 
+Bot_Ejercicio_peq.svg
+Objetivo
+Aplicar los conceptos de React JS, programación orientada a componentes, manejo de estado con hooks y manipulación dinámica de datos para transformar el diseño estático de CreditSmart en una aplicación web interactiva y funcional, implementando búsquedas en tiempo real, filtros dinámicos y formularios controlados. 
+
+ 
+
+Instrucciones
+Para el desarrollo de la actividad se debe realizar lo siguiente:
+
+Leer detenidamente el documento Actividad_2.pdf.
+
+Opción 1: Usando Vite (Recomendado)
+
+Opción 2: Usando Create React App
+
+Nota: Vite es más rápido y moderno, pero ambas opciones son válidas.
+
+Instalar React Router
+
+Crear el Archivo de Datos (creditsData.js)
+
+Desarrollar las Páginas y Funcionalidades
+
+Usar Componentes Reutilizables como Navbar.jsx
+
+Aspectos técnicos a tener en cuenta:
+
+Hooks de React
+
+Componentes
+
+Manejo de Arrays (.map(), .filter(), .sort())
+
+Estilos 
+
+Recursos de Apoyo:
+
+Documentación oficial de React: https://react.devLinks to an external site.
+
+Documentación de React Router: https://reactrouter.comLinks to an external site.
+
+Documentación oficial de HTML5 y CSS3
+
+Material de los encuentros sincrónicos
+
+Grabaciones en Canvas
+
+MDN Web Docs para JavaScript
+
+Asistir a encuentros sincrónicos es FUNDAMENTAL para esta actividad.
+
+ 
+
+Entregar:
+Repositorio Git (GitHub, GitLab o Bitbucket)
+
+El repositorio debe contener:
+
+Código fuente completo en la carpeta src/
+
+package.json con dependencias 
+
+.gitignore configurado (no subir node_modules/) 
+
+README.md actualizado
+
+README.md actualizado
+
+Archivo README.md debe incluir:
+
+Nombre del estudiante
+
+Descripción del proyecto
+
+Tecnologías utilizadas (React, React Router, etc.)
+
+Instrucciones de instalación (npm install, npm run dev)
+
+Capturas de pantalla o GIF
+
+Commits en Git
+
+Mínimo 8 commits durante el desarrollo
+
+Ejemplo de buenos commits:
+
+Configuración inicial de React con Vite"
+
+Componente CreditCard creado con props
+
+Búsqueda en tiempo real implementada
+
+Validaciones de formulario agregadas
+
+Cálculo de cuota mensual funcionando
+
+Estilos responsive actualizados
+
+Criterios de Evaluación:
+
+Ver rúbrica detallada en la siguiente sección.
+
+ 
+
+Notas Importantes:
+
+NO se permite el uso de código generado 100% por inteligencia artificial sin comprensión
+
+Si puedes consultar recursos, tutoriales y ejemplos, pero debes entender el código
+
+El código debe ser original y reflejar tu aprendizaje
+
+Si usas código de terceros, debes citarlo en comentarios
+
+Se realizarán revisiones de código para verificar comprensión
+
+ 
+Haz clic en Siguiente para continuar.
+
+ 
+0%
+Rúbrica
+Rúbrica: Configuración y Estructura de React (1)
+Rúbrica: Configuración y Estructura de React (1)
+Criterios	Calificaciones	Pts
+Este criterio depende de una competencia de aprendizajeConfiguración y Estructura de React
+20 pts
+Proyecto React correctamente configurado (Vite/CRA). Estructura de carpetas organizada (components/, pages/, data/). Archivos bien nombrados. React Router implementado correctamente.
+10 pts
+Proyecto configurado pero desorganizado. Estructura confusa. React Router con problemas.
+0 pts
+Proyecto no configura o no arranca. Sin estructura. Sin routing.
+20 pts
+Este criterio depende de una competencia de aprendizajeComponentes y Props
+15 pts
+Componentes funcionales bien diseñados y reutilizables. Uso correcto de props con desestructuración. Un componente por archivo.
+8 pts
+Componentes básicos funcionales. Props usadas, pero sin desestructuración. Algunos componentes mezclados en archivos.
+0 pts
+No realiza componentes con props
+15 pts
+Este criterio depende de una competencia de aprendizajeManejo de Estado (useState)
+10 pts
+Uso de useState para todos los casos necesarios. Estados bien nombrados e inicializados. Actualización correcta con setters. Gestión óptima de múltiples estados.
+5 pts
+Uso básico de useState. Algunos estados mal manejados. Actualización con errores menores.
+0 pts
+No usa useState o lo usa incorrectamente. Estados no funcionan.
+10 pts
+Este criterio depende de una competencia de aprendizajeBúsqueda y Filtros Dinámicos
+15 pts
+Permite realizar búsquedas incluso mientras se va escribiendo realiza los filtros
+7 pts
+Búsqueda básica funcional. Solo 1 filtro adicional. Limpiar filtros con problemas
+0 pts
+Búsqueda no funciona o no existe. Filtros ausentes o rotos.
+15 pts
+Este criterio depende de una competencia de aprendizajeFormulario Controlado
+10 pts
+Formulario 100% controlado con useState. Todos los campos funcionan. Validaciones en tiempo real (email, cédula, montos). Mensajes de error claros. onSubmit previene default. Limpia formulario tras envío.
+5 pts
+Formulario parcialmente controlado. Algunos
+0 pts
+Formulario no controlado o no funciona. Sin validaciones. Submit roto.
+10 pts
+Este criterio depende de una competencia de aprendizajeManipulación de Arrays (.map, .filter, .sort)
+10 pts
+Uso de .map() con keys únicas. .filter() para búsquedas complejas. .sort() para ordenamiento. Métodos encadenados correctamente.
+5 pts
+Uso básico de .map() y .filter(). Algunas keys faltantes. Ordenamiento con errores.
+0 pts
+No usa métodos de arrays correctamente o están ausentes. Keys faltantes.
+10 pts
+Este criterio depende de una competencia de aprendizajeCálculo de Cuota Mensual
+10 pts
+Cálculo automático usando fórmula correcta. Se actualiza dinámicamente al cambiar monto/plazo. Formato COP correcto. Considera tasa del crédito seleccionado.
+5 pts
+Cálculo básico presente. Actualización manual. Formato simple.
+0 pts
+No calcula cuota o cálculo incorrecto.
+10 pts
+Este criterio depende de una competencia de aprendizajeSustentación sincrónica
+10 pts
+Realiza sustentación en encuentro sincrónico
+5 pts
+Realiza sustentación, pero o explica de forma clara.
+0 pts
+No realiza sustentación.
+10 pts
+Puntos totales: 100
