@@ -12,19 +12,13 @@
   <meta name="theme-color" content="#1d4ed8" />
 
   <link rel="icon" type="image/png" href="https://media.base44.com/images/public/6a7d2f90c3c6cae43f73f77b/b344403c4_logo.png" />
-  <link rel="manifest" href="./manifest.json" />
-
-  <!-- Capa de estilos: cascada explícita (reset -> tokens -> base -> layout -> componentes -> páginas -> responsive) -->
-  <link rel="stylesheet" href="./assets/css/01-reset.css" />
-  <link rel="stylesheet" href="./assets/css/02-tokens.css" />
-  <link rel="stylesheet" href="./assets/css/03-base.css" />
-  <link rel="stylesheet" href="./assets/css/04-layout.css" />
-  <link rel="stylesheet" href="./assets/css/05-components.css" />
-  <link rel="stylesheet" href="./assets/css/06-pages.css" />
-  <link rel="stylesheet" href="./assets/css/07-responsive.css" />
+  <link rel="manifest" href="/manifest.json" />
 </head>
 <body>
-  <!-- Punto de montaje único (Composition Root de la capa de presentación) -->
+  <!-- Punto de montaje único de React (Composition Root de la presentación).
+       Los estilos se importan desde src/main.jsx para que Vite los empaquete
+       respetando la cascada: reset -> tokens -> base -> layout -> componentes
+       -> páginas -> responsive. -->
   <div id="root">
     <div class="app-boot">
       <div class="spinner" role="status" aria-label="Cargando"></div>
@@ -41,6 +35,6 @@
     </div>
   </noscript>
 
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
