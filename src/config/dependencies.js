@@ -21,6 +21,7 @@ import { GetAmountRangeFiltersUseCase } from '../application/usecases/GetAmountR
 import { GetCreditProductNamesUseCase } from '../application/usecases/GetCreditProductNamesUseCase.js';
 import { SimulateCreditUseCase } from '../application/usecases/SimulateCreditUseCase.js';
 import { SubmitCreditApplicationUseCase } from '../application/usecases/SubmitCreditApplicationUseCase.js';
+import { ValidateCreditApplicationDraftUseCase } from '../application/usecases/ValidateCreditApplicationDraftUseCase.js';
 
 /* ---------- Infraestructura (adaptadores) ---------- */
 import { InMemoryCreditProductRepository } from '../infrastructure/persistence/InMemoryCreditProductRepository.js';
@@ -189,6 +190,11 @@ export function buildContainer({ config = AppConfig, notificationsElement = null
         clock: c.resolve('clock'),
         logger: c.resolve('logger'),
       }),
+  );
+
+  container.register(
+    'validateCreditApplicationDraftUseCase',
+    () => new ValidateCreditApplicationDraftUseCase(),
   );
 
   return container;
