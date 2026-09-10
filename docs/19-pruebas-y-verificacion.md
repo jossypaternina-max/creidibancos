@@ -2,6 +2,12 @@
 
 # 19 — Pruebas y verificación
 
+> **Actividad 2 — React.** De las tres suites solo sigue vigente
+> `tests/01-domain-application.mjs`, que cubre dominio y aplicación y sigue
+> dando `TODO OK`. Las suites 02 y 03 probaban el render de plantillas de
+> cadena y el arranque con jsdom, que ya no existen; se sustituyen por
+> `npm run build`. Ver [21 §6](./21-migracion-a-react-ev2.md).
+
 ## 19.1 Las tres suites
 
 ```

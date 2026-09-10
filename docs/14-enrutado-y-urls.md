@@ -2,6 +2,12 @@
 
 # 14 — Enrutado y URLs
 
+> **Actividad 2 — React.** `HistoryRouter` y `UrlBuilder` se retiraron: el
+> enrutado lo hace React Router (`BrowserRouter`, `Routes`, `NavLink`,
+> `Link`), leyendo las mismas rutas de `config/routes.js`. La reescritura de
+> Apache (`public/.htaccess`) sigue siendo necesaria y funciona igual. Ver
+> [21 §2](./21-migracion-a-react-ev2.md).
+
 ## 14.1 Las rutas
 
 | Ruta | Controlador | Título del documento |

@@ -2,6 +2,12 @@
 
 # 12 — Vistas, controladores y componentes
 
+> **Actividad 2 — React.** Este documento describe la presentación de la
+> Actividad 1 (`BaseView`, `BaseController`, plantillas de cadena), que se
+> retiró al migrar. Se conserva como referencia del diseño anterior y porque
+> las reglas de reparto siguen aplicándose. La presentación actual está en
+> [21 — Migración a React](./21-migracion-a-react-ev2.md).
+
 Referencia archivo por archivo de la capa de presentación. Los conceptos de MVC
 están en [04](./04-mvc-presentacion.md); esto es el detalle.
 
