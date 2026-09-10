@@ -1,25 +1,31 @@
 # CreditSmart — Documentación Maestra
 
 > Índice único de toda la documentación del proyecto.
-> Reconstrucción de `sweet-smart-credit-path.base44.app` en HTML + CSS +
-> JavaScript vanilla, con **arquitectura hexagonal**, **Clean Architecture**,
-> **MVC** en presentación, **SOLID** e **interfaces declaradas como contratos**.
+> Reconstrucción de `sweet-smart-credit-path.base44.app` con **arquitectura
+> hexagonal**, **Clean Architecture**, **SOLID** e **interfaces declaradas como
+> contratos**.
+>
+> **Actividad 1**: interfaz en JavaScript vanilla, sin build (tag `ev1-entrega`).
+> **Actividad 2**: la misma arquitectura con la interfaz en **React + Vite +
+> React Router**. El delta está en
+> [21 — Migración a React](./21-migracion-a-react-ev2.md); los documentos 01–20
+> describen el diseño, que no cambió.
 
 | Dato | Valor |
 |---|---|
 | Ubicación | `C:\laragon\www\crediSmart` |
-| Stack | HTML5 · CSS3 plano · JavaScript ES2022 (módulos ES nativos) |
-| Dependencias de runtime | **cero** — no hay `node_modules`, ni bundler, ni transpilador |
-| Capas | `domain` · `application` · `infrastructure` · `presentation` (+ `config`) |
-| Archivos JS | 79 (6 881 líneas) — `domain` 26 · `presentation` 22 · `application` 15 · `infrastructure` 11 · `config` 4 · `main.js` 1 |
-| Archivos CSS | 7 (1 681 líneas, cascada explícita) |
-| Contratos (interfaces) | 12 |
-| Casos de uso | 6 |
+| Stack | React 19 · React Router 7 · Vite 8 · CSS3 plano · JavaScript ES2022 |
+| Dependencias de runtime | React y React Router. Dominio, aplicación e infraestructura siguen sin ninguna |
+| Capas | `domain` · `application` · `infrastructure` · presentación React (+ `config`, `data`) |
+| Archivos JS/JSX | 82 — `domain` 26 · presentación 25 (`components` 11 · `hooks` 7 · `pages` 4 · `context` 1 · `App` · `main`) · `application` 16 · `infrastructure` 10 · `config` 4 · `data` 1 |
+| Archivos CSS | 7 (1 681 líneas, cascada explícita) — reutilizados sin cambios desde la Actividad 1 |
+| Contratos (interfaces) | 9 puertos de dominio y aplicación (los 3 de presentación los impone React) |
+| Casos de uso | 7 |
 | Entidades | 2 · Value objects: 10 |
 | Productos del catálogo | 6 (5 replicados del original + `Crédito de Libranza`) |
 | Paletas de tema | 6 — `blue` · `emerald` · `violet` · `amber` · `rose` · `teal` |
 | Adaptadores | 10 · Servicios de dominio: 2 |
-| Dependencias en el contenedor | 34 |
+| Dependencias en el contenedor | 20 (la presentación la construye React) |
 | Rutas | `/` · `/simulador` · `/solicitar` · `*` (404) |
 
 ---
@@ -78,7 +84,7 @@ Tres itinerarios según para qué vengas:
 | 01 | [Visión general](./01-vision-general.md) | Qué es el proyecto, qué se replicó del original, mapa completo del sistema, cómo ejecutarlo |
 | 02 | [Arquitectura hexagonal](./02-arquitectura-hexagonal.md) | Puertos y adaptadores, driving vs. driven, el diagrama del hexágono, los 12 puertos del proyecto |
 | 03 | [Clean Architecture y capas](./03-clean-architecture-capas.md) | Las 4 capas + config, la regla de dependencia, cómo se verifica con `grep`, flujo de control vs. flujo de dependencias |
-| 04 | [MVC en la presentación](./04-mvc-presentacion.md) | Dónde vive el Modelo (no en la vista), qué puede y no puede hacer una Vista, qué puede y no puede hacer un Controlador |
+| 04 | [MVC en la presentación](./04-mvc-presentacion.md) | Dónde vive el Modelo (no en la vista), qué puede y no puede hacer una Vista, qué puede y no puede hacer un Controlador. **En React**: Vista → `pages/`, Controlador → `hooks/` ([21](./21-migracion-a-react-ev2.md)) |
 | 05 | [Principios SOLID](./05-principios-solid.md) | Los 5 principios, cada uno con el archivo y el fragmento real que lo materializa |
 
 ### Contratos
@@ -106,9 +112,9 @@ Tres itinerarios según para qué vengas:
 | # | Documento | Qué responde |
 |---|---|---|
 | 11 | [Adaptadores de infraestructura](./11-adaptadores-de-infraestructura.md) | Los 10 adaptadores, el datasource estático, la anticorruption layer, cómo sustituir cualquiera por uno HTTP |
-| 12 | [Vistas, controladores y componentes](./12-vistas-controladores-componentes.md) | `BaseView`, `BaseController`, las 6 vistas, los 4 componentes, el escapado por defecto, la gestión de listeners |
-| 13 | [Inyección de dependencias](./13-inyeccion-de-dependencias.md) | El `Container`, el Composition Root, el grafo completo de las 34 dependencias, detección de ciclos |
-| 14 | [Enrutado y URLs](./14-enrutado-y-urls.md) | `HistoryRouter`, `UrlBuilder`, prefijo de despliegue autodetectado, delegación de clics, reescritura en Apache/Nginx |
+| 12 | [Vistas, controladores y componentes](./12-vistas-controladores-componentes.md) | `BaseView`, `BaseController`, las 6 vistas, los 4 componentes, el escapado por defecto, la gestión de listeners. **Histórico de la Actividad 1**: sustituido por [21](./21-migracion-a-react-ev2.md) |
+| 13 | [Inyección de dependencias](./13-inyeccion-de-dependencias.md) | El `Container`, el Composition Root, el grafo de dependencias, detección de ciclos. **En React**: `DependenciesProvider` ([21 §3](./21-migracion-a-react-ev2.md)) |
+| 14 | [Enrutado y URLs](./14-enrutado-y-urls.md) | `HistoryRouter`, `UrlBuilder`, prefijo de despliegue, delegación de clics, reescritura en Apache/Nginx. **En React**: React Router ([21 §2](./21-migracion-a-react-ev2.md)) |
 | 15 | [Sistema de estilos](./15-sistema-de-estilos.md) | Los 7 archivos CSS en cascada, los design tokens, el mapeo Tailwind → CSS plano, los temas de producto |
 
 ### Síntesis y operación
@@ -120,6 +126,7 @@ Tres itinerarios según para qué vengas:
 | 18 | [Guía de extensión](./18-guia-de-extension.md) | 10 recetas paso a paso: añadir producto, campo, página, adaptador HTTP, contrato nuevo… |
 | 19 | [Pruebas y verificación](./19-pruebas-y-verificacion.md) | Las 3 suites ejecutadas, qué cubre cada una, cómo re-ejecutarlas, qué verificar antes de dar por bueno un cambio |
 | 20 | [Glosario y convenciones](./20-glosario-y-convenciones.md) | Vocabulario del proyecto, convenciones de nombres, de archivos, de comentarios y de commits |
+| 21 | [Migración a React (Actividad 2)](./21-migracion-a-react-ev2.md) | Qué cambió y qué no al sustituir la interfaz vanilla por React: tabla de equivalencias, inyección con contexto, los 3 cambios que exigió, verificación |
 
 ---
 
@@ -144,9 +151,14 @@ Tres itinerarios según para qué vengas:
  └─ SÍ .............................................. infrastructure/…
      y debe implementar un puerto ya declarado en domain/ o application/
 
-¿Pinta píxeles o reacciona a un evento del usuario?
- └─ SÍ .............................................. presentation/views
-                                                   o presentation/controllers
+¿Pinta píxeles? .................................... src/components (puro, sin
+                                                      estado ni efectos)
+                                                   o src/pages (una ruta)
+
+¿Guarda estado de interfaz o invoca un caso de uso?
+ └─ SÍ .............................................. src/hooks
+
+¿Es un dato del catálogo? .......................... src/data/creditsData.js
 
 ¿Es un `new` de una clase concreta que une capas?
  └─ SÍ ......... config/dependencies.js  ← y SOLO ahí
@@ -162,8 +174,9 @@ diseño, no solo "empeora el estilo".
 1. **`src/domain/` no importa nada de fuera de `src/domain/`.**
    Ni aplicación, ni infraestructura, ni presentación, ni config.
 2. **`src/application/` solo importa de `src/domain/` y de sí misma.**
-3. **`src/presentation/` nunca importa `src/infrastructure/`.**
-   Si necesita un dato de infraestructura, lo recibe **inyectado**.
+3. **La presentación (`src/components`, `src/pages`, `src/hooks`,
+   `src/context`) nunca importa `src/infrastructure/`.** Si necesita un dato
+   de infraestructura, lo recibe **inyectado** por `DependenciesProvider`.
 4. **El único archivo con `new` de clases concretas de varias capas es
    `src/config/dependencies.js`** (el Composition Root).
 5. **Toda dependencia entra por el constructor.** No hay `import` de
@@ -175,7 +188,7 @@ Verificación de las tres primeras:
 ```bash
 grep -rn "from '\.\./\.\./\(application\|infrastructure\|presentation\|config\)" src/domain/
 grep -rn "from '\.\./\.\./\(infrastructure\|presentation\|config\)"              src/application/
-grep -rn "infrastructure"                                                        src/presentation/
+grep -rn "infrastructure" src/components src/pages src/hooks src/context src/App.jsx
 ```
 
 Las tres deben devolver **cero resultados**. Estado actual: **cero**.
@@ -188,20 +201,19 @@ Dónde está declarado cada nombre propio del proyecto.
 
 | Artefacto | Tipo | Archivo | Doc |
 |---|---|---|---|
-| `AlertComponent` | Componente | `src/presentation/components/AlertComponent.js` | [12](./12-vistas-controladores-componentes.md) |
+| `Alert` | Componente React | `src/components/Alert.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `AmortizationPlan` | Value object | `src/domain/valueobjects/AmortizationPlan.js` | [08](./08-value-objects.md) |
+| `AmortizationTable` | Componente React | `src/components/AmortizationTable.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `AmountRange` | Value object | `src/domain/valueobjects/AmountRange.js` | [08](./08-value-objects.md) |
-| `APPLICATION_STATUS` | Enum | `src/domain/entities/CreditApplication.js` | [07](./07-entidades.md) |
-| `ApplicationController` | Controlador | `src/presentation/controllers/ApplicationController.js` | [12](./12-vistas-controladores-componentes.md) |
-| `ApplicationView` | Vista | `src/presentation/views/ApplicationView.js` | [12](./12-vistas-controladores-componentes.md) |
-| `Applicant` | Value object | `src/domain/valueobjects/Applicant.js` | [08](./08-value-objects.md) |
+| `AmountRangeFilter` | Componente React | `src/components/AmountRangeFilter.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `App` | Tabla de rutas | `src/App.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `AppConfig` | Configuración | `src/config/AppConfig.js` | [13](./13-inyeccion-de-dependencias.md) |
+| `Applicant` | Value object | `src/domain/valueobjects/Applicant.js` | [08](./08-value-objects.md) |
+| `APPLICATION_STATUS` | Enum | `src/domain/entities/CreditApplication.js` | [07](./07-entidades.md) |
+| `ApplicationPage` | Página React | `src/pages/ApplicationPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `assertImplements` | Función | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
-| `BaseController` | Clase base | `src/presentation/controllers/BaseController.js` | [12](./12-vistas-controladores-componentes.md) |
-| `BaseView` | Clase base | `src/presentation/views/BaseView.js` | [12](./12-vistas-controladores-componentes.md) |
 | `buildContainer` | Composition Root | `src/config/dependencies.js` | [13](./13-inyeccion-de-dependencias.md) |
-| `CatalogController` | Controlador | `src/presentation/controllers/CatalogController.js` | [12](./12-vistas-controladores-componentes.md) |
-| `CatalogView` | Vista | `src/presentation/views/CatalogView.js` | [12](./12-vistas-controladores-componentes.md) |
+| `CatalogPage` | Página React | `src/pages/CatalogPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `ConsoleLogger` | Adaptador | `src/infrastructure/logging/ConsoleLogger.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `Container` | Contenedor DI | `src/config/Container.js` | [13](./13-inyeccion-de-dependencias.md) |
 | `Contract.js` | Fábrica de interfaces | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
@@ -209,65 +221,71 @@ Dónde está declarado cada nombre propio del proyecto.
 | `CreditApplication` | Entidad | `src/domain/entities/CreditApplication.js` | [07](./07-entidades.md) |
 | `CreditApplicationMapper` | Mapper | `src/application/mappers/CreditApplicationMapper.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `CreditApplicationPolicy` | Servicio de dominio | `src/domain/services/CreditApplicationPolicy.js` | [09](./09-dominio-servicios-criterios-errores.md) |
+| `CreditCard` | Componente React | `src/components/CreditCard.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `CreditProduct` | Entidad | `src/domain/entities/CreditProduct.js` | [07](./07-entidades.md) |
 | `CreditProductDTO` | DTO | `src/application/dto/CreditProductDTO.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `CreditProductFactory` | Factory / ACL | `src/infrastructure/persistence/factories/CreditProductFactory.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `CreditProductMapper` | Mapper | `src/application/mappers/CreditProductMapper.js` | [10](./10-casos-de-uso-y-dtos.md) |
+| `CREDITS_DATA` | Datos | `src/data/creditsData.js` | [11](./11-adaptadores-de-infraestructura.md) · [21](./21-migracion-a-react-ev2.md) |
 | `CreditSimulationService` | Servicio de dominio | `src/domain/services/CreditSimulationService.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `CryptoIdGenerator` | Adaptador | `src/infrastructure/identity/CryptoIdGenerator.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `defineContract` | Función | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
-| `DocumentTitleController` | Decorador | `src/presentation/decorators/DocumentTitleController.js` | [16](./16-catalogo-de-patrones.md) |
+| `DependenciesProvider` | Contexto React | `src/context/DependenciesProvider.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `DomainError` | Error base | `src/domain/errors/DomainError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `EmploymentInfo` | Value object | `src/domain/valueobjects/EmploymentInfo.js` | [08](./08-value-objects.md) |
-| `FooterComponent` | Componente | `src/presentation/components/FooterComponent.js` | [12](./12-vistas-controladores-componentes.md) |
+| `Footer` | Componente React | `src/components/Footer.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `FormField` | Componente React | `src/components/FormField.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `GetAmountRangeFiltersUseCase` | Caso de uso | `src/application/usecases/GetAmountRangeFiltersUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `GetCreditProductNamesUseCase` | Caso de uso | `src/application/usecases/GetCreditProductNamesUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
-| `HistoryRouter` | Adaptador | `src/infrastructure/routing/HistoryRouter.js` | [14](./14-enrutado-y-urls.md) |
-| `Html` (`html`, `raw`, `escapeHtml`) | Utilidad | `src/presentation/shared/Html.js` | [12](./12-vistas-controladores-componentes.md) |
 | `IAmountRangeProvider` | Puerto | `src/domain/contracts/IAmountRangeProvider.js` | [06](./06-contratos-e-interfaces.md) |
 | `IClock` | Puerto | `src/domain/contracts/IClock.js` | [06](./06-contratos-e-interfaces.md) |
-| `IController` | Puerto | `src/presentation/contracts/IController.js` | [06](./06-contratos-e-interfaces.md) |
 | `ICreditApplicationRepository` | Puerto | `src/domain/contracts/ICreditApplicationRepository.js` | [06](./06-contratos-e-interfaces.md) |
 | `ICreditProductRepository` | Puerto | `src/domain/contracts/ICreditProductRepository.js` | [06](./06-contratos-e-interfaces.md) |
 | `IIdGenerator` | Puerto | `src/domain/contracts/IIdGenerator.js` | [06](./06-contratos-e-interfaces.md) |
 | `ILogger` | Puerto | `src/application/contracts/ILogger.js` | [06](./06-contratos-e-interfaces.md) |
 | `IMoneyFormatter` | Puerto | `src/domain/contracts/IMoneyFormatter.js` | [06](./06-contratos-e-interfaces.md) |
-| `INotifier` | Puerto | `src/application/contracts/INotifier.js` | [06](./06-contratos-e-interfaces.md) |
 | `InMemoryCreditProductRepository` | Adaptador | `src/infrastructure/persistence/InMemoryCreditProductRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
+| `INotifier` | Puerto | `src/application/contracts/INotifier.js` | [06](./06-contratos-e-interfaces.md) |
 | `Installment` | Value object | `src/domain/valueobjects/Installment.js` | [08](./08-value-objects.md) |
 | `InterestRate` | Value object | `src/domain/valueobjects/InterestRate.js` | [08](./08-value-objects.md) |
 | `IntlMoneyFormatter` | Adaptador | `src/infrastructure/formatters/IntlMoneyFormatter.js` | [11](./11-adaptadores-de-infraestructura.md) |
-| `IRouter` | Puerto | `src/presentation/contracts/IRouter.js` | [06](./06-contratos-e-interfaces.md) |
 | `IUseCase` | Puerto | `src/application/contracts/IUseCase.js` | [06](./06-contratos-e-interfaces.md) |
-| `IView` | Puerto | `src/presentation/contracts/IView.js` | [06](./06-contratos-e-interfaces.md) |
 | `ListCreditProductsUseCase` | Caso de uso | `src/application/usecases/ListCreditProductsUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `LocalStorageCreditApplicationRepository` | Adaptador | `src/infrastructure/persistence/LocalStorageCreditApplicationRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
+| `main.jsx` | Composition Root | `src/main.jsx` | [13](./13-inyeccion-de-dependencias.md) · [21](./21-migracion-a-react-ev2.md) |
 | `Money` | Value object | `src/domain/valueobjects/Money.js` | [08](./08-value-objects.md) |
-| `NavbarComponent` | Componente | `src/presentation/components/NavbarComponent.js` | [12](./12-vistas-controladores-componentes.md) |
-| `NotFoundController` | Controlador | `src/presentation/controllers/NotFoundController.js` | [12](./12-vistas-controladores-componentes.md) |
-| `NotFoundView` | Vista | `src/presentation/views/NotFoundView.js` | [12](./12-vistas-controladores-componentes.md) |
+| `Navbar` | Componente React | `src/components/Navbar.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `NotFoundPage` | Página React | `src/pages/NotFoundPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `NotImplementedError` | Error | `src/domain/errors/NotImplementedError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
-| `ProductCardComponent` | Componente | `src/presentation/components/ProductCardComponent.js` | [12](./12-vistas-controladores-componentes.md) |
 | `ProductSearchCriteria` | Specification | `src/domain/criteria/ProductSearchCriteria.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `ProductTheme` | Value object | `src/domain/valueobjects/ProductTheme.js` | [08](./08-value-objects.md) |
 | `RequestedCredit` | Value object | `src/domain/valueobjects/RequestedCredit.js` | [08](./08-value-objects.md) |
 | `Result` | Tipo de retorno | `src/application/shared/Result.js` | [10](./10-casos-de-uso-y-dtos.md) |
-| `ROUTES` / `ROUTE_TABLE` | Configuración | `src/config/routes.js` | [14](./14-enrutado-y-urls.md) |
+| `ROUTES` / `ROUTE_TITLES` | Configuración | `src/config/routes.js` | [14](./14-enrutado-y-urls.md) · [21](./21-migracion-a-react-ev2.md) |
+| `SearchBar` | Componente React | `src/components/SearchBar.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `SearchCreditProductsUseCase` | Caso de uso | `src/application/usecases/SearchCreditProductsUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SimulateCreditUseCase` | Caso de uso | `src/application/usecases/SimulateCreditUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SimulationDTO` | DTO | `src/application/dto/SimulationDTO.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SimulationMapper` | Mapper | `src/application/mappers/SimulationMapper.js` | [10](./10-casos-de-uso-y-dtos.md) |
-| `SimulatorController` | Controlador | `src/presentation/controllers/SimulatorController.js` | [12](./12-vistas-controladores-componentes.md) |
-| `SimulatorView` | Vista | `src/presentation/views/SimulatorView.js` | [12](./12-vistas-controladores-componentes.md) |
+| `SimulationResult` | Componente React | `src/components/SimulationResult.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `SimulatorForm` | Componente React | `src/components/SimulatorForm.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `SimulatorPage` | Página React | `src/pages/SimulatorPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `SortSelect` | Componente React | `src/components/SortSelect.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `StaticAmountRangeProvider` | Adaptador | `src/infrastructure/persistence/StaticAmountRangeProvider.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `StaticCreditProductDataSource` | Datasource | `src/infrastructure/persistence/datasources/StaticCreditProductDataSource.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `SubmitCreditApplicationUseCase` | Caso de uso | `src/application/usecases/SubmitCreditApplicationUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SystemClock` | Adaptador | `src/infrastructure/time/SystemClock.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `Term` | Value object | `src/domain/valueobjects/Term.js` | [08](./08-value-objects.md) |
 | `ToastNotifier` | Adaptador | `src/infrastructure/notification/ToastNotifier.js` | [11](./11-adaptadores-de-infraestructura.md) |
-| `UrlBuilder` | Utilidad | `src/presentation/shared/UrlBuilder.js` | [14](./14-enrutado-y-urls.md) |
+| `useApplicationForm` | Hook | `src/hooks/useApplicationForm.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useCreditProducts` | Hook | `src/hooks/useCreditProducts.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useCreditSearch` | Hook | `src/hooks/useCreditSearch.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useDependencies` | Hook | `src/hooks/useDependencies.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useDocumentTitle` | Hook | `src/hooks/useDocumentTitle.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useProductSorting` | Hook | `src/hooks/useProductSorting.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useSimulation` | Hook | `src/hooks/useSimulation.js` | [21](./21-migracion-a-react-ev2.md) |
+| `ValidateCreditApplicationDraftUseCase` | Caso de uso | `src/application/usecases/ValidateCreditApplicationDraftUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) · [21](./21-migracion-a-react-ev2.md) |
 | `ValidationError` | Error | `src/domain/errors/ValidationError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
-| `ViewRenderer` | Servicio de UI | `src/presentation/shared/ViewRenderer.js` | [12](./12-vistas-controladores-componentes.md) |
 
 ---
 
@@ -276,10 +294,11 @@ Dónde está declarado cada nombre propio del proyecto.
 | Archivo | Contenido |
 |---|---|
 | `../README.md` | Puesta en marcha, qué se replicó del sitio original, resumen de arquitectura |
-| `../.htaccess` | Reescritura SPA para Apache/Laragon, MIME, caché, cabeceras |
+| `../public/.htaccess` | Reescritura SPA para Apache/Laragon, MIME, caché, cabeceras |
 | `../src/config/AppConfig.js` | Todos los valores configurables del sistema |
-| `./iudigital_doc/CreditSmart_Arquitectura_de_la_Solucion.docx` | Documento de arquitectura para la actividad de la IU Digital — **copia de trabajo que se edita a mano** |
-| `./iudigital_doc/generador/` | Scripts que generan ese documento y sus 8 gráficos. Escriben siempre en `..._generado.docx`, nunca sobre la copia editada. Ver su [`README.md`](./iudigital_doc/generador/README.md) |
+| `./iudigital_doc/EV1/CreditSmart_Arquitectura_EV1.docx` | Documento de arquitectura entregado en la Actividad 1 |
+| `./iudigital_doc/EV2/rubricaEV2.txt` | Rúbrica de la Actividad 2 |
+| `./iudigital_doc/EV1/generador/` | Scripts que generan ese documento y sus 8 gráficos. Escriben siempre en `..._generado.docx`, nunca sobre la copia editada. Ver su [`README.md`](./iudigital_doc/EV1/generador/README.md) |
 
 ---
 

@@ -2,6 +2,12 @@
 
 # 13 — Inyección de dependencias y Composition Root
 
+> **Actividad 2 — React.** El `Container` y el Composition Root no cambiaron.
+> Lo que cambió: `dependencies.js` ya no registra vistas, controladores ni
+> router, y la interfaz recibe los casos de uso a través de
+> `DependenciesProvider`. Ver
+> [21 §3](./21-migracion-a-react-ev2.md).
+
 ## 13.1 El principio operativo
 
 Una clase **nunca** crea sus colaboradores. Los recibe.

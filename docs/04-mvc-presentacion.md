@@ -2,6 +2,11 @@
 
 # 04 — MVC en la capa de presentación
 
+> **Actividad 2 — React.** El reparto de responsabilidades de este documento
+> sigue vigente; cambia el nombre de las piezas: la Vista es una página de
+> `src/pages/`, el Controlador es un hook de `src/hooks/` y el Modelo sigue
+> siendo el dominio. Ver [21 — Migración a React](./21-migracion-a-react-ev2.md).
+
 ## 4.1 MVC aquí no es "MVC de framework"
 
 En muchos frameworks "MVC" significa: el Modelo es el ORM, la Vista es una
