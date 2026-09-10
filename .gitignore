@@ -23,3 +23,6 @@ __pycache__/
 
 #CL
 /.claude/
+
+# Logo institucional extraido al vuelo por el generador del .docx
+docs/iudigital_doc/*/generador/refmedia/
