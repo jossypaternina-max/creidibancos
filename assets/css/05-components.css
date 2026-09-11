@@ -29,19 +29,24 @@
 }
 
 .brand__name {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-2xl);
-  font-weight: var(--fw-black);
-  color: var(--brand);
-  letter-spacing: -0.025em;
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  font-weight: var(--fw-bold);
+  color: var(--brand-strong);
+  letter-spacing: -0.015em;
 }
 
+/* La marca es monocroma: «Smart» usa otro tono del mismo azul, no un segundo
+   color. Antes era verde y, junto al azul del banner, daba una combinación
+   que no armonizaba. */
 .brand__name-accent {
-  color: var(--accent);
+  color: var(--brand-light);
 }
 
 .brand__tagline {
   display: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   font-size: var(--text-xs);
   line-height: var(--leading-xs);
   color: var(--text-faint);
@@ -95,6 +100,8 @@
 /* ------------------------------------------------------------
    Botones
    ------------------------------------------------------------ */
+/* Una acción principal en azul corporativo, una secundaria de contorno y una
+   clara para fondos oscuros. Ningún botón decorativo. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -117,21 +124,23 @@
 }
 .btn--primary:hover { background-color: var(--brand-hover); }
 
+/* Acción principal sobre el banner oscuro: blanco sobre azul. Máximo
+   contraste y ningún color nuevo. Antes era un botón verde. */
 .btn--accent {
-  background-color: var(--accent);
-  color: var(--color-white);
-  font-weight: var(--fw-bold);
+  background-color: var(--color-white);
+  color: var(--brand-strong);
+  font-weight: var(--fw-semibold);
   padding: var(--space-3) var(--space-6);
 }
-.btn--accent:hover { background-color: var(--accent-hover); }
+.btn--accent:hover { background-color: var(--color-blue-50); }
 
 .btn--ghost-light {
-  background-color: rgb(255 255 255 / 0.1);
+  background-color: transparent;
   color: var(--color-white);
-  border: 1px solid rgb(255 255 255 / 0.3);
+  border: 1px solid rgb(255 255 255 / 0.45);
   padding: var(--space-3) var(--space-6);
 }
-.btn--ghost-light:hover { background-color: rgb(255 255 255 / 0.2); }
+.btn--ghost-light:hover { background-color: rgb(255 255 255 / 0.12); }
 
 .btn--outline {
   border: 1px solid var(--color-gray-200);
@@ -141,7 +150,7 @@
 .btn--outline:hover { background-color: var(--color-gray-50); }
 
 .btn--outline-brand {
-  border: 1px solid var(--color-blue-600);
+  border: 1px solid var(--brand-soft-border);
   color: var(--brand);
 }
 .btn--outline-brand:hover { background-color: var(--brand-soft); }
@@ -197,62 +206,81 @@
 /* ------------------------------------------------------------
    Card de producto
    ------------------------------------------------------------ */
+/* Tarjeta sobria: superficie blanca, borde de 1 px y una línea superior azul
+   que da jerarquía sin colorear la tarjeta entera. Antes cada cabecera era un
+   degradado de un color distinto, y seis degradados en la misma rejilla
+   saturaban la pantalla. */
 .product-card {
   background-color: var(--surface);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--color-gray-200);
+  border-top: 3px solid var(--product-accent);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: box-shadow var(--transition-base) var(--ease);
+  transition: box-shadow var(--transition-base) var(--ease),
+              border-color var(--transition-base) var(--ease);
 }
 
 .product-card:hover {
   box-shadow: var(--shadow-md);
+  border-color: var(--color-blue-200);
 }
 
 .product-card__header {
-  background-image: linear-gradient(
-    to right,
-    var(--product-grad-from),
-    var(--product-grad-to)
-  );
-  padding: var(--space-6);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--color-gray-100);
   display: flex;
   align-items: center;
   gap: var(--space-4);
 }
 
 .product-card--compact .product-card__header {
-  padding: var(--space-5);
+  padding: var(--space-4) var(--space-4) var(--space-3);
   gap: var(--space-3);
 }
 
+/* El pictograma va dentro de un chip neutro, no suelto sobre un color */
 .product-card__icon {
-  font-size: var(--text-4xl);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: var(--text-xl);
   line-height: 1;
+  background-color: var(--product-chip-bg);
+  border: 1px solid var(--product-chip-border);
+  border-radius: var(--radius-lg);
+  /* El pictograma del producto es un emoji a todo color: desaturarlo lo
+     integra en la paleta corporativa sin tocar el dato del catalogo. */
+  filter: grayscale(1) contrast(0.9);
+  opacity: 0.85;
 }
 
 .product-card--compact .product-card__icon {
-  font-size: var(--text-3xl);
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: var(--text-lg);
 }
 
 .product-card__name {
-  color: var(--color-white);
-  font-weight: var(--fw-bold);
-  font-size: var(--text-lg);
-  line-height: 1.25;
+  color: var(--text-strong);
+  font-weight: var(--fw-semibold);
+  font-size: var(--text-base);
+  line-height: 1.3;
 }
 
 .product-card--compact .product-card__name {
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
 .product-card__term {
-  color: rgb(255 255 255 / 0.8);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: var(--leading-xs);
 }
 
 .product-card--compact .product-card__term {
@@ -290,16 +318,17 @@
 }
 
 .metric__value {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-2xl);
-  font-weight: var(--fw-black);
-  color: var(--text-strong);
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  font-weight: var(--fw-bold);
+  color: var(--brand-strong);
+  font-variant-numeric: tabular-nums;
 }
 
 .metric__value--sm {
-  font-size: var(--text-lg);
-  line-height: var(--leading-lg);
-  font-weight: var(--fw-bold);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  font-weight: var(--fw-semibold);
   color: var(--color-gray-700);
 }
 
@@ -326,12 +355,14 @@
 
 /* ---------- Badge de rango de monto ---------- */
 .badge-amount {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-xs);
   line-height: var(--leading-xs);
   font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
   background-color: var(--product-badge-bg);
+  border: 1px solid var(--product-badge-border);
   color: var(--product-badge-fg);
 }
 
@@ -382,10 +413,12 @@
   line-height: var(--leading-sm);
 }
 
+/* El aviso informativo era amarillo: un cuarto color en pantalla para algo
+   que solo informa. Ahora usa el azul corporativo en su tono más claro. */
 .alert--info {
-  background-color: var(--color-amber-50);
-  border: 1px solid var(--color-amber-200);
-  color: var(--color-amber-700);
+  background-color: var(--brand-soft);
+  border: 1px solid var(--brand-soft-border);
+  color: var(--brand);
 }
 
 .alert--empty {
@@ -424,15 +457,20 @@
   padding: 0.625rem var(--space-4);
   font-size: var(--text-sm);
   line-height: var(--leading-sm);
-  background-color: var(--color-gray-50);
+  background-color: var(--color-white);
   color: var(--color-gray-900);
   transition: box-shadow var(--transition-fast) var(--ease),
               border-color var(--transition-fast) var(--ease);
 }
 
+.control:hover {
+  border-color: var(--color-gray-300);
+}
+
 .control:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--focus-ring);
+  border-color: var(--brand-light);
+  box-shadow: 0 0 0 3px var(--color-blue-100);
 }
 
 .control--textarea {
@@ -478,7 +516,7 @@
    Footer
    ------------------------------------------------------------ */
 .footer {
-  background-color: var(--color-gray-900);
+  background-color: var(--brand-strong);
   color: var(--text-faint);
   font-size: var(--text-sm);
   line-height: var(--leading-sm);
@@ -525,9 +563,10 @@
   animation: toast-in var(--transition-base) var(--ease);
 }
 
-.toast--success { border-left-color: var(--color-emerald-500); }
-.toast--error   { border-left-color: var(--color-red-500); }
-.toast--info    { border-left-color: var(--color-blue-500); }
+/* Los tres únicos usos de color con significado: éxito, error e información */
+.toast--success { border-left-color: var(--success); }
+.toast--error   { border-left-color: var(--color-red-600); }
+.toast--info    { border-left-color: var(--brand); }
 
 .toast__title {
   font-weight: var(--fw-bold);

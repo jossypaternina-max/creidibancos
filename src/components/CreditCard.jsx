@@ -66,7 +66,7 @@ export function CreditCard({ product, variant = 'full' }) {
           </div>
         </div>
 
-        <div className="badge-amount">💰 {amountRangeLabel}</div>
+        <div className="badge-amount">{amountRangeLabel}</div>
 
         {!isCompact && (
           <p className="product-card__requirements">

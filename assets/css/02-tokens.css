@@ -53,31 +53,38 @@
   --color-slate-800: #1e293b;
   --color-slate-900: #0f172a;
 
-  /* ---------- Azul (marca primaria) ---------- */
-  --color-blue-50:  #eff6ff;
-  --color-blue-100: #dbeafe;
-  --color-blue-200: #bfdbfe;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
-  --color-blue-900: #1e3a8a;
+  /* ---------- Azul corporativo (color primario, y practicamente el unico)
+     Escala navy de una sola familia. Reemplaza al azul royal saturado de la
+     primera version: un producto financiero necesita sobriedad, no viveza. --- */
+  --color-blue-50:  #f4f7fb;
+  --color-blue-100: #e5ecf5;
+  --color-blue-200: #c7d6e8;
+  --color-blue-400: #7390b5;
+  --color-blue-500: #45648f;
+  --color-blue-600: #2d4c75;
+  --color-blue-700: #1f3a5f;
+  --color-blue-800: #182e4c;
+  --color-blue-900: #101f35;
 
-  /* ---------- Esmeralda (acento) ---------- */
-  --color-emerald-100: #d1fae5;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  --color-emerald-700: #047857;
+  /* ---------- Verde de confirmacion (SOLO estados: exito de una operacion).
+     Desaturado a proposito: informa, no decora. --------------------------- */
+  --color-emerald-100: #dcefe8;
+  --color-emerald-400: #4d9c86;
+  --color-emerald-500: #2f7d68;
+  --color-emerald-600: #1f6654;
+  --color-emerald-700: #175043;
 
-  /* ---------- Violeta ---------- */
+  /* ---------- Paletas heredadas de los temas de producto ----------
+     Los seis productos siguen declarando su paleta en el dominio
+     (ProductTheme), porque es un atributo del producto. Pero la interfaz ya no
+     la usa para pintar: los seis temas se resuelven al azul corporativo (ver
+     el bloque «Temas de producto» al final del archivo). Estos tokens quedan
+     como referencia del catalogo original y para posibles usos editoriales,
+     NO para superficies de la aplicacion. */
   --color-violet-100: #ede9fe;
-  --color-violet-500: #8b5cf6;
   --color-violet-600: #7c3aed;
-  --color-violet-700: #6d28d9;
 
-  /* ---------- Ámbar ---------- */
+  /* Ámbar: solo se conserva para avisos de precaucion en documentacion */
   --color-amber-50:  #fffbeb;
   --color-amber-100: #fef3c7;
   --color-amber-200: #fde68a;
@@ -85,16 +92,8 @@
   --color-amber-600: #d97706;
   --color-amber-700: #b45309;
 
-  /* ---------- Rosa ---------- */
-  --color-rose-100: #ffe4e6;
   --color-rose-500: #f43f5e;
-  --color-rose-700: #be123c;
-
-  /* ---------- Verde azulado (sexto tema de producto) ---------- */
-  --color-teal-100: #ccfbf1;
-  --color-teal-500: #14b8a6;
   --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
 
   /* ---------- Naranja / Rojo (estados) ---------- */
   --color-orange-100: #ffedd5;
@@ -115,23 +114,29 @@
   --text-faint: var(--color-gray-400);
   --brand: var(--color-blue-700);
   --brand-hover: var(--color-blue-800);
+  --brand-strong: var(--color-blue-900);
   --brand-soft: var(--color-blue-50);
-  --accent: var(--color-emerald-500);
-  --accent-hover: var(--color-emerald-400);
-  --focus-ring: var(--color-blue-400);
-  --required: var(--color-red-500);
+  --brand-soft-border: var(--color-blue-200);
+  --brand-light: var(--color-blue-500);
+  /* El «acento» ya no es un segundo color de marca: es el propio azul.
+     Tres colores en total: azul corporativo, gris neutro y verde de estado. */
+  --accent: var(--color-blue-700);
+  --accent-hover: var(--color-blue-800);
+  --success: var(--color-emerald-600);
+  --focus-ring: var(--color-blue-500);
+  --required: var(--color-red-600);
 
   /* ---------- Radios ---------- */
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.625rem;
   --radius-full: 9999px;
 
   /* ---------- Sombras ---------- */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(16 31 53 / 0.04);
+  --shadow-md: 0 2px 6px -1px rgb(16 31 53 / 0.08), 0 1px 3px -2px rgb(16 31 53 / 0.06);
+  --shadow-lg: 0 8px 20px -6px rgb(16 31 53 / 0.12), 0 2px 6px -4px rgb(16 31 53 / 0.08);
 
   /* ---------- Anchos de contenedor ---------- */
   --container-md: 28rem;   /* max-w-md  */
@@ -163,49 +168,31 @@
   --z-toast: 100;
 }
 
-/* ---------- Temas de producto (gradiente + badge) ----------
-   Mapeo 1:1 con el catálogo original:
-   blue / emerald / violet / amber / rose
-   más `teal`, añadido para el sexto producto (Crédito de Libranza)  */
+/* ---------- Temas de producto ----------
+   El dominio declara seis paletas (blue, emerald, violet, amber, rose, teal)
+   porque el tema es un atributo del producto. La decision VISUAL es otra: los
+   seis se resuelven al mismo azul corporativo.
 
-.theme-blue {
-  --product-grad-from: var(--color-blue-500);
-  --product-grad-to: var(--color-blue-700);
-  --product-badge-bg: var(--color-blue-100);
-  --product-badge-fg: var(--color-blue-700);
-}
+   Por que: seis degradados de colores distintos en la misma rejilla saturan la
+   pantalla y, en un sitio financiero, restan credibilidad. Los productos se
+   distinguen por su nombre, su pictograma y sus cifras, no por el color.
 
-.theme-emerald {
-  --product-grad-from: var(--color-emerald-500);
-  --product-grad-to: var(--color-emerald-700);
-  --product-badge-bg: var(--color-emerald-100);
-  --product-badge-fg: var(--color-emerald-700);
-}
+   Cambiar de criterio no exige tocar el dominio ni un solo componente: es este
+   bloque de tokens. */
 
-.theme-violet {
-  --product-grad-from: var(--color-violet-500);
-  --product-grad-to: var(--color-violet-700);
-  --product-badge-bg: var(--color-violet-100);
-  --product-badge-fg: var(--color-violet-700);
-}
-
-.theme-amber {
-  --product-grad-from: var(--color-amber-500);
-  --product-grad-to: var(--color-amber-600);
-  --product-badge-bg: var(--color-amber-100);
-  --product-badge-fg: var(--color-amber-700);
-}
-
-.theme-rose {
-  --product-grad-from: var(--color-rose-500);
-  --product-grad-to: var(--color-rose-700);
-  --product-badge-bg: var(--color-rose-100);
-  --product-badge-fg: var(--color-rose-700);
-}
-
+.theme-blue,
+.theme-emerald,
+.theme-violet,
+.theme-amber,
+.theme-rose,
 .theme-teal {
-  --product-grad-from: var(--color-teal-500);
-  --product-grad-to: var(--color-teal-700);
-  --product-badge-bg: var(--color-teal-100);
-  --product-badge-fg: var(--color-teal-700);
+  /* Chip del pictograma: fondo azul muy claro, trazo azul corporativo */
+  --product-chip-bg: var(--color-blue-50);
+  --product-chip-border: var(--color-blue-100);
+  --product-accent: var(--color-blue-700);
+
+  /* Badge del rango de monto */
+  --product-badge-bg: var(--color-blue-50);
+  --product-badge-fg: var(--color-blue-700);
+  --product-badge-border: var(--color-blue-100);
 }

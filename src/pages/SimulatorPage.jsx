@@ -106,7 +106,7 @@ export function SimulatorPage() {
             />
           </>
         ) : (
-          <Alert variant="empty" icon="🧮">
+          <Alert variant="empty">
             Completa el monto y el plazo para ver tu cuota.
           </Alert>
         )}
@@ -126,13 +126,13 @@ export function SimulatorPage() {
           </div>
 
           <div className="filters__actions">
-            <label className="label" htmlFor="hide-simulated">
+            <label className="filters__toggle" htmlFor="hide-simulated">
               <input
                 id="hide-simulated"
                 type="checkbox"
                 checked={hideSimulated}
                 onChange={(event) => setHideSimulated(event.target.checked)}
-              />{' '}
+              />
               Ocultar el producto que estoy simulando
             </label>
             <button type="button" className="btn btn--outline" onClick={clearFilters}>
@@ -141,7 +141,7 @@ export function SimulatorPage() {
           </div>
         </div>
 
-        <Alert variant="info" icon="ℹ️">
+        <Alert variant="info">
           La búsqueda se aplica <strong>mientras escribes</strong>: el criterio lo resuelve el
           dominio, no la interfaz.
         </Alert>
@@ -153,7 +153,7 @@ export function SimulatorPage() {
         )}
 
         {visibleProducts.length === 0 ? (
-          <Alert variant="empty" icon="🔎">
+          <Alert variant="empty">
             Ningún producto coincide con los filtros aplicados.
           </Alert>
         ) : (

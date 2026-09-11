@@ -57,6 +57,11 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  /* Los tres controles del catalogo, tambien: buscar, rango y orden. */
+  .filters__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .sim-result__grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

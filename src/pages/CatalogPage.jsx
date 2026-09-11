@@ -55,14 +55,12 @@ export function CatalogPage() {
 
         {isLoading && (
           <div className="alert alert--empty" role="status">
-            <span aria-hidden="true">⏳</span>
             <span>Cargando el catálogo de productos…</span>
           </div>
         )}
 
         {error && (
           <div className="alert alert--empty" role="alert">
-            <span aria-hidden="true">⚠️</span>
             <span>{error}</span>
           </div>
         )}

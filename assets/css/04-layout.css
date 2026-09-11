@@ -48,7 +48,8 @@
 .section__title--page {
   font-size: var(--text-3xl);
   line-height: var(--leading-3xl);
-  font-weight: var(--fw-black);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
   margin-bottom: var(--space-1);
 }
 
