@@ -2,6 +2,12 @@
 
 # 15 — Sistema de estilos
 
+> **Actividad 2 — rediseño visual.** La cascada de los siete archivos y los
+> nombres de los tokens no cambian, pero la paleta sí: se redujo a azul
+> corporativo, gris neutro y un verde reservado a los avisos de éxito, y los
+> seis temas de producto se resuelven al mismo azul. El criterio y la tabla de
+> valores están en [22 — Identidad visual](./22-identidad-visual.md).
+
 ## 15.1 De Tailwind a CSS plano
 
 El original usaba Tailwind: 70 KB de CSS generado y clases atómicas en el marcado

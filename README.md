@@ -30,7 +30,7 @@ El detalle de la migración está en
 | [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/simulador`, `/solicitar`, 404) |
 | [Vite](https://vite.dev) | 8 | Servidor de desarrollo y empaquetado |
 | JavaScript | ES2022 (módulos ES) | Dominio, aplicación e infraestructura, sin dependencias |
-| CSS3 | — | 7 hojas en cascada explícita, Grid y Flexbox, mobile-first |
+| CSS3 | — | 7 hojas en cascada explícita, Grid y Flexbox, mobile-first, paleta corporativa de 3 colores |
 | Node.js | ≥ 18 (probado en 22.14) | Entorno de desarrollo |
 
 El núcleo de negocio **no depende de React**: son módulos ES estándar que se
@@ -101,6 +101,14 @@ error de un campo solo aparece cuando el usuario ya pasó por él.
 
 ![Formulario con validaciones en tiempo real](./docs/capturas/04-formulario-validaciones.jpg)
 
+### Responsive
+
+Una columna en móvil (414 px), dos en tableta (820 px) y tres en escritorio.
+
+![Catálogo en móvil](./docs/capturas/05-responsive-movil.jpg)
+
+![Simulador en tableta](./docs/capturas/06-responsive-tableta.jpg)
+
 ---
 
 ## 4. Funcionalidades
@@ -120,6 +128,7 @@ error de un campo solo aparece cuando el usuario ya pasó por él.
 | Radicado y persistencia de la solicitud | `infrastructure/persistence/LocalStorageCreditApplicationRepository.js` |
 | Avisos accesibles (toasts) | `infrastructure/notification/ToastNotifier.js` |
 | Diseño responsive mobile-first | `assets/css/07-responsive.css` |
+| Identidad visual sobria: 3 colores, sin degradados de producto | `assets/css/02-tokens.css` ([doc 22](./docs/22-identidad-visual.md)) |
 
 ---
 
@@ -131,7 +140,7 @@ crediSmart/
 ├── package.json                Dependencias y scripts
 ├── vite.config.js              Configuración del empaquetador
 ├── public/.htaccess            Reescritura SPA para Apache (se copia a dist/)
-├── assets/css/                 7 hojas en cascada, reutilizadas de la Actividad 1
+├── assets/css/                 7 hojas en cascada; paleta corporativa (doc 22)
 ├── src/
 │   ├── main.jsx                Composition Root: construye el grafo y monta React
 │   ├── App.jsx                 Tabla de rutas (React Router)
@@ -148,7 +157,7 @@ crediSmart/
 │   └── config/                 AppConfig, Container, dependencies, routes
 ├── tests/
 │   └── 01-domain-application.mjs      Suite de dominio y aplicación (85 aserciones)
-└── docs/                       21 documentos + capturas
+└── docs/                       22 documentos + capturas
 ```
 
 Las tres carpetas que pide la rúbrica —`components/`, `pages/`, `data/`— están
@@ -258,7 +267,7 @@ ruta inexistente. Sin errores ni advertencias en consola.
 
 ## 9. Documentación
 
-**Índice maestro: [`docs/master.md`](./docs/master.md)** — 21 documentos sobre el
+**Índice maestro: [`docs/master.md`](./docs/master.md)** — 22 documentos sobre el
 patrón de diseño, las entidades, los value objects, los contratos, los casos de
 uso, los adaptadores, la inyección de dependencias, el enrutado, los estilos,
 los flujos end-to-end, las recetas de extensión y las convenciones.
@@ -268,6 +277,7 @@ Lecturas recomendadas para esta entrega:
 | Documento | Qué responde |
 |---|---|
 | [21 — Migración a React](./docs/21-migracion-a-react-ev2.md) | Qué cambió y qué no al pasar de vanilla a React, y por qué |
+| [22 — Identidad visual](./docs/22-identidad-visual.md) | La paleta corporativa de tres colores y el criterio para pantallas nuevas |
 | [02 — Arquitectura hexagonal](./docs/02-arquitectura-hexagonal.md) | Qué es un puerto y qué es un adaptador |
 | [03 — Clean Architecture y capas](./docs/03-clean-architecture-capas.md) | Quién puede importar a quién |
 | [10 — Casos de uso y DTOs](./docs/10-casos-de-uso-y-dtos.md) | Por qué la interfaz recibe DTOs y nunca entidades |
