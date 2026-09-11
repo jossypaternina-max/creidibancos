@@ -25,6 +25,7 @@ Ten abiertas, en este orden, estas pestañas y ventanas:
 |---|---|---|
 | 1 | Navegador en `http://localhost:5173` | La demo |
 | 2 | Editor con `src/hooks/useSimulation.js` | Mostrar código de estado |
+| 2b | Editor con `assets/css/02-tokens.css` | Mostrar la paleta y los seis temas unificados |
 | 3 | Editor con `src/components/CreditCard.jsx` | Mostrar props desestructuradas |
 | 4 | Editor con `src/pages/SimulatorPage.jsx` | Mostrar `.filter().sort().map()` |
 | 5 | Editor con `src/hooks/useApplicationForm.js` | Mostrar formulario controlado |
@@ -62,6 +63,21 @@ Habla mientras haces clic. No leas la pantalla: explica qué decide cada cosa.
 - «Las cifras llegan **ya formateadas** desde la capa de aplicación. El
   componente no formatea dinero: recibe `"$ 1.000.000 – $ 30.000.000"` como
   texto.»
+
+### 2.1 bis Identidad visual — responde a la revisión anterior
+
+Dilo tú antes de que lo pregunten, y en una frase:
+
+> «La revisión de la Actividad 1 señaló que el diseño estaba saturado: banner
+> con blanco, verde y azul, y seis degradados distintos en las tarjetas. La
+> rehicimos con tres colores: azul corporativo, gris y un verde reservado a los
+> avisos de éxito. Las seis paletas siguen declaradas en el dominio, porque el
+> tema es un atributo del producto, pero la interfaz las resuelve todas al mismo
+> azul: son seis selectores en el archivo de tokens.»
+
+Si el docente quiere ver el código, abre `assets/css/02-tokens.css` en el bloque
+«Temas de producto». El punto que cierra el argumento: **el rediseño no tocó el
+dominio, ni un caso de uso, ni un componente**.
 
 ### 2.2 Simulador (`/simulador`) — el criterio de la cuota
 
@@ -259,6 +275,8 @@ Cierra con el resumen de una frase:
 | **¿Para qué el `cancelled` en los efectos?** | React monta dos veces en modo estricto y el usuario puede teclear más rápido de lo que responden las promesas. Sin la limpieza, una respuesta vieja puede sobrescribir el estado más nuevo. |
 | **¿Dónde quedó la Actividad 1?** | En el tag `ev1-entrega` de la misma historia del repositorio: sigue siendo reproducible tal como se entregó. |
 | **¿Y las pruebas de la interfaz?** | La suite de dominio y aplicación sigue vigente. Las dos suites que probaban plantillas de cadena y arranque con jsdom se retiraron porque probaban código que ya no existe; su papel lo cubren `npm run build` y la comprobación manual documentada en el §17 del documento. |
+| **¿Por qué quitaron los colores de las tarjetas?** | Porque no informaban de nada: los productos ya se distinguen por nombre, pictograma, tasa y rango de montos. Seis degradados en la misma rejilla saturan la pantalla, y en banca eso resta credibilidad. El color quedó reservado a la acción principal y a los estados. |
+| **¿Y si mañana quieren volver a distinguir productos por color?** | Es el mismo bloque de tokens de `02-tokens.css`. El dominio sigue declarando las seis paletas en `ProductTheme`, así que el dato está ahí: solo cambia cómo se pinta. |
 | **¿Cuánto de esto es código propio?** | La arquitectura, el enrutado, el simulador, las validaciones, los hooks y las pruebas. Del sitio de referencia se replicaron textos, productos, colores y puntos de quiebre, y así está declarado en las referencias del documento. |
 
 ---

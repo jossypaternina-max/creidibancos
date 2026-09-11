@@ -98,6 +98,9 @@ for t in (u'Configurar un proyecto React con Vite y React Router, con una estruc
           u'correo, cédula, montos e ingresos, reutilizando las reglas del dominio.',
           u'Calcular la cuota mensual de forma automática con la tasa del producto '
           u'elegido y presentarla en formato COP, junto con la tabla de amortización.',
+          u'Rediseñar la interfaz con una paleta corporativa sobria de tres colores, '
+          u'atendiendo la observación de la revisión anterior sobre la saturación '
+          u'visual y la credibilidad que exige un producto financiero.',
           u'Demostrar, con evidencia medible, que la arquitectura hexagonal hizo de '
           u'la migración un cambio de adaptador y no una reescritura.'):
     bullet(t)
@@ -149,7 +152,7 @@ add_table(
       u'Estado local con hooks; el catálogo se resuelve en memoria'],
      [u'RNF-02', u'Diseño responsive mobile-first verificado en móvil, tablet y '
                  u'escritorio.',
-      u'Los 7 CSS de la Actividad 1, reutilizados sin cambios'],
+      u'Los 7 CSS de la Actividad 1, con la paleta rediseñada (§16)'],
      [u'RNF-03', u'Las reglas de negocio no dependen de React ni del navegador.',
       u'domain/ y application/ son módulos ES estándar; la suite corre en Node'],
      [u'RNF-04', u'Un error de configuración debe fallar al arrancar, no a mitad de '
@@ -184,7 +187,8 @@ add_table(
       u'4 páginas, 1 contexto, App.jsx, main.jsx'],
      [u'Configuración y datos', u'4 + 1 archivos — AppConfig, Container, '
       u'dependencies, routes; creditsData'],
-     [u'Archivos CSS', u'7 (1 681 líneas) reutilizados sin cambios de la Actividad 1'],
+     [u'Archivos CSS', u'7 en cascada explícita, heredados de la Actividad 1 y con la paleta rediseñada'],
+     [u'Colores de la interfaz', u'3 — azul corporativo, gris neutro y un verde de confirmación'],
      [u'Contratos (puertos)', u'9 — 6 de dominio y 3 de aplicación'],
      [u'Dependencias en el contenedor', u'20'],
      [u'Productos del catálogo', u'6'],
@@ -353,7 +357,7 @@ code_block([
     u'|- package.json                Dependencias y scripts',
     u'|- vite.config.js              Configuracion del empaquetador',
     u'|- public/.htaccess            Reescritura SPA para Apache (se copia a dist/)',
-    u'|- assets/css/                 7 hojas en cascada (reutilizadas de la Actividad 1)',
+    u'|- assets/css/                 7 hojas en cascada (paleta corporativa, seccion 16)',
     u'|- src/',
     u'|  |- main.jsx                 Composition Root: construye el grafo y monta React',
     u'|  |- App.jsx                  Tabla de rutas (React Router)',
@@ -969,45 +973,187 @@ cap(u'Los cinco principios en la capa de presentación de React', kind='Tabla')
 
 page_break()
 
-# ============================================================== 16. ESTILOS
-h1(u'16. Estilos y diseño responsive')
-para(u'Los siete archivos CSS de la Actividad 1 se reutilizaron sin modificar ni una '
-     u'regla. Se importan una sola vez en main.jsx, en orden, para que Vite los '
-     u'empaquete respetando la cascada.')
+# ============================================================== 16. IDENTIDAD VISUAL
+h1(u'16. Identidad visual y diseño responsive')
+para(u'La revisión de la Actividad 1 señaló como punto más crítico el diseño '
+     u'visual: un banner que mezclaba blanco, verde y azul, y tarjetas con '
+     u'degradados de seis colores distintos. La observación es correcta y va al '
+     u'fondo del problema: en el sector financiero la credibilidad es parte del '
+     u'producto, y una pantalla saturada de color hace dudar al usuario sobre la '
+     u'legitimidad del sitio. Esta actividad rehace la capa visual con ese '
+     u'criterio.')
+
+h2(u'16.1 El problema, elemento por elemento')
+add_table(
+    [u'Elemento', u'Qué hacía antes', u'Por qué estorba'],
+    [[u'Banner', u'Degradado azul, segunda línea del titular en verde y botón '
+                 u'principal verde',
+      u'Tres familias de color compitiendo en la zona de mayor atención'],
+     [u'Tarjetas de producto', u'Cabecera con un degradado distinto por producto: '
+                               u'azul, verde, violeta, ámbar, rosa y turquesa',
+      u'Seis degradados en la misma rejilla saturan la pantalla y el color no '
+      u'aporta ninguna información'],
+     [u'Resultado de la simulación', u'Tomaba el degradado del producto simulado',
+      u'El panel cambiaba de color en cada simulación: inestabilidad sin '
+      u'significado'],
+     [u'Avisos informativos', u'Amarillo con borde ámbar',
+      u'Un cuarto color en pantalla para un mensaje que solo informa'],
+     [u'Secciones del formulario', u'Iconos en azul, verde y violeta',
+      u'Son tres partes del mismo trámite, no tres cosas distintas'],
+     [u'Botones y títulos', u'Emojis decorativos',
+      u'Restan formalidad; en banca el tono también comunica']],
+    widths=[3.6, 6.4, 6.4])
+cap(u'Diagnóstico del diseño visual de la primera versión', kind='Tabla')
+
+h2(u'16.2 La regla nueva: tres colores')
 code_block([
-    u'// src/main.jsx',
-    u'import \'../assets/css/01-reset.css\';',
-    u'import \'../assets/css/02-tokens.css\';',
-    u'import \'../assets/css/03-base.css\';',
-    u'import \'../assets/css/04-layout.css\';',
-    u'import \'../assets/css/05-components.css\';',
-    u'import \'../assets/css/06-pages.css\';',
-    u'import \'../assets/css/07-responsive.css\';',
+    u'1. Azul corporativo   - identidad, acciones y jerarquia   (una sola familia)',
+    u'2. Gris neutro        - texto, bordes y superficies        (no compite)',
+    u'3. Verde desaturado   - SOLO confirmacion de una operacion (nunca decora)',
+], caption=u'La paleta completa de la aplicación. El rojo queda reservado a los '
+           u'errores de validación.')
+
+for t in (u'El color no es decoración, es información: si no distingue un estado '
+          u'ni marca la acción principal, no entra.',
+          u'Una familia y varios tonos: la jerarquía se construye con tonos del '
+          u'mismo azul, no añadiendo colores.',
+          u'La superficie es blanca; las tarjetas se separan del fondo con un borde '
+          u'de 1 px y una sombra mínima, no con relleno de color.',
+          u'Lo que destaca, destaca por contraste y tamaño: la cuota mensual es la '
+          u'única tarjeta blanca sobre el panel azul.',
+          u'Sin emojis decorativos. Se conserva el pictograma del producto, que es '
+          u'un dato del catálogo, pero desaturado.'):
+    bullet(t)
+
+h2(u'16.3 La paleta')
+add_table(
+    [u'Token', u'Valor', u'Uso'],
+    [[u'--color-blue-50', u'#f4f7fb', u'Avisos, chips y estado activo de navegación'],
+     [u'--color-blue-100', u'#e5ecf5', u'Bordes suaves y halo de foco'],
+     [u'--color-blue-200', u'#c7d6e8', u'Texto secundario sobre fondo oscuro'],
+     [u'--color-blue-500', u'#45648f', u'Segundo tono de la marca y foco de controles'],
+     [u'--color-blue-700', u'#1f3a5f', u'Color de marca: botones, enlaces y cifras'],
+     [u'--color-blue-800', u'#182e4c', u'Hover de botones y fondo del banner'],
+     [u'--color-blue-900', u'#101f35', u'Pie de página y base del degradado'],
+     [u'--success', u'#1f6654', u'Un único uso: borde del aviso de éxito'],
+     [u'Grises 50–900', u'#f9fafb…#111827', u'Texto, bordes y superficies']],
+    widths=[4.4, 2.8, 9.2])
+cap(u'Paleta corporativa definida en assets/css/02-tokens.css', kind='Tabla')
+
+h2(u'16.4 Los seis temas de producto, resueltos al mismo azul')
+para(u'Aquí el rediseño se cruza con la arquitectura. La entidad CreditProduct '
+     u'tiene un value object ProductTheme con seis paletas válidas, porque el tema '
+     u'es un atributo del producto: así viene del catálogo y así se valida en el '
+     u'dominio. Cómo se pinta ese atributo, en cambio, es una decisión de '
+     u'presentación.')
+code_block([
+    u'/* assets/css/02-tokens.css */',
+    u'.theme-blue,',
+    u'.theme-emerald,',
+    u'.theme-violet,',
+    u'.theme-amber,',
+    u'.theme-rose,',
+    u'.theme-teal {',
+    u'  --product-chip-bg: var(--color-blue-50);',
+    u'  --product-accent:  var(--color-blue-700);',
+    u'  --product-badge-bg: var(--color-blue-50);',
+    u'  --product-badge-fg: var(--color-blue-700);',
+    u'}',
+], caption=u'Seis selectores en el archivo de tokens: eso es todo el cambio.')
+
+callout(u'Por qué esto importa para la arquitectura',
+        u'El rediseño completo no tocó el dominio, ni un caso de uso, ni un '
+        u'componente: son cinco archivos CSS y la retirada de los emojis del '
+        u'marcado. Si mañana el negocio quiere volver a distinguir productos por '
+        u'color, o marcar solo el producto en promoción, el cambio vuelve a ser '
+        u'ese mismo bloque de tokens. La decisión vive donde corresponde tomarla.')
+
+para(u'Los productos siguen siendo distinguibles: por su nombre, su pictograma, su '
+     u'tasa y su rango de montos. El color no aportaba nada que no dijera ya el '
+     u'texto.')
+
+h2(u'16.5 Antes y después')
+figure('antes-01-catalogo.jpg',
+       u'ANTES — Catálogo: banner con acento y botón verdes, y seis cabeceras de '
+       u'tarjeta con degradados de colores distintos.', width_cm=15.0)
+figure('captura-01-catalogo.jpg',
+       u'DESPUÉS — Catálogo: un solo azul en dos tonos, botón blanco como única '
+       u'llamada a la acción, tarjetas blancas con filete superior azul y '
+       u'pictograma en chip neutro.', width_cm=15.0)
+
+figure('antes-02-simulador.jpg',
+       u'ANTES — Simulador: el panel de resultado tomaba el degradado del producto '
+       u'simulado, así que cambiaba de color en cada simulación.', width_cm=15.0)
+figure('captura-02-simulador.jpg',
+       u'DESPUÉS — Simulador: panel azul corporativo estable y la cuota mensual '
+       u'destacada en blanco, que es el dato que el usuario vino a buscar.',
+       width_cm=15.0)
+
+h2(u'16.6 Cambios concretos')
+add_table(
+    [u'Elemento', u'Antes', u'Ahora'],
+    [[u'Banner', u'Degradado diagonal + acento y botón verdes',
+      u'Un azul en dos tonos; botón blanco'],
+     [u'Marca CreditSmart', u'«Credit» azul + «Smart» verde',
+      u'Dos tonos del mismo azul; peso 700 en lugar de 900'],
+     [u'Tarjeta de producto', u'Cabecera con degradado y nombre en blanco',
+      u'Superficie blanca, filete superior de 3 px y pictograma en chip neutro'],
+     [u'Badge de monto', u'Relleno del color del producto',
+      u'Azul claro con borde de 1 px y cifras tabulares'],
+     [u'Panel de resultado', u'Degradado del producto',
+      u'Azul corporativo fijo; cuota en tarjeta blanca'],
+     [u'Aviso informativo', u'Amarillo', u'Azul claro'],
+     [u'Secciones del formulario', u'Azul, verde y violeta',
+      u'Color de marca compartido y filete azul a la izquierda'],
+     [u'Titulares', u'Peso 900', u'Peso 700 con letter-spacing negativo'],
+     [u'Radios', u'16 px', u'10 px'],
+     [u'Sombras', u'Grises genéricas', u'Teñidas de azul y de menor opacidad'],
+     [u'Emojis de interfaz', u'En botones, títulos y avisos',
+      u'Retirados; el pictograma del producto queda desaturado'],
+     [u'Cifras', u'Fuente proporcional',
+      u'font-variant-numeric: tabular-nums en tasas, montos y tablas']],
+    widths=[4.0, 5.4, 7.0])
+cap(u'Inventario de cambios visuales', kind='Tabla')
+
+h2(u'16.7 Los siete archivos de estilos')
+para(u'La cascada y los nombres de los tokens no cambiaron: siguen siendo los siete '
+     u'archivos de la Actividad 1, importados una sola vez en main.jsx para que '
+     u'Vite los empaquete en orden. Lo que cambió son los valores.')
+code_block([
+    u"import '../assets/css/01-reset.css';",
+    u"import '../assets/css/02-tokens.css';",
+    u"import '../assets/css/03-base.css';",
+    u"import '../assets/css/04-layout.css';",
+    u"import '../assets/css/05-components.css';",
+    u"import '../assets/css/06-pages.css';",
+    u"import '../assets/css/07-responsive.css';",
 ], caption=u'Cascada explícita: reset → tokens → base → layout → componentes → '
            u'páginas → responsive.')
 
 add_table(
-    [u'Archivo', u'Contenido'],
-    [[u'01-reset.css', u'Normalización de márgenes, tipografía y caja'],
-     [u'02-tokens.css', u'Variables de color, espaciado, sombras y las 6 paletas de tema'],
-     [u'03-base.css', u'Tipografía, enlaces, títulos y controles de formulario'],
-     [u'04-layout.css', u'Contenedores, rejillas y estructura de página'],
-     [u'05-components.css', u'Tarjetas, botones, campos, avisos, barra y pie'],
-     [u'06-pages.css', u'Hero, panel del simulador, resultado, tabla y formulario'],
-     [u'07-responsive.css', u'Puntos de quiebre móvil, tableta y escritorio']],
-    widths=[4.2, 12.2])
-cap(u'Los siete archivos de estilos, reutilizados de la Actividad 1', kind='Tabla')
+    [u'Archivo', u'Contenido', u'Tocado en el rediseño'],
+    [[u'01-reset.css', u'Normalización de márgenes, tipografía y caja', u'No'],
+     [u'02-tokens.css', u'Paleta, tipografía, radios, sombras y temas', u'Sí'],
+     [u'03-base.css', u'Tipografía, enlaces y utilidades', u'No'],
+     [u'04-layout.css', u'Contenedores, rejillas y títulos de sección', u'Sí'],
+     [u'05-components.css', u'Barra, botones, tarjetas, campos, avisos y pie', u'Sí'],
+     [u'06-pages.css', u'Banner, simulador, resultado, tabla y formulario', u'Sí'],
+     [u'07-responsive.css', u'Puntos de quiebre móvil, tableta y escritorio', u'Sí']],
+    widths=[4.0, 8.4, 4.0], align_center_cols=(2,))
+cap(u'Los siete archivos de estilos y su papel en el rediseño', kind='Tabla')
 
-para(u'Que el diseño se conserve sin tocar el CSS no es casualidad: los componentes de '
-     u'React reproducen las mismas clases y la misma estructura de marcado que las '
-     u'plantillas de la Actividad 1. Fue una decisión deliberada, y evitó rehacer el '
-     u'trabajo de maquetación y de responsive ya evaluado.')
-
-figure('captura-01-catalogo.jpg',
-       u'Catálogo en React con el mismo diseño de la Actividad 1: hero, rejilla de '
-       u'productos y tarjetas con tema por producto.', width_cm=15.5)
-
-page_break()
+h2(u'16.8 Diseño responsive')
+para(u'Verificado en los tres tamaños: rejilla de productos de tres columnas en '
+     u'escritorio, dos en tableta y una en móvil; los tres controles del catálogo '
+     u'en una fila a partir de 1024 px y apilados por debajo; barra de navegación '
+     u'compacta en pantallas estrechas; tabla de amortización con desplazamiento '
+     u'horizontal propio, de modo que la página nunca scrollea en horizontal.')
+figure('captura-05-movil.jpg',
+       u'Catálogo en móvil (414 px): banner, rejilla de una columna y barra '
+       u'compacta.', width_cm=8.4)
+figure('captura-06-tableta.jpg',
+       u'Simulador en tableta (820 px): los campos y las métricas pasan a dos '
+       u'columnas.', width_cm=11.0)
 
 # ============================================================== 17. VERIFICACION
 h1(u'17. Verificación')
@@ -1051,6 +1197,11 @@ add_table(
      [u'Envío con datos válidos',
       u'Radicado CS-B946581E, aviso al usuario y formulario limpio'],
      [u'Ruta inexistente', u'Pantalla 404 con la ruta solicitada y enlace a inicio'],
+     [u'Revisión visual de la paleta',
+      u'Sin colores fuera de azul, gris, verde de éxito y rojo de error; sin '
+      u'emojis decorativos; cifras tabulares'],
+     [u'Responsive a 414, 820 y 1440 px',
+      u'Una, dos y tres columnas; la página nunca scrollea en horizontal'],
      [u'Consola del navegador', u'Sin errores ni advertencias']],
     widths=[5.6, 10.8])
 cap(u'Pruebas manuales realizadas en el navegador', kind='Tabla')
@@ -1171,10 +1322,16 @@ for t in (u'La transformación del diseño estático en una aplicación interact
           u'problema más común de los formularios controlados: dos validaciones '
           u'distintas, una en el cliente y otra en el servidor, que se desincronizan. '
           u'El caso de uso de borrador cuesta doce líneas y elimina esa duplicación.',
-          u'Reutilizar los siete archivos CSS sin modificarlos confirmó que el diseño '
-          u'y la estructura del marcado son independientes de la tecnología que los '
-          u'genera. El coste de la migración fue proporcional al tamaño de la '
-          u'presentación, no al del proyecto.',
+          u'Mantener la estructura del marcado al migrar a React permitió reutilizar '
+          u'los siete archivos CSS y, sobre esa base, rehacer solo la capa de color. '
+          u'El coste de la migración fue proporcional al tamaño de la presentación, '
+          u'no al del proyecto.',
+          u'El rediseño visual atendió la observación de la revisión anterior con un '
+          u'cambio localizado: la paleta bajó de siete familias de color a tres, los '
+          u'seis degradados de producto se resolvieron al azul corporativo y no hubo '
+          u'que tocar el dominio, ningún caso de uso ni ningún componente. Que una '
+          u'decisión de marca se resuelva en un archivo de tokens es, en la práctica, '
+          u'la prueba de que la separación de capas también sirve para el diseño.',
           u'Queda como extensión natural sustituir el datasource estático por una API '
           u'HTTP: es un adaptador nuevo y una línea en el contenedor, sin tocar el '
           u'dominio, los casos de uso ni un solo componente.'):

@@ -1,8 +1,8 @@
 # Generador del documento de la Actividad 2 (.docx)
 
 Scripts que producen **`../CreditSmart_Arquitectura_EV2_generado.docx`**: el
-documento técnico de la Actividad 2 de CreditSmart (43 páginas, 21 secciones,
-9 imágenes, 60 tablas).
+documento técnico de la Actividad 2 de CreditSmart (49 páginas, 21 secciones,
+15 imágenes, 63 tablas).
 
 El documento no se escribe a mano: se genera desde estos scripts para que los
 datos que cita —conteos de archivos por capa, tasas y plazos de los productos,
@@ -16,7 +16,7 @@ pruebas, lista de commits— se corrijan en un solo sitio y se vuelva a compilar
 | `build_doc.py` | Infraestructura del documento: estilos, encabezado con el logo institucional, pie con «Página X de Y» y los helpers de contenido (`h1`, `h2`, `h3`, `para`, `bullet`, `add_table`, `code_block`, `callout`, `figure`, `diagram`, `boxes_row`, `field_placeholder`, `page_break`, `add_toc`). Define la ruta de salida. Copia del de la Actividad 1 con las rutas cambiadas. |
 | `content_doc.py` | El contenido: portada, tabla de contenido y las 21 secciones. **Es el archivo que hay que editar** para cambiar el documento. |
 | `charts.py` | Los 5 gráficos de `img/`, con la paleta exacta de `assets/css/02-tokens.css`. |
-| `img/` | Los gráficos generados (`chart-*.png`, 200 ppp) y las 4 capturas de pantalla (`captura-*.jpg`, copiadas de `docs/capturas/`). |
+| `img/` | Los gráficos generados (`chart-*.png`, 200 ppp), las 6 capturas del diseño actual (`captura-*.jpg`, copiadas de `docs/capturas/`) y las 4 capturas del diseño anterior (`antes-*.jpg`), que la sección 16 usa para el antes y después. |
 | `refmedia/` | Se crea al vuelo: el logo institucional extraído de `../../EV1/Pedraza_Jeremy_TallerDOFA.docx`. No hace falta versionarlo. |
 
 ## Regenerar
@@ -92,6 +92,7 @@ Si se cambia el código, revisar en `content_doc.py`:
 - §9.2: los siete hooks propios.
 - §12.3: las cifras de la simulación de ejemplo.
 - §13.2: las reglas y los mensajes de validación.
+- §16: la paleta, la tabla de cambios visuales y las capturas de antes y después.
 - §17: resultados de las comprobaciones automáticas y manuales.
 - §19.2: la lista de commits.
 

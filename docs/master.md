@@ -18,12 +18,12 @@
 | Dependencias de runtime | React y React Router. Dominio, aplicación e infraestructura siguen sin ninguna |
 | Capas | `domain` · `application` · `infrastructure` · presentación React (+ `config`, `data`) |
 | Archivos JS/JSX | 82 — `domain` 26 · presentación 25 (`components` 11 · `hooks` 7 · `pages` 4 · `context` 1 · `App` · `main`) · `application` 16 · `infrastructure` 10 · `config` 4 · `data` 1 |
-| Archivos CSS | 7 (1 681 líneas, cascada explícita) — reutilizados sin cambios desde la Actividad 1 |
+| Archivos CSS | 7 en cascada explícita — heredados de la Actividad 1 y con la paleta rediseñada en la 2 ([22](./22-identidad-visual.md)) |
 | Contratos (interfaces) | 9 puertos de dominio y aplicación (los 3 de presentación los impone React) |
 | Casos de uso | 7 |
 | Entidades | 2 · Value objects: 10 |
 | Productos del catálogo | 6 (5 replicados del original + `Crédito de Libranza`) |
-| Paletas de tema | 6 — `blue` · `emerald` · `violet` · `amber` · `rose` · `teal` |
+| Paletas de tema | 6 declaradas en el dominio (`blue` · `emerald` · `violet` · `amber` · `rose` · `teal`), las seis resueltas al azul corporativo en la interfaz |
 | Adaptadores | 10 · Servicios de dominio: 2 |
 | Dependencias en el contenedor | 20 (la presentación la construye React) |
 | Rutas | `/` · `/simulador` · `/solicitar` · `*` (404) |
@@ -115,7 +115,7 @@ Tres itinerarios según para qué vengas:
 | 12 | [Vistas, controladores y componentes](./12-vistas-controladores-componentes.md) | `BaseView`, `BaseController`, las 6 vistas, los 4 componentes, el escapado por defecto, la gestión de listeners. **Histórico de la Actividad 1**: sustituido por [21](./21-migracion-a-react-ev2.md) |
 | 13 | [Inyección de dependencias](./13-inyeccion-de-dependencias.md) | El `Container`, el Composition Root, el grafo de dependencias, detección de ciclos. **En React**: `DependenciesProvider` ([21 §3](./21-migracion-a-react-ev2.md)) |
 | 14 | [Enrutado y URLs](./14-enrutado-y-urls.md) | `HistoryRouter`, `UrlBuilder`, prefijo de despliegue, delegación de clics, reescritura en Apache/Nginx. **En React**: React Router ([21 §2](./21-migracion-a-react-ev2.md)) |
-| 15 | [Sistema de estilos](./15-sistema-de-estilos.md) | Los 7 archivos CSS en cascada, los design tokens, el mapeo Tailwind → CSS plano, los temas de producto |
+| 15 | [Sistema de estilos](./15-sistema-de-estilos.md) | Los 7 archivos CSS en cascada, los design tokens, el mapeo Tailwind → CSS plano, los temas de producto. **Paleta actual**: [22](./22-identidad-visual.md) |
 
 ### Síntesis y operación
 
@@ -127,6 +127,7 @@ Tres itinerarios según para qué vengas:
 | 19 | [Pruebas y verificación](./19-pruebas-y-verificacion.md) | Las 3 suites ejecutadas, qué cubre cada una, cómo re-ejecutarlas, qué verificar antes de dar por bueno un cambio |
 | 20 | [Glosario y convenciones](./20-glosario-y-convenciones.md) | Vocabulario del proyecto, convenciones de nombres, de archivos, de comentarios y de commits |
 | 21 | [Migración a React (Actividad 2)](./21-migracion-a-react-ev2.md) | Qué cambió y qué no al sustituir la interfaz vanilla por React: tabla de equivalencias, inyección con contexto, los 3 cambios que exigió, verificación |
+| 22 | [Identidad visual](./22-identidad-visual.md) | La paleta corporativa de tres colores, por qué se retiraron los seis degradados de producto, y qué comprobar antes de dar por buena una pantalla nueva |
 
 ---
 
@@ -298,7 +299,7 @@ Dónde está declarado cada nombre propio del proyecto.
 | `../src/config/AppConfig.js` | Todos los valores configurables del sistema |
 | `./iudigital_doc/EV1/CreditSmart_Arquitectura_EV1.docx` | Documento de arquitectura entregado en la Actividad 1 |
 | `./iudigital_doc/EV2/rubricaEV2.txt` | Rúbrica de la Actividad 2 |
-| `./iudigital_doc/EV2/CreditSmart_Arquitectura_EV2_generado.docx` | Documento técnico de la Actividad 2 (43 páginas). Lo produce su [generador](./iudigital_doc/EV2/generador/README.md) |
+| `./iudigital_doc/EV2/CreditSmart_Arquitectura_EV2_generado.docx` | Documento técnico de la Actividad 2 (49 páginas). Lo produce su [generador](./iudigital_doc/EV2/generador/README.md) |
 | `./iudigital_doc/EV2/guion-sustentacion-EV2.md` | Guion del encuentro sincrónico: demo, archivos que se muestran y preguntas probables con respuesta |
 | `./iudigital_doc/EV1/generador/` | Scripts que generan ese documento y sus 8 gráficos. Escriben siempre en `..._generado.docx`, nunca sobre la copia editada. Ver su [`README.md`](./iudigital_doc/EV1/generador/README.md) |
 
