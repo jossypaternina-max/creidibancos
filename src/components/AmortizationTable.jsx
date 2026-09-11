@@ -28,7 +28,7 @@ export function AmortizationTable({ simulation, isOpen, mode, onToggle, onModeCh
           aria-expanded={isOpen}
           aria-controls="sim-schedule-table"
         >
-          {isOpen ? '▲ Ocultar' : '▼ Ver'} tabla de amortización ({simulation.schedule.length}{' '}
+          {isOpen ? 'Ocultar' : 'Ver'} tabla de amortización ({simulation.schedule.length}{' '}
           cuotas)
         </button>
 

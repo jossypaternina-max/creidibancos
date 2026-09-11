@@ -51,7 +51,7 @@ export function ApplicationPage() {
         </p>
 
         {reference && (
-          <Alert variant="info" icon="✅">
+          <Alert variant="info">
             Solicitud radicada con el número <strong>{reference}</strong>. Guarda este número para
             hacer seguimiento.
           </Alert>
@@ -65,9 +65,6 @@ export function ApplicationPage() {
               aria-labelledby={`section-${section.id}`}
             >
               <h2 className="panel__title" id={`section-${section.id}`}>
-                <span className={section.iconClass} aria-hidden="true">
-                  {section.icon}
-                </span>{' '}
                 {section.title}
               </h2>
               <p className="panel__hint">{section.hint}</p>
@@ -89,10 +86,10 @@ export function ApplicationPage() {
 
           <div className="form-actions">
             <button type="submit" className="btn btn--primary btn--block" disabled={isSubmitting}>
-              {isSubmitting ? '⏳ Enviando…' : '✅ Enviar Solicitud'}
+              {isSubmitting ? 'Enviando…' : 'Enviar solicitud'}
             </button>
             <button type="button" className="btn btn--outline-gray btn--block" onClick={reset}>
-              🗑️ Limpiar Formulario
+              Limpiar formulario
             </button>
           </div>
 
@@ -120,8 +117,6 @@ function buildSections({ productNames, termOptions }) {
   return [
     {
       id: 'personal',
-      icon: '👤',
-      iconClass: 'form__section-icon--personal',
       title: 'Datos Personales',
       hint: 'Información básica del solicitante',
       fields: [
@@ -151,8 +146,6 @@ function buildSections({ productNames, termOptions }) {
     },
     {
       id: 'credit',
-      icon: '💰',
-      iconClass: 'form__section-icon--credit',
       title: 'Datos del Crédito',
       hint: 'Información sobre el crédito que desea solicitar',
       fields: [
@@ -189,8 +182,6 @@ function buildSections({ productNames, termOptions }) {
     },
     {
       id: 'work',
-      icon: '🏢',
-      iconClass: 'form__section-icon--work',
       title: 'Datos Laborales',
       hint: 'Información sobre tu situación laboral actual',
       fields: [

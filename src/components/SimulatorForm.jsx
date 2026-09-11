@@ -38,7 +38,7 @@ export function SimulatorForm({
 
   return (
     <form className="panel panel--simulator" onSubmit={(event) => event.preventDefault()}>
-      <h2 className="panel__title">🧮 Simula tu crédito</h2>
+      <h2 className="panel__title">Simula tu crédito</h2>
       <p className="panel__hint">
         {bounds
           ? `Monto disponible: ${bounds.amountRangeLabel} · Plazo máximo: ${bounds.maxTermMonths} meses`
@@ -59,7 +59,7 @@ export function SimulatorForm({
           >
             {catalog.map((product) => (
               <option key={product.id} value={product.id}>
-                {product.icon} {product.name} — {product.annualRateLabel} E.A.
+                {product.name} — {product.annualRateLabel} E.A.
               </option>
             ))}
           </select>

@@ -5,15 +5,20 @@
 /* ------------------------------------------------------------
    Catálogo (/) — Hero
    ------------------------------------------------------------ */
+/* Banner corporativo: un solo color, en dos tonos del mismo azul. La versión
+   anterior mezclaba blanco, verde y azul en la misma zona; aquí el único
+   elemento claro es el botón de acción, que es justo donde debe ir la
+   atención. */
 .hero {
+  background-color: var(--color-blue-800);
   background-image: linear-gradient(
-    to bottom right,
-    var(--color-blue-700),
-    var(--color-blue-800) 50%,
+    180deg,
+    var(--color-blue-800),
     var(--color-blue-900)
   );
+  border-bottom: 1px solid var(--color-blue-900);
   color: var(--color-white);
-  padding: var(--space-16) var(--space-4);
+  padding: var(--space-14) var(--space-4);
 }
 
 .hero__inner {
@@ -24,13 +29,17 @@
 
 .hero__title {
   font-size: var(--text-4xl);
-  line-height: 1.15;
-  font-weight: var(--fw-black);
+  line-height: 1.2;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.015em;
   margin-bottom: var(--space-4);
 }
 
+/* La segunda línea del titular ya no cambia de color: cambia de tono dentro
+   del mismo azul, sobre el fondo oscuro. */
 .hero__title-accent {
-  color: var(--color-emerald-400);
+  color: var(--color-blue-200);
+  font-weight: var(--fw-medium);
 }
 
 .hero__subtitle {
@@ -60,8 +69,31 @@
 
 .filters__actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* Casilla y etiqueta alineadas: antes la casilla quedaba desalineada
+   respecto al texto y al boton que tiene al lado. */
+.filters__toggle {
+  display: inline-flex;
+  align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-body);
+  cursor: pointer;
+}
+
+.filters__toggle input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--brand);
 }
 
 .results-count {
@@ -99,9 +131,18 @@
   padding: var(--space-6);
 }
 
-.form__section-icon--personal { color: var(--brand); }
-.form__section-icon--credit   { color: var(--color-emerald-600); }
-.form__section-icon--work     { color: var(--color-violet-600); }
+/* Las tres secciones del formulario usaban azul, verde y violeta. Son partes
+   del mismo trámite: comparten el color corporativo y se distinguen por su
+   título, no por el color. */
+.form__section-icon--personal,
+.form__section-icon--credit,
+.form__section-icon--work {
+  color: var(--brand);
+}
+
+.form__section {
+  border-left: 3px solid var(--color-blue-100);
+}
 
 /* ------------------------------------------------------------
    404 — Página no encontrada (estilo de sistema, paleta slate)
@@ -303,16 +344,20 @@
 
 /* ----------------------------- Resultado ----------------------------- */
 
+/* El panel de resultado tomaba el degradado del producto simulado: cambiaba
+   de color en cada simulación. Ahora es siempre el azul corporativo, y lo que
+   destaca es la cifra, no el fondo. */
 .sim-result {
   padding: var(--space-6);
   margin-bottom: var(--space-6);
+  background-color: var(--color-blue-800);
   background-image: linear-gradient(
-    135deg,
-    var(--product-grad-from, var(--color-blue-600)),
-    var(--product-grad-to, var(--color-blue-800))
+    180deg,
+    var(--color-blue-800),
+    var(--color-blue-900)
   );
   border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   color: var(--color-white);
 }
 
@@ -324,8 +369,19 @@
 }
 
 .sim-result__icon {
-  font-size: var(--text-4xl);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  font-size: var(--text-2xl);
   line-height: 1;
+  background-color: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: var(--radius-lg);
+  filter: grayscale(1) brightness(1.6);
+  opacity: 0.9;
 }
 
 .sim-result__title {
@@ -355,13 +411,17 @@
 
 .sim-metric {
   padding: var(--space-4);
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgb(255 255 255 / 0.07);
+  border: 1px solid rgb(255 255 255 / 0.12);
   border-radius: var(--radius-lg);
 }
 
+/* La cuota mensual es el dato que el usuario vino a buscar: se distingue por
+   contraste y tamaño, no añadiendo un color. */
 .sim-metric--highlight {
-  background-color: rgba(255, 255, 255, 0.22);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  background-color: var(--color-white);
+  border-color: var(--color-white);
+  color: var(--brand-strong);
 }
 
 .sim-metric__label {
@@ -378,6 +438,12 @@
   font-size: var(--text-xl);
   line-height: var(--leading-xl);
   font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-metric--highlight .sim-metric__label {
+  color: var(--brand);
+  opacity: 1;
 }
 
 .sim-metric--highlight .sim-metric__value {
