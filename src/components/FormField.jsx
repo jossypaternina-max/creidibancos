@@ -1,3 +1,5 @@
+import { Icon } from './Icon.jsx';
+
 /**
  * FormField — un campo del formulario de solicitud, con etiqueta y error.
  *
@@ -7,11 +9,19 @@
  * son iguales. Un componente por archivo, sin estado: el valor y el error
  * llegan por props.
  *
+ * La etiqueta es siempre visible y nunca se sustituye por el `placeholder`:
+ * el texto de ayuda desaparece en cuanto se escribe, y con él la única pista
+ * de qué se estaba rellenando.
+ *
+ * El hueco del error está reservado con `min-height`, así que aparecer o
+ * desaparecer no empuja el resto del formulario.
+ *
  * @param {{
  *   name: string,
  *   label: string,
  *   value: string,
  *   error?: string,
+ *   hint?: string,
  *   type?: string,
  *   placeholder?: string,
  *   options?: Array<{ value: string|number, label: string }>,
@@ -31,6 +41,7 @@ export function FormField({
   label,
   value,
   error = '',
+  hint = '',
   type = 'text',
   placeholder = '',
   options = [],
@@ -44,60 +55,69 @@ export function FormField({
 }) {
   const id = `field-${name}`;
   const errorId = `${id}-error`;
+  const hintId = `${id}-hint`;
+
+  const describedBy = [error ? errorId : null, hint ? hintId : null]
+    .filter(Boolean)
+    .join(' ');
 
   const shared = {
     id,
     name,
     value,
+    className: 'field__control',
     onChange: (event) => onChange(name, event.target.value),
     onBlur: () => onBlur?.(name),
     'aria-invalid': error ? 'true' : undefined,
-    'aria-describedby': error ? errorId : undefined,
+    'aria-describedby': describedBy || undefined,
   };
 
   return (
-    <div className={full ? 'field grid-form__full' : 'field'}>
-      <label className="label" htmlFor={id}>
+    <div className={full ? 'field grid--form__full' : 'field'}>
+      <label className="field__label" htmlFor={id}>
         {label}{' '}
-        <span className="t-required" aria-hidden="true">
+        <span className="field__required" aria-hidden="true">
           *
         </span>
       </label>
 
       {type === 'select' && (
-        <select {...shared} className={`control control--select ${error ? 'is-invalid' : ''}`}>
-          <option value="">{placeholderOption}</option>
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className="select-wrap">
+          <select {...shared}>
+            <option value="">{placeholderOption}</option>
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <Icon name="chevron-down" className="ui-icon select-wrap__chevron" />
+        </div>
       )}
 
       {type === 'textarea' && (
-        <textarea
-          {...shared}
-          className={`control control--textarea ${error ? 'is-invalid' : ''}`}
-          rows={rows}
-          placeholder={placeholder}
-        />
+        <textarea {...shared} rows={rows} placeholder={placeholder} />
       )}
 
       {type !== 'select' && type !== 'textarea' && (
         <input
           {...shared}
           type={type}
-          className={`control ${error ? 'is-invalid' : ''}`}
           placeholder={placeholder}
           min={min}
           autoComplete={autoComplete}
         />
       )}
 
-      <span className="field__error" id={errorId} role="alert">
+      {hint && (
+        <p className="field__hint" id={hintId}>
+          {hint}
+        </p>
+      )}
+
+      <p className="field__error" id={errorId} role="alert">
         {error}
-      </span>
+      </p>
     </div>
   );
 }

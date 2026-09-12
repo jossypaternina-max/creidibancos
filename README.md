@@ -2,15 +2,21 @@
 
 Plataforma web para **consultar, simular y solicitar productos de crédito**.
 Búsqueda en tiempo real, filtros dinámicos, cálculo automático de la cuota
-mensual con tabla de amortización y formulario de solicitud completamente
-controlado.
+mensual con tabla de amortización y formulario de solicitud por pasos,
+completamente controlado.
 
-Es la **Actividad 2** de Ingeniería Web: la interfaz de la Actividad 1
-(JavaScript vanilla, sin build) reescrita en **React + Vite + React Router**
-sobre la misma arquitectura hexagonal. El dominio, la aplicación y la
-infraestructura **no se tocaron**; lo que cambió fue el adaptador de interfaz.
-El detalle de la migración está en
-[`docs/21-migracion-a-react-ev2.md`](./docs/21-migracion-a-react-ev2.md).
+Es la **Actividad 2** de Ingeniería Web, en dos movimientos sobre la misma
+arquitectura hexagonal:
+
+1. La interfaz de la Actividad 1 (JavaScript vanilla, sin build) reescrita en
+   **React + Vite + React Router** —
+   [`docs/21`](./docs/21-migracion-a-react-ev2.md).
+2. Un **rediseño completo de la interfaz** a partir del kit de diseño aprobado:
+   tokens con tema claro/oscuro, iconografía propia, cinco pantallas y tres
+   flujos rehechos — [`docs/23`](./docs/23-rediseno-ui-ux.md).
+
+En ninguno de los dos se tocó el dominio, la aplicación ni la infraestructura.
+Lo que cambió fue el adaptador de interfaz.
 
 | Dato | Valor |
 |---|---|
@@ -27,11 +33,15 @@ El detalle de la migración está en
 | Tecnología | Versión | Para qué |
 |---|---|---|
 | [React](https://react.dev) | 19 | Componentes, estado con hooks, render declarativo |
-| [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/simulador`, `/solicitar`, 404) |
+| [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/productos`, `/simulador`, `/solicitar`, `/ayuda`, 404) |
 | [Vite](https://vite.dev) | 8 | Servidor de desarrollo y empaquetado |
 | JavaScript | ES2022 (módulos ES) | Dominio, aplicación e infraestructura, sin dependencias |
-| CSS3 | — | 7 hojas en cascada explícita, Grid y Flexbox, mobile-first, paleta corporativa de 3 colores |
+| CSS3 | — | 7 hojas en cascada explícita, Grid y Flexbox, mobile-first, tema claro/oscuro |
 | Node.js | ≥ 18 (probado en 22.14) | Entorno de desarrollo |
+
+Sin Tailwind, sin Sass, sin CSS-in-JS y sin librería de componentes: el CSS está
+escrito a mano. Tampoco hay webfont — la tipografía es la pila del sistema, así
+que no hay descarga ni bloqueo de render.
 
 El núcleo de negocio **no depende de React**: son módulos ES estándar que se
 ejecutan igual en Node (así corre la suite de pruebas) que en el navegador.
@@ -63,7 +73,7 @@ npm run build
 
 `dist/` ya incluye el `.htaccess` (viene de `public/.htaccess`), que reescribe
 las rutas limpias hacia `index.html`: así recargar en `/simulador` o
-`/solicitar` funciona en lugar de devolver 404. Requiere `mod_rewrite`, activo
+`/productos` funciona en lugar de devolver 404. Requiere `mod_rewrite`, activo
 por defecto en Laragon. Para Nginx el equivalente es:
 
 ```nginx
@@ -74,40 +84,50 @@ location / { try_files $uri $uri/ /index.html; }
 
 ## 3. Capturas de pantalla
 
-### Catálogo (`/`)
+### Inicio (`/`)
 
-Hero, seis productos con su tasa, plazo, rango de montos y requisitos.
+Hero con la propuesta de valor y las señales de confianza, accesos rápidos a
+los seis productos y banda institucional con cifras comprobables.
 
-![Catálogo de productos](./docs/capturas/01-catalogo.jpg)
+![Página de inicio](./docs/capturas/01-catalogo.jpg)
 
-### Simulador (`/simulador`) — cálculo de la cuota mensual
+### Simulador (`/simulador`)
 
-La cuota se recalcula al cambiar producto, monto o plazo, sin pulsar ningún
-botón. Todos los importes en formato COP.
+Espacio de trabajo en tres zonas: se ajusta a la izquierda, se ve la cifra en el
+centro y el panel de confianza acompaña a la derecha. La cuota se recalcula al
+cambiar producto, monto o plazo, sin pulsar ningún botón. Todos los importes en
+formato COP.
 
 ![Simulador con la cuota mensual calculada](./docs/capturas/02-simulador.jpg)
 
-### Búsqueda en tiempo real, filtros y ordenamiento
+### Catálogo (`/productos`) — búsqueda, filtros y ordenamiento
 
-Búsqueda mientras se escribe, filtro por rango de monto, cinco criterios de
-orden y botón para limpiar los filtros.
+Barra lateral con búsqueda mientras se escribe, filtro por tipo, deslizador de
+monto, plazo y cinco criterios de orden.
 
-![Búsqueda y filtros del catálogo](./docs/capturas/03-busqueda-filtros.jpg)
+![Catálogo con filtros](./docs/capturas/03-busqueda-filtros.jpg)
 
 ### Solicitud (`/solicitar`) — validación en tiempo real
 
-Formulario 100 % controlado. Los mensajes de error los produce el dominio, y el
-error de un campo solo aparece cuando el usuario ya pasó por él.
+Once campos en tres pasos más confirmación. Los mensajes de error los produce el
+dominio, y el de un campo solo aparece cuando el usuario ya pasó por él.
 
 ![Formulario con validaciones en tiempo real](./docs/capturas/04-formulario-validaciones.jpg)
 
 ### Responsive
 
-Una columna en móvil (414 px), dos en tableta (820 px) y tres en escritorio.
+Una columna en móvil (414 px) y dos en tableta (820 px); tres en escritorio.
 
-![Catálogo en móvil](./docs/capturas/05-responsive-movil.jpg)
+![Inicio en móvil](./docs/capturas/05-responsive-movil.jpg)
 
-![Simulador en tableta](./docs/capturas/06-responsive-tableta.jpg)
+![Catálogo en tableta](./docs/capturas/06-responsive-tableta.jpg)
+
+### Tema oscuro
+
+El sitio sigue la preferencia del sistema operativo y el botón de la barra
+permite forzar claro u oscuro. La elección se recuerda en el navegador.
+
+![Simulador en tema oscuro](./docs/capturas/07-tema-oscuro.jpg)
 
 ---
 
@@ -115,20 +135,27 @@ Una columna en móvil (414 px), dos en tableta (820 px) y tres en escritorio.
 
 | Funcionalidad | Dónde está |
 |---|---|
-| Catálogo de 6 productos con `.map()` y `key` única | `pages/CatalogPage.jsx` + `components/CreditCard.jsx` |
+| Accesos rápidos a los 6 productos con `.map()` y `key` única | `pages/HomePage.jsx` + `components/ProductTile.jsx` |
+| Catálogo completo con tarjeta por producto | `pages/ProductsPage.jsx` + `components/CreditCard.jsx` |
 | Búsqueda por nombre **mientras se escribe** | `components/SearchBar.jsx` + `hooks/useCreditSearch.js` |
-| Filtro por rango de monto (5 rangos) | `components/AmountRangeFilter.jsx` |
+| Filtro por rango de monto (5 rangos, deslizador accesible) | `components/AmountRangeFilter.jsx` |
+| Filtro por tipo de crédito y por plazo | `hooks/useCatalogRefinement.js` |
 | Ordenamiento con `.sort()` (5 criterios) | `components/SortSelect.jsx` + `hooks/useProductSorting.js` |
 | Limpiar filtros | `hooks/useCreditSearch.js` |
 | Cálculo automático de la cuota mensual | `hooks/useSimulation.js` + `domain/services/CreditSimulationService.js` |
+| Monto con campo, deslizador y atajos sincronizados | `components/SimulatorForm.jsx` |
 | Total en intereses, total a pagar y coste del crédito | `components/SimulationResult.jsx` |
-| Tabla de amortización (resumen anual y mes a mes) | `components/AmortizationTable.jsx` |
-| Formulario controlado de 11 campos | `pages/ApplicationPage.jsx` + `components/FormField.jsx` |
+| Tabla de amortización con reparto capital/interés | `components/AmortizationTable.jsx` |
+| Puente simulador → solicitud con prellenado | `components/SimulationResult.jsx` + `pages/ApplicationPage.jsx` |
+| Formulario controlado de 11 campos en 3 pasos | `pages/ApplicationPage.jsx` + `components/FormField.jsx` |
 | Validación en vivo de correo, cédula, montos e ingresos | `hooks/useApplicationForm.js` + `application/usecases/ValidateCreditApplicationDraftUseCase.js` |
 | Radicado y persistencia de la solicitud | `infrastructure/persistence/LocalStorageCreditApplicationRepository.js` |
+| Preguntas frecuentes derivadas del catálogo | `pages/HelpPage.jsx` |
 | Avisos accesibles (toasts) | `infrastructure/notification/ToastNotifier.js` |
+| Tema claro / oscuro / automático | `assets/css/02-tokens.css` + `components/ThemeToggle.jsx` |
+| Iconografía propia, 36 trazos inline con `currentColor` | `components/Icon.jsx` |
 | Diseño responsive mobile-first | `assets/css/07-responsive.css` |
-| Identidad visual sobria: 3 colores, sin degradados de producto | `assets/css/02-tokens.css` ([doc 22](./docs/22-identidad-visual.md)) |
+| Identidad visual: 3 colores, sin degradados de producto | `assets/css/02-tokens.css` ([doc 22](./docs/22-identidad-visual.md), [doc 23](./docs/23-rediseno-ui-ux.md)) |
 
 ---
 
@@ -136,28 +163,31 @@ Una columna en móvil (414 px), dos en tableta (820 px) y tres en escritorio.
 
 ```
 crediSmart/
-├── index.html                  Punto de entrada de Vite
+├── index.html                  Punto de entrada de Vite; aplica el tema antes de pintar
 ├── package.json                Dependencias y scripts
 ├── vite.config.js              Configuración del empaquetador
-├── public/.htaccess            Reescritura SPA para Apache (se copia a dist/)
-├── assets/css/                 7 hojas en cascada; paleta corporativa (doc 22)
+├── public/
+│   ├── .htaccess               Reescritura SPA para Apache (se copia a dist/)
+│   └── assets/                 Iconos, logos, ilustraciones y fotografías
+├── assets/css/                 7 hojas en cascada; tokens con tema claro/oscuro (doc 23)
 ├── src/
 │   ├── main.jsx                Composition Root: construye el grafo y monta React
-│   ├── App.jsx                 Tabla de rutas (React Router)
+│   ├── App.jsx                 Armazón (navbar, pie, salto al contenido) y tabla de rutas
 │   ├── data/
 │   │   └── creditsData.js      Catálogo, rangos de monto y plazos (dato puro)
-│   ├── components/             11 componentes reutilizables, props desestructuradas
-│   ├── pages/                  4 páginas, una por ruta
-│   ├── hooks/                  7 hooks: estado de UI + invocación de casos de uso
+│   ├── components/             21 componentes reutilizables, props desestructuradas
+│   ├── pages/                  6 páginas, una por ruta
+│   ├── hooks/                  8 hooks: estado de UI + invocación de casos de uso
 │   ├── context/
 │   │   └── DependenciesProvider.jsx   Inyecta los casos de uso en el árbol React
 │   ├── domain/                 Entidades, value objects, servicios, puertos, errores
 │   ├── application/            Casos de uso, DTOs, mappers, Result
 │   ├── infrastructure/         Adaptadores: persistencia, formato, reloj, ids, avisos
-│   └── config/                 AppConfig, Container, dependencies, routes
+│   └── config/                 AppConfig, Container, dependencies, routes, productVisualMap
 ├── tests/
-│   └── 01-domain-application.mjs      Suite de dominio y aplicación (85 aserciones)
-└── docs/                       22 documentos + capturas
+│   ├── 01-domain-application.mjs   Dominio y aplicación (85 aserciones)
+│   └── 02-boot-jsdom.mjs           Arranque de la interfaz: 6 rutas en un DOM simulado
+└── docs/                       23 documentos + capturas + kit de rediseño
 ```
 
 Las tres carpetas que pide la rúbrica —`components/`, `pages/`, `data/`— están
@@ -209,7 +239,24 @@ Las tres devuelven **cero resultados**.
 
 Fuera de un hook no circula ni un `Result` ni una entidad: solo datos planos.
 
-### 6.4 Contratos verificables
+### 6.4 Dónde acaba el dominio y empieza la interfaz
+
+El rediseño obligó a trazar esa frontera en sitios concretos, y el criterio es
+siempre el mismo: **¿esto seguiría siendo verdad sin pantalla?**
+
+| Decisión | Quién la resuelve |
+|---|---|
+| Buscar por nombre, acotar por rango de monto | Dominio (`ProductSearchCriteria`, `AmountRange.overlaps()`) |
+| Filtrar por tipo de crédito y por plazo | Presentación (`useCatalogRefinement`) |
+| Ordenar los resultados | Presentación (`useProductSorting`) |
+| Qué pictograma y qué frase lleva cada producto | Presentación (`config/productVisualMap.js`) |
+| Tema claro u oscuro | Presentación (`ThemeToggle` + `localStorage`) |
+| Paso actual del formulario | Presentación (estado local de la página) |
+
+El dominio nunca almacena una ruta de SVG, un texto publicitario ni un paso de
+formulario.
+
+### 6.5 Contratos verificables
 
 JavaScript no tiene `interface`, así que se declaran explícitamente:
 
@@ -223,7 +270,7 @@ adaptador implementa de verdad todos los métodos, y `eagerResolveAll()`
 construye el grafo al arrancar: un contrato roto falla al cargar la página, no
 a mitad de una interacción.
 
-### 6.5 Inyección de dependencias
+### 6.6 Inyección de dependencias
 
 `config/dependencies.js` es el **único** archivo con `new` de clases concretas.
 `DependenciesProvider` traduce el contenedor a un objeto **congelado** de casos
@@ -233,18 +280,24 @@ de uso, así que un componente no puede pedir un repositorio: no está ahí.
 const { simulateCredit } = useDependencies();   // un caso de uso, no un adaptador
 ```
 
+La única excepción es el puerto `IMoneyFormatter`, que el resumen de la
+solicitud necesita para dar formato a un monto recién tecleado. Se inyecta el
+**puerto**, no el adaptador: la vista sigue sin conocer `Intl`.
+
 ---
 
 ## 7. Hooks de React usados
 
 | Hook | Dónde y para qué |
 |---|---|
-| `useState` | Texto de búsqueda, rango, orden, visibilidad, producto/monto/plazo del simulador, los 11 campos del formulario, campos tocados, envío en curso, radicado |
-| `useEffect` | Cargar catálogo, rangos y nombres de producto; relanzar la búsqueda; recalcular la cuota; validar el borrador; fijar el título del documento |
-| `useMemo` | Ordenar y filtrar el catálogo sin recalcular en cada render; construir el objeto de dependencias una sola vez |
-| `useCallback` | Acciones estables (`setValue`, `submit`, `reset`, `clearFilters`) para no re-renderizar los componentes hijos |
+| `useState` | Texto de búsqueda, rango, tipo, plazo, orden, producto/monto/plazo del simulador, paso actual, los 11 campos del formulario, campos tocados, envío en curso, radicado, tema |
+| `useEffect` | Cargar catálogo, rangos y nombres de producto; relanzar la búsqueda; recalcular la cuota; validar el borrador; aplicar el prellenado; fijar el título; seguir el tema del sistema |
+| `useMemo` | Ordenar y afinar el catálogo sin recalcular en cada render; resolver el prellenado; construir el objeto de dependencias una sola vez |
+| `useCallback` | Acciones estables (`setValue`, `submit`, `reset`, `clearFilters`, `toggleType`) para no re-renderizar los componentes hijos |
+| `useRef` | Marcar que el prellenado ya se aplicó, para no pisar lo que el usuario escriba |
 | `useContext` | Acceso a las dependencias inyectadas (`useDependencies`) |
-| Hooks propios | `useCreditProducts`, `useCreditSearch`, `useProductSorting`, `useSimulation`, `useApplicationForm`, `useDocumentTitle`, `useDependencies` |
+| `useSearchParams` | Leer el traspaso del simulador (`?product=&amount=&term=`) |
+| Hooks propios | `useCreditProducts`, `useCreditSearch`, `useCatalogRefinement`, `useProductSorting`, `useSimulation`, `useApplicationForm`, `useDocumentTitle`, `useDependencies` |
 
 Todo `useEffect` asíncrono marca `cancelled` en su función de limpieza, porque
 React monta dos veces en modo estricto.
@@ -255,19 +308,35 @@ React monta dos veces en modo estricto.
 
 ```bash
 node tests/01-domain-application.mjs   # 85 aserciones -> TODO OK
+npm install jsdom --no-save
+node tests/02-boot-jsdom.mjs           # las 6 rutas montan y pintan -> TODO OK
 npm run build                          # compila sin errores
 ```
 
-Comprobado además en navegador: navegación entre las cuatro rutas sin recarga,
-recarga directa en rutas profundas, búsqueda incremental, recálculo de la cuota,
-validación en vivo, radicado con aviso y limpieza del formulario, y 404 en una
-ruta inexistente. Sin errores ni advertencias en consola.
+Y las reglas del sistema de estilos:
+
+```bash
+# Ningún color fuera del archivo de tokens
+grep -rn "#[0-9a-fA-F]\{3,8\}" assets/css/ --include=*.css | grep -v 02-tokens.css
+```
+
+Comprobado además **en navegador, pulsando la aplicación**: navegación entre las
+seis rutas sin recarga, recarga directa en rutas profundas, búsqueda
+incremental, recálculo de la cuota, traspaso del simulador a la solicitud con
+prellenado, los tres pasos del formulario, envío real con radicado y aviso,
+404 en una ruta inexistente, tema claro y oscuro, y sin desplazamiento
+horizontal en 375, 414, 768, 820, 1024, 1440 y 1920 px. Sin errores en consola.
+
+Esa pasada por el navegador destapó tres fallos que las capturas automatizadas
+daban por buenos —incluido un formulario que se autoenviaba al llegar al último
+paso—. Están documentados con su causa en
+[`docs/23 §12`](./docs/23-rediseno-ui-ux.md).
 
 ---
 
 ## 9. Documentación
 
-**Índice maestro: [`docs/master.md`](./docs/master.md)** — 22 documentos sobre el
+**Índice maestro: [`docs/master.md`](./docs/master.md)** — 23 documentos sobre el
 patrón de diseño, las entidades, los value objects, los contratos, los casos de
 uso, los adaptadores, la inyección de dependencias, el enrutado, los estilos,
 los flujos end-to-end, las recetas de extensión y las convenciones.
@@ -276,12 +345,19 @@ Lecturas recomendadas para esta entrega:
 
 | Documento | Qué responde |
 |---|---|
+| [23 — Rediseño UI/UX](./docs/23-rediseno-ui-ux.md) | El rediseño completo: tokens con tema día/noche, iconografía propia, las cinco pantallas, el puente simulador → solicitud, qué se decidió NO pintar del mockup y los tres fallos que solo aparecieron en el navegador |
 | [21 — Migración a React](./docs/21-migracion-a-react-ev2.md) | Qué cambió y qué no al pasar de vanilla a React, y por qué |
-| [22 — Identidad visual](./docs/22-identidad-visual.md) | La paleta corporativa de tres colores y el criterio para pantallas nuevas |
+| [22 — Identidad visual](./docs/22-identidad-visual.md) | La corrección de paleta previa: por qué se retiraron los seis degradados de producto |
 | [02 — Arquitectura hexagonal](./docs/02-arquitectura-hexagonal.md) | Qué es un puerto y qué es un adaptador |
 | [03 — Clean Architecture y capas](./docs/03-clean-architecture-capas.md) | Quién puede importar a quién |
 | [10 — Casos de uso y DTOs](./docs/10-casos-de-uso-y-dtos.md) | Por qué la interfaz recibe DTOs y nunca entidades |
 | [18 — Guía de extensión](./docs/18-guia-de-extension.md) | Recetas paso a paso para añadir producto, campo o página |
+
+El encargo del que partió el rediseño está en
+[`docs/plans/brief-rediseno-ui-ux.md`](./docs/plans/brief-rediseno-ui-ux.md):
+estado del front antes del cambio, restricciones y criterios de aceptación. Los
+recursos gráficos que produjo (iconos, logos, ilustraciones y fotografías) están
+en `public/assets/`.
 
 La documentación académica está en [`docs/iudigital_doc/`](./docs/iudigital_doc/):
 `EV1/` con el documento de arquitectura de la Actividad 1 y su generador, y

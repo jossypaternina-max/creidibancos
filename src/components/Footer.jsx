@@ -1,28 +1,34 @@
+import { Logo } from './Logo.jsx';
+
 /**
  * Footer — pie de página.
  *
- * Componente reutilizable con dos variantes, las mismas de la Actividad 1:
- *  - `catalog`  → margen superior corto y segunda línea larga.
- *  - `compact`  → margen superior mayor y segunda línea corta.
+ * Tres zonas: marca y lema a la izquierda, una línea editorial en el centro
+ * y el aviso de autoría a la derecha. En móvil se apilan centradas.
+ *
+ * El fondo se mantiene azul financiero en los dos temas: el pie cierra la
+ * página con identidad, no con el color de fondo de turno.
  *
  * Capa: PRESENTACIÓN (componente).
  */
 
-const COMPANY = 'CreditSmart — FinTech Solutions S.A.S';
-const RIGHTS_SHORT = '© 2025 Todos los derechos reservados';
-const RIGHTS_LONG =
-  '© 2025 Todos los derechos reservados · Plataforma de solicitudes de crédito en línea';
+const TAGLINE = 'Más que crédito, progreso para ti.';
+const QUOTE = '«Hoy es un buen momento para construir el mañana.»';
+const COPY = '© 2026 CreditSmart — FinTech Solutions S.A.S · Proyecto académico';
 
-/**
- * @param {{ variant?: 'catalog'|'compact' }} props
- */
-export function Footer({ variant = 'compact' }) {
-  const isCatalog = variant === 'catalog';
-
+export function Footer() {
   return (
-    <footer className={isCatalog ? 'footer' : 'footer footer--spaced'}>
-      <p className="footer__brand">{COMPANY}</p>
-      <p>{isCatalog ? RIGHTS_LONG : RIGHTS_SHORT}</p>
+    <footer className="footer">
+      <div className="footer__inner container container--wide">
+        <div>
+          <Logo className="logo--inverse" />
+          <p className="footer__tagline">{TAGLINE}</p>
+        </div>
+
+        <p className="footer__quote footer__center">{QUOTE}</p>
+
+        <p className="footer__copy footer__end">{COPY}</p>
+      </div>
     </footer>
   );
 }

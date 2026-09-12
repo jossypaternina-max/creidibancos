@@ -1,5 +1,14 @@
 [← Volver al índice maestro](./master.md)
 
+> ⚠️ **Documento histórico de la Actividad 1.** Describe `BaseView`,
+> `BaseController` y `ViewRenderer`, que React sustituyó por componentes y
+> hooks ([21](./21-migracion-a-react-ev2.md)). La composición actual de la
+> capa de presentación —los 21 componentes, las 6 páginas y los 8 hooks— está
+> en [23](./23-rediseno-ui-ux.md).
+>
+> Se conserva porque el reparto de responsabilidades que plantea (quién decide,
+> quién pinta, quién no consulta datos) es el mismo que sigue el código de hoy.
+
 # 12 — Vistas, controladores y componentes
 
 > **Actividad 2 — React.** Este documento describe la presentación de la

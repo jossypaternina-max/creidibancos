@@ -1,550 +1,1110 @@
 /* ============================================================
-   06-pages.css — Estilos específicos por vista
+   06-pages.css — Composiciones propias de cada vista.
+
+   Lo que solo aparece una vez en el sitio vive aquí; lo que se
+   reutiliza está en 05-components.css.
    ============================================================ */
 
-/* ------------------------------------------------------------
-   Catálogo (/) — Hero
-   ------------------------------------------------------------ */
-/* Banner corporativo: un solo color, en dos tonos del mismo azul. La versión
-   anterior mezclaba blanco, verde y azul en la misma zona; aquí el único
-   elemento claro es el botón de acción, que es justo donde debe ir la
-   atención. */
+/* ============================================================
+   HOME (/)
+   ============================================================ */
+
+/* ---------- Hero ----------
+   Fondo claro, no un banner oscuro. La credibilidad la dan la
+   jerarquía, la ilustración y las señales de confianza; no un
+   bloque de color saturado. */
+/* Azul muy claro, no blanco puro: en el diseño aprobado el hero se distingue
+   de la franja de productos, que sí es blanca. Dos superficies contiguas de
+   distinto valor es lo que da el escalón entre bloques sin necesidad de una
+   línea divisoria. */
 .hero {
-  background-color: var(--color-blue-800);
-  background-image: linear-gradient(
-    180deg,
-    var(--color-blue-800),
-    var(--color-blue-900)
-  );
-  border-bottom: 1px solid var(--color-blue-900);
-  color: var(--color-white);
-  padding: var(--space-14) var(--space-4);
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-brand-soft);
 }
 
+/* Patrón geométrico apenas perceptible, y solo en la mitad izquierda: a
+   mayor opacidad dibujaba círculos por detrás del titular, que es justo
+   donde el diseño aprobado deja la superficie limpia. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 48%;
+  background-image: url("/assets/backgrounds/hero-orbit.svg");
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+/* Sin `position: relative`. Si el contenedor crea contexto de posicionado,
+   el `right: 0` de la fotografía se ancla a ÉL y no a la ventana: a 1912 px
+   quedaba una franja de casi 200 px sin imagen contra el borde derecho.
+   El contexto lo pone `.hero`, que sí ocupa todo el ancho. */
 .hero__inner {
-  max-width: var(--container-4xl);
-  margin-inline: auto;
-  text-align: center;
+  display: grid;
+  align-items: center;
+  gap: var(--space-8);
+  padding-block: clamp(2rem, 4vw, 3.5rem);
+  min-height: clamp(0rem, 46vh, 29rem);
 }
 
+.hero__copy {
+  position: relative;
+  z-index: calc(var(--z-base) + 1);
+  max-width: 38rem;
+}
+
+.hero__eyebrow {
+  margin-bottom: var(--space-3);
+  color: var(--brand);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* El titular del hero NO usa el tamaño máximo de `h1`. En el diseño
+   aprobado mide unos 56 px a 1440, no 76: a ese cuerpo desplazaba el resto
+   del bloque fuera de la banda y obligaba a estirar el hero. */
 .hero__title {
-  font-size: var(--text-4xl);
-  line-height: 1.2;
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.015em;
   margin-bottom: var(--space-4);
+  max-width: 12ch;
+  color: var(--brand-strong);
+  font-size: clamp(2.25rem, 3.9vw, 3.5rem);
+  line-height: 1.08;
 }
 
-/* La segunda línea del titular ya no cambia de color: cambia de tono dentro
-   del mismo azul, sobre el fondo oscuro. */
-.hero__title-accent {
-  color: var(--color-blue-200);
-  font-weight: var(--fw-medium);
-}
+.hero__title-accent { color: var(--brand); }
 
 .hero__subtitle {
-  color: var(--color-blue-200);
-  font-size: var(--text-lg);
-  line-height: var(--leading-lg);
-  max-width: var(--container-2xl);
-  margin-inline: auto;
-  margin-bottom: var(--space-8);
+  max-width: 26rem;
+  margin-bottom: var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--text-base);
 }
 
+/* El CTA va DESPUÉS de las señales de confianza: primero se justifica por
+   qué merece la pena, después se pide el clic. En el marcado el orden es el
+   mismo, así que la lectura con teclado y lector de pantalla coincide. */
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: var(--space-3);
+  margin-bottom: 0;
 }
 
-/* ------------------------------------------------------------
-   Simulador (/simulador)
-   ------------------------------------------------------------ */
-.filters__grid {
+.hero__proof {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: var(--space-4);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
 }
 
-.filters__actions {
+.hero__proof-item {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-gray-100);
-}
-
-/* Casilla y etiqueta alineadas: antes la casilla quedaba desalineada
-   respecto al texto y al boton que tiene al lado. */
-.filters__toggle {
-  display: inline-flex;
-  align-items: center;
   gap: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-body);
-  cursor: pointer;
-}
-
-.filters__toggle input {
-  width: 1rem;
-  height: 1rem;
-  accent-color: var(--brand);
-}
-
-.results-count {
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
+  align-items: center;
   color: var(--text-muted);
-  margin-bottom: var(--space-4);
-}
-
-.results-count strong {
-  color: var(--text-strong);
-  font-weight: var(--fw-bold);
-}
-
-/* ------------------------------------------------------------
-   Solicitud (/solicitar)
-   ------------------------------------------------------------ */
-.form-page {
-  max-width: var(--container-3xl);
-  margin-inline: auto;
-  padding: var(--space-10) var(--space-4);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.form__section {
-  background-color: var(--surface);
-  border-radius: var(--radius-2xl);
-  border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-6);
-}
-
-/* Las tres secciones del formulario usaban azul, verde y violeta. Son partes
-   del mismo trámite: comparten el color corporativo y se distinguen por su
-   título, no por el color. */
-.form__section-icon--personal,
-.form__section-icon--credit,
-.form__section-icon--work {
-  color: var(--brand);
-}
-
-.form__section {
-  border-left: 3px solid var(--color-blue-100);
-}
-
-/* ------------------------------------------------------------
-   404 — Página no encontrada (estilo de sistema, paleta slate)
-   ------------------------------------------------------------ */
-.sys-page {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-6);
-  background-color: var(--color-slate-50);
-}
-
-.sys-page__inner {
-  max-width: var(--container-md);
-  width: 100%;
-}
-
-.sys-block {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.sys-code {
-  font-size: var(--text-7xl);
-  line-height: var(--leading-7xl);
-  font-weight: 300;
-  color: var(--color-slate-300);
-}
-
-.sys-rule {
-  height: 2px;
-  width: 4rem;
-  background-color: var(--color-slate-200);
-  margin-inline: auto;
-}
-
-.sys-title {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-2xl);
-  font-weight: var(--fw-medium);
-  color: var(--color-slate-800);
-}
-
-.sys-text {
-  color: var(--color-slate-600);
-  line-height: 1.625;
-}
-
-.sys-text__highlight {
-  font-weight: var(--fw-medium);
-  color: var(--color-slate-700);
-}
-
-.sys-note {
-  margin-top: var(--space-8);
-  padding: var(--space-4);
-  background-color: var(--color-slate-100);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-slate-200);
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  text-align: left;
-}
-
-.sys-note__dot {
-  flex-shrink: 0;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: var(--radius-full);
-  background-color: var(--color-orange-100);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 0.125rem;
-}
-
-.sys-note__dot::after {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: var(--radius-full);
-  background-color: var(--color-orange-400);
-}
-
-.sys-note__title {
   font-size: var(--text-sm);
-  font-weight: var(--fw-medium);
-  color: var(--color-slate-700);
+  line-height: var(--leading-snug);
 }
 
-.sys-note__text {
-  font-size: var(--text-sm);
-  color: var(--color-slate-600);
-  line-height: 1.625;
-}
-
-.sys-actions {
-  padding-top: var(--space-6);
-}
-
-/* ------------------------------------------------------------
-   Acceso restringido (pantalla de sistema)
-   ------------------------------------------------------------ */
-.access-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  min-height: 100dvh;
-  background-image: linear-gradient(to bottom, var(--color-white), var(--color-slate-50));
-}
-
-.access-card {
-  max-width: var(--container-md);
-  width: 100%;
-  padding: var(--space-8);
-  background-color: var(--color-white);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--color-slate-100);
-  text-align: center;
-}
-
-.access-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 4rem;
-  height: 4rem;
-  margin-bottom: var(--space-6);
-  border-radius: var(--radius-full);
-  background-color: var(--color-orange-100);
-}
-
-.access-card__icon svg {
-  width: 2rem;
-  height: 2rem;
-  color: var(--color-orange-600);
-  stroke: currentColor;
-  fill: none;
-}
-
-.access-card__title {
-  font-size: var(--text-3xl);
-  line-height: var(--leading-3xl);
-  font-weight: var(--fw-bold);
-  color: var(--color-slate-900);
-  margin-bottom: var(--space-4);
-}
-
-.access-card__text {
-  color: var(--color-slate-600);
-  margin-bottom: var(--space-8);
-}
-
-.access-card__help {
-  padding: var(--space-4);
-  background-color: var(--color-slate-50);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  color: var(--color-slate-600);
-  text-align: left;
-}
-
-.access-card__help ul {
-  list-style: disc;
-  list-style-position: inside;
-  margin-top: var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-/* ==========================================================================
-   Simulador — panel de cálculo, resultado y tabla de amortización
-   ========================================================================== */
-
-.panel--simulator {
-  margin-bottom: var(--space-6);
-}
-
-.section__title--sub {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-2xl);
-  margin-top: var(--space-4);
-}
-
-.sim-divider {
-  margin: var(--space-14) 0 var(--space-10);
-  border: 0;
-  border-top: 1px solid var(--surface-border);
-}
-
-/* ----------------------------- Resultado ----------------------------- */
-
-/* El panel de resultado tomaba el degradado del producto simulado: cambiaba
-   de color en cada simulación. Ahora es siempre el azul corporativo, y lo que
-   destaca es la cifra, no el fondo. */
-.sim-result {
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
-  background-color: var(--color-blue-800);
-  background-image: linear-gradient(
-    180deg,
-    var(--color-blue-800),
-    var(--color-blue-900)
-  );
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-md);
-  color: var(--color-white);
-}
-
-.sim-result__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.sim-result__icon {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  font-size: var(--text-2xl);
-  line-height: 1;
-  background-color: rgb(255 255 255 / 0.1);
-  border: 1px solid rgb(255 255 255 / 0.2);
-  border-radius: var(--radius-lg);
-  filter: grayscale(1) brightness(1.6);
-  opacity: 0.9;
-}
-
-.sim-result__title {
-  font-size: var(--text-xl);
-  line-height: var(--leading-xl);
-  font-weight: var(--fw-bold);
-}
-
-.sim-result__meta {
-  font-size: var(--text-sm);
-  opacity: 0.85;
-}
-
-.sim-result__grid {
+/* Contorno verde sobre fondo claro, como en el diseño aprobado: el relleno
+   sólido convertía las tres señales en tres manchas de color. */
+.hero__proof-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-4);
+  place-items: center;
+  color: var(--growth);
+  background: transparent;
+  border: 1.5px solid var(--growth);
+  border-radius: var(--radius-md);
 }
 
-.sim-result__note {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: var(--text-sm);
-  opacity: 0.9;
+.hero__proof-icon .ui-icon { width: 1.05rem; height: 1.05rem; }
+
+.hero__visual {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  background: var(--surface-brand-soft);
+  box-shadow: var(--shadow-lg);
 }
 
-.sim-metric {
-  padding: var(--space-4);
-  background-color: rgb(255 255 255 / 0.07);
-  border: 1px solid rgb(255 255 255 / 0.12);
+.hero__visual picture { display: block; height: 100%; }
+
+.hero__visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Espejada. En la fotografía original la pareja está en la mitad derecha,
+     que es justo donde el diseño coloca la tarjeta flotante: encuadrándola
+     de cualquier otra forma la tarjeta acababa sobre una cara. Volteada, la
+     pareja ocupa la mitad izquierda y la tarjeta cae sobre la ventana. No
+     hay texto ni nada orientado en la imagen, así que el volteo es
+     imperceptible. */
+  transform: scaleX(-1);
+  /* Una fotografía no tiene «versión nocturna»: invertirla la estropea.
+     En tema oscuro solo se atenúa, para que no deslumbre sobre un fondo
+     casi negro. */
+  filter: brightness(var(--photo-dim));
+}
+
+/* Tarjeta flotante: refuerza el mensaje sin robarle sitio al titular.
+   Se retira en móvil, donde solo taparía la ilustración. */
+.hero__floating-card {
+  position: absolute;
+  z-index: calc(var(--z-base) + 1);
+  top: var(--space-6);
+  right: var(--space-6);
+  width: min(15rem, 44%);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+}
+
+.hero__floating-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--space-3);
+  color: var(--growth);
+  background: var(--growth-soft);
   border-radius: var(--radius-lg);
 }
 
-/* La cuota mensual es el dato que el usuario vino a buscar: se distingue por
-   contraste y tamaño, no añadiendo un color. */
-.sim-metric--highlight {
-  background-color: var(--color-white);
-  border-color: var(--color-white);
-  color: var(--brand-strong);
+.hero__floating-title {
+  margin-bottom: var(--space-2);
+  color: var(--text-strong);
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-snug);
 }
 
-.sim-metric__label {
-  display: block;
+.hero__floating-text {
+  margin: 0;
+  color: var(--text-muted);
   font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  opacity: 0.85;
-  margin-bottom: var(--space-1);
+  line-height: var(--leading-snug);
 }
 
-.sim-metric__value {
+.hero__floating-bar {
+  height: 3px;
+  width: 3.5rem;
+  margin-top: var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--growth);
+}
+
+@media (min-width: 56rem) {
+  /* A partir de tablet grande la fotografía sale del contenedor y llega
+     hasta el borde de la ventana, como en el diseño aprobado: el hero deja
+     de ser «texto + tarjeta con foto» y pasa a ser una sola banda.
+     El texto ocupa la única columna de la rejilla; la foto se coloca encima,
+     a la derecha, en posición absoluta. */
+  .hero__inner { grid-template-columns: minmax(0, 1fr); }
+  .hero__copy { max-width: 32rem; }
+  .hero__proof { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  .hero__visual {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(64%, 74rem);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* El encuadre se desplaza a la derecha de la fotografía: así la pareja
+     queda en el centro del hueco libre y la tarjeta flotante no le tapa la
+     cara, que es justo lo que pasaba con el encuadre centrado. */
+  .hero__visual img { object-position: 50% 46%; }
+
+  /* Degradado desde el fondo de la página hacia la foto: el titular se lee
+     sobre superficie limpia y la imagen no se corta con un canto duro.
+     Usa `--surface`, así que el empalme sigue al tema sin tocar el marcado. */
+  .hero__visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-base);
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      var(--surface-brand-soft) 0%,
+      var(--surface-brand-soft) 14%,
+      color-mix(in srgb, var(--surface-brand-soft) 60%, transparent) 34%,
+      transparent 64%
+    );
+  }
+}
+
+@media (max-width: 55.99rem) {
+  .hero__floating-card { display: none; }
+}
+
+/* La franja de accesos comparte fondo con el hero: en el diseño aprobado la
+   mitad superior de la home es una sola superficie blanca y el gris solo
+   aparece más abajo. */
+.home-products {
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+/* Sin contenedor ni padding propio: la banda ocupa el ancho de la ventana
+   porque cuelga directamente del `<main>`. */
+.trust-section { padding: 0; }
+
+/* ---------- Banda de confianza ---------- */
+/* A sangre, de borde a borde de la ventana: en el diseño aprobado la banda
+   corta la página en dos. Metida dentro del contenedor y con las esquinas
+   redondeadas se leía como «una tarjeta más», que es justo lo contrario de
+   lo que tiene que hacer un cierre institucional. */
+.trust-strip {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  background: var(--brand-panel-bg);
+  color: var(--brand-panel-text);
+}
+
+.trust-strip__media {
+  position: relative;
+  /* Altura acotada: es una BANDA institucional, no un mural. Sin tope, la
+     proporción de la fotografía haría una franja de 600 px que empuja el
+     pie fuera de la primera pantalla. */
+  min-height: 15rem;
+  height: clamp(15rem, 18vw, 17rem);
+  background: var(--brand-strong);
+}
+
+.trust-strip__media picture {
   display: block;
-  font-size: var(--text-xl);
-  line-height: var(--leading-xl);
-  font-weight: var(--fw-bold);
+  height: 100%;
+}
+
+.trust-strip__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* La foto se centra en el punto donde se ve la ciudad contra la montaña,
+     que es lo que el velo deja visible a la derecha. */
+  object-position: 60% 55%;
+  filter: brightness(var(--photo-dim));
+}
+
+/* Velo direccional: el texto se lee sobre la imagen sin bajarle la
+   opacidad al texto, que es lo que rompe el contraste. */
+.trust-strip__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* El velo se mantiene opaco sobre todo el ancho del texto y solo se abre
+     en el último tercio. Un degradado que empieza a aclararse de inmediato
+     deja el titular sobre cielo y montaña, y ahí no hay contraste que
+     aguante. */
+  background: linear-gradient(
+    90deg,
+    var(--brand-panel-overlay-strong) 0%,
+    var(--brand-panel-overlay-strong) 36%,
+    var(--brand-panel-overlay-soft) 78%,
+    transparent 100%
+  );
+}
+
+.trust-strip__copy {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--z-base) + 1);
+  display: grid;
+  align-content: center;
+  gap: var(--space-2);
+  /* El texto se alinea con el contenedor del resto de la página aunque la
+     banda sea a sangre: si empezara en el borde de la ventana, rompería la
+     retícula que siguen todas las demás secciones. */
+  padding: var(--space-6) var(--content-gutter);
+  /* Misma fórmula que `.container--wide`, para que el titular caiga en la
+     misma vertical que el resto de los encabezados de la página. `100%` es
+     el ancho de la banda, que ya ocupa la ventana entera. */
+  padding-inline-start: max(var(--content-gutter), calc((100% - var(--container-2xl)) / 2));
+  max-width: 44rem;
+}
+
+.trust-strip__title {
+  margin: 0;
+  color: var(--brand-panel-text);
+  font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+}
+
+.trust-strip__text {
+  margin: 0;
+  color: var(--brand-panel-muted);
+  font-size: var(--text-sm);
+}
+
+.trust-strip__copy .btn { justify-self: start; margin-top: var(--space-2); }
+
+.trust-strip__stats {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-6) var(--space-8);
+  background: var(--surface);
+  color: var(--text-body);
+}
+
+.trust-stat {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.trust-stat__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  color: var(--growth);
+  background: var(--growth-soft);
+}
+
+.trust-stat__value {
+  display: block;
+  color: var(--text-strong);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
   font-variant-numeric: tabular-nums;
 }
 
-.sim-metric--highlight .sim-metric__label {
-  color: var(--brand);
-  opacity: 1;
+.trust-stat__label { color: var(--text-muted); font-size: var(--text-xs); }
+
+@media (max-width: 47.99rem) {
+  .trust-strip__copy { padding-inline-start: var(--content-gutter); }
+
+  /* En una columna estrecha el velo horizontal cubre la banda entera y la
+     fotografía desaparece. Se gira 90°: la imagen se ve arriba y el texto
+     se apoya sobre la parte oscurecida. */
+  .trust-strip__media::after {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      var(--brand-panel-overlay-soft) 34%,
+      var(--brand-panel-overlay-strong) 72%
+    );
+  }
+
+  .trust-strip__copy { align-content: end; }
+  .trust-strip__media { height: 18rem; }
 }
 
-.sim-metric--highlight .sim-metric__value {
-  font-size: var(--text-2xl);
-  line-height: var(--leading-2xl);
+@media (min-width: 48rem) {
+  .trust-strip { grid-template-columns: 1fr minmax(18rem, 23rem); }
 }
 
-/* -------------------------- Amortización -------------------------- */
-
-.sim-schedule {
-  margin-bottom: var(--space-8);
+/* ============================================================
+   CATÁLOGO (/productos)
+   ============================================================ */
+.filters {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xs);
 }
 
-.sim-schedule__bar {
+.filters__title {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+}
+
+.filters__group { display: grid; gap: var(--space-3); }
+
+.filters__legend {
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.filters__options { display: grid; gap: var(--space-1); }
+
+.filters__options .checkbox { min-height: 2.25rem; }
+
+.filters__actions { display: grid; gap: var(--space-2); }
+
+.results-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.results-count {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.results-count strong { color: var(--text-strong); }
+
+/* ============================================================
+   SIMULADOR (/simulador)
+   ============================================================ */
+.simulator-workspace {
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  /* Entrada · resultado · confianza. El mismo orden en que se toma la
+     decisión: ajusto, veo la cifra, me convenzo. */
+  .simulator-workspace {
+    grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr) minmax(14rem, 17rem);
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .simulator-workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .simulator-workspace > .goal-panel { grid-column: 1 / -1; }
+}
+
+/* ---------- Panel de entrada ----------
+   Azul fuerte para separar «lo que decido» del resto de la página. */
+.simulator-shell {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  color: var(--brand-panel-text);
+  background: var(--brand-panel-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.simulator-shell__title {
+  margin-bottom: var(--space-2);
+  color: var(--brand-panel-text);
+  font-size: var(--text-2xl);
+}
+.simulator-shell__intro { margin: 0; color: var(--brand-panel-muted); font-size: var(--text-sm); }
+
+.simulator-shell .field__label { color: var(--brand-panel-text); }
+.simulator-shell .field__hint { color: var(--brand-panel-faint); }
+
+.simulator-shell .field__control {
+  background: var(--brand-panel-control-bg);
+  color: var(--brand-panel-control-text);
+  border-color: var(--brand-panel-faint);
+}
+
+.simulator-shell .field__error { color: var(--warning); }
+
+.simulator-shell .select-wrap__chevron { color: var(--brand-panel-control-text); }
+
+.simulator-shell__amount { display: grid; gap: var(--space-2); }
+
+.simulator-shell__range-labels {
+  display: flex;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  color: var(--brand-panel-faint);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
 }
 
-.sim-schedule__modes {
-  display: flex;
-  gap: var(--space-2);
+.simulator-shell__actions { display: grid; gap: var(--space-2); }
+
+.simulator-shell .range-control { accent-color: var(--brand-panel-control-bg); }
+
+.simulator-shell .amount-filter__preset {
+  background: transparent;
+  border-color: var(--brand-panel-faint);
+  color: var(--brand-panel-muted);
 }
 
-.btn--system.is-active {
-  color: var(--color-white);
-  background-color: var(--brand);
-  border-color: var(--brand);
+.simulator-shell .amount-filter__preset:hover,
+.simulator-shell .amount-filter__preset[aria-pressed="true"] {
+  background: var(--surface-glass-hover);
+  border-color: var(--brand-panel-control-bg);
+  color: var(--brand-panel-text);
 }
 
-.btn--system.is-active:hover {
-  background-color: var(--brand-hover);
-}
-
-/* La tabla desborda en móvil: scrollea ella, nunca la página. */
-.sim-schedule__scroll {
-  max-height: 26rem;
-  overflow: auto;
-  background-color: var(--surface);
+/* ---------- Resultado ---------- */
+.sim-result {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
 }
 
+.sim-result__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.sim-result__title { margin-bottom: var(--space-1); font-size: var(--text-2xl); }
+.sim-result__meta { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+
+/* La cuota es el dato que el usuario vino a buscar: destaca por tamaño y
+   por ser lo único en verde, no por un fondo de color nuevo. */
+.sim-result__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--surface-soft);
+  border-radius: var(--radius-lg);
+}
+
+.sim-result__eyebrow {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.sim-result__payment {
+  display: block;
+  color: var(--growth);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: var(--font-black);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-result__rate-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.sim-result__rate {
+  display: block;
+  color: var(--brand);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-result__facts {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--surface-border);
+}
+
+.sim-result__fact {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-block: 0.8rem;
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.sim-result__fact > span:last-child {
+  color: var(--text-strong);
+  font-weight: var(--font-semibold);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-result__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.sim-result__actions .btn { flex: 1 1 12rem; }
+
+/* ---------- Panel de confianza del simulador ---------- */
+.goal-panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--growth-soft);
+  border: 1px solid var(--growth-soft-border);
+  border-radius: var(--radius-xl);
+}
+
+.goal-panel__title { margin: 0; color: var(--text-strong); font-size: var(--text-xl); }
+.goal-panel__text { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+.goal-panel__media { justify-self: center; max-width: 11rem; }
+.goal-panel__media img { width: 100%; height: auto; }
+
+.goal-panel__list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
+
+.goal-panel__item {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--text-body);
+  font-size: var(--text-sm);
+}
+
+.goal-panel__item .ui-icon { color: var(--growth); width: 1.1rem; height: 1.1rem; }
+
+/* ---------- Tabla de amortización ---------- */
+/* Separación propia, no una sección completa: la tabla es continuación del
+   resultado, no un bloque nuevo con su propio aire alrededor. */
+.sim-schedule-wrap { margin-top: var(--space-6); }
+
+.sim-schedule {
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+}
+
+.sim-schedule__bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+}
+
+.sim-schedule__bar + .sim-schedule__scroll { border-top: 1px solid var(--surface-border); }
+
+/* Segmentado: dos modos del mismo dato, no dos acciones distintas. */
+.sim-schedule__modes {
+  display: inline-flex;
+  padding: 0.2rem;
+  background: var(--surface-soft);
+  border-radius: var(--radius-md);
+}
+
+.sim-schedule__mode {
+  min-height: 2.25rem;
+  padding: 0.45rem 0.75rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+}
+
+.sim-schedule__mode[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--brand);
+  box-shadow: var(--shadow-xs);
+}
+
+/* La tabla desborda: scrollea ella, nunca la página. */
+.sim-schedule__scroll { max-height: 28rem; overflow: auto; }
+
 .sim-table {
   width: 100%;
+  min-width: 42rem;
   border-collapse: collapse;
   font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
 }
 
-.sim-table__caption {
+.sim-table caption {
   padding: var(--space-4);
   text-align: left;
-  font-weight: var(--fw-semibold);
-  color: var(--text-strong);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
 }
+
+.sim-table th,
+.sim-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--surface-border);
+  text-align: right;
+  color: var(--text-body);
+}
+
+.sim-table th:first-child,
+.sim-table td:first-child { text-align: left; }
 
 .sim-table thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
-  padding: var(--space-3) var(--space-4);
-  text-align: right;
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  z-index: var(--z-base);
+  background: var(--surface);
   color: var(--text-muted);
-  background-color: var(--color-slate-50);
-  border-bottom: 1px solid var(--surface-border);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
 }
 
-.sim-table thead th:first-child,
-.sim-table tbody th {
-  text-align: left;
-}
-
-.sim-table tbody th,
-.sim-table tbody td {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--color-slate-100);
-  color: var(--text-body);
-}
-
-.sim-table tbody td {
-  text-align: right;
-}
-
-.sim-table tbody th {
-  font-weight: var(--fw-semibold);
-  color: var(--text-strong);
-}
-
-.sim-table tbody tr:nth-child(even) {
-  background-color: var(--color-slate-50);
-}
-
+.sim-table tbody th { color: var(--text-strong); font-weight: var(--font-semibold); }
+.sim-table tbody tr:nth-child(even) { background: var(--surface-soft); }
 .sim-table tbody tr:last-child th,
-.sim-table tbody tr:last-child td {
-  border-bottom: 0;
+.sim-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Reparto capital / interés de la cuota: la proporción se ve de un
+   vistazo; los números siguen estando en su columna. */
+.amortization-bar {
+  width: 5.5rem;
+  height: 0.45rem;
+  margin-left: auto;
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--surface-border);
 }
+
+.amortization-bar__capital { background: var(--brand); }
+.amortization-bar__interest { background: var(--growth); }
+
+.amortization-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.amortization-legend__item { display: flex; align-items: center; gap: var(--space-2); }
+
+.amortization-legend__swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.amortization-legend__swatch--capital { background: var(--brand); }
+.amortization-legend__swatch--interest { background: var(--growth); }
+
+/* ============================================================
+   SOLICITUD (/solicitar)
+   ============================================================ */
+
+/* ---------- Indicador de pasos ----------
+   Es un INDICADOR, no una navegación: el usuario no puede saltar a un
+   paso que aún no ha completado, así que no son botones. */
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.stepper__item {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  color: var(--text-faint);
+  text-align: center;
+  font-size: var(--text-xs);
+}
+
+.stepper__item::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--surface-border);
+  z-index: 0;
+}
+
+.stepper__item:first-child::before { left: 50%; }
+.stepper__item:last-child::before { right: 50%; }
+
+.stepper__dot {
+  position: relative;
+  z-index: var(--z-base);
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.stepper__item[aria-current="step"] { color: var(--text-strong); font-weight: var(--font-bold); }
+
+.stepper__item[aria-current="step"] .stepper__dot,
+.stepper__item[data-complete="true"] .stepper__dot {
+  color: var(--brand-on);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.stepper__item[data-complete="true"] { color: var(--text-muted); }
+.stepper__dot .ui-icon { width: 1rem; height: 1rem; }
+
+@media (max-width: 39.99rem) {
+  /* Los puntos se quedan; las etiquetas no caben y sobran. */
+  .stepper__label { display: none; }
+}
+
+/* ---------- Secciones del formulario ---------- */
+.form { display: grid; gap: var(--space-6); }
+
+.form__section {
+  display: grid;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xs);
+}
+
+.form__section-head { display: grid; gap: var(--space-1); }
+.form__section-title { margin: 0; font-size: var(--text-xl); }
+.form__section-hint { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+
+.form__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.form__nav .btn { flex: 1 1 10rem; }
+
+/* ---------- Resumen del crédito ---------- */
+.application-summary {
+  padding: var(--space-5);
+  background: var(--surface-brand-soft);
+  border: 1px solid var(--brand-soft-border);
+  border-radius: var(--radius-xl);
+}
+
+.application-summary__title { margin-bottom: var(--space-4); font-size: var(--text-lg); }
+.application-summary__list { display: grid; gap: var(--space-3); margin: 0; }
+
+.application-summary__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.application-summary dt { color: var(--text-muted); font-size: var(--text-sm); }
+
+.application-summary dd {
+  margin: 0;
+  color: var(--text-strong);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Panel de seguridad ---------- */
+.security-panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--growth-soft);
+  border: 1px solid var(--growth-soft-border);
+  border-radius: var(--radius-xl);
+}
+
+.security-panel__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: grid;
+  place-items: center;
+  color: var(--growth);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-xs);
+}
+
+.security-panel__icon .ui-icon { width: 1.75rem; height: 1.75rem; }
+.security-panel__title { margin: 0; color: var(--text-strong); font-size: var(--text-xl); }
+.security-panel__text { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+
+.security-panel__list {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  margin: var(--space-2) 0 0;
+  list-style: none;
+}
+
+.security-panel__item {
+  display: flex;
+  gap: var(--space-2);
+  align-items: start;
+  color: var(--text-body);
+  font-size: var(--text-sm);
+}
+
+.security-panel__item .ui-icon { color: var(--growth); width: 1.1rem; height: 1.1rem; margin-top: 0.15rem; }
+
+/* ---------- Confirmación ---------- */
+.confirmation {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-4);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--growth-soft-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.confirmation__icon {
+  width: 4rem;
+  height: 4rem;
+  display: grid;
+  place-items: center;
+  color: var(--growth);
+  background: var(--growth-soft);
+  border-radius: var(--radius-pill);
+}
+
+.confirmation__icon .ui-icon { width: 2rem; height: 2rem; }
+.confirmation__title { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.15rem); }
+.confirmation__text { margin: 0; max-width: 34rem; color: var(--text-muted); }
+
+.confirmation__reference {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface-soft);
+  border-radius: var(--radius-lg);
+}
+
+.confirmation__reference-label { color: var(--text-muted); font-size: var(--text-xs); }
+
+.confirmation__reference-value {
+  color: var(--brand-strong);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-black);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-heading);
+}
+
+.confirmation__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }
+
+/* ============================================================
+   AYUDA (/ayuda)
+   ============================================================ */
+.faq { display: grid; gap: var(--space-3); }
+
+.faq__item {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.faq__item[open] { border-color: var(--brand-soft-border); }
+
+.faq__question {
+  min-height: var(--touch-target);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  color: var(--text-strong);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq__question::-webkit-details-marker { display: none; }
+.faq__question:hover { background: var(--surface-soft); }
+
+.faq__question .ui-icon {
+  color: var(--text-faint);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.faq__item[open] .faq__question .ui-icon { transform: rotate(180deg); }
+
+.faq__answer {
+  padding: 0 var(--space-5) var(--space-5);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.faq__group-title { margin-bottom: var(--space-4); font-size: var(--text-xl); }
+
+/* ============================================================
+   404
+   ============================================================ */
+.not-found {
+  display: grid;
+  place-items: center;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+.not-found__card {
+  width: min(100%, 44rem);
+  padding: clamp(2rem, 6vw, 4rem);
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.not-found__code {
+  margin: 0;
+  color: var(--brand-soft-border);
+  font-size: clamp(5rem, 18vw, 10rem);
+  font-weight: var(--font-black);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.not-found__title { margin: var(--space-5) 0 var(--space-3); font-size: clamp(1.6rem, 2.6vw, 2.15rem); }
+.not-found__text { max-width: 34rem; margin-inline: auto; color: var(--text-muted); }
+
+.not-found__path {
+  display: inline-block;
+  max-width: 100%;
+  margin: var(--space-3) 0 var(--space-6);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  font-family: var(--font-mono-num);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.not-found__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; }

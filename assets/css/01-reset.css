@@ -46,7 +46,7 @@ b, strong {
 }
 
 code, kbd, samp, pre {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono-num);
   font-size: 1em;
 }
 
@@ -135,7 +135,7 @@ textarea { resize: vertical; }
 input::placeholder,
 textarea::placeholder {
   opacity: 1;
-  color: var(--color-gray-400);
+  color: var(--text-faint);
 }
 
 [role="button"],

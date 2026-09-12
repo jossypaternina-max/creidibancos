@@ -1,10 +1,17 @@
 /**
- * AmountRangeFilter — desplegable de filtro por rango de monto.
+ * AmountRangeFilter — filtro por rango de monto.
  *
- * Las opciones no están escritas aquí: llegan del caso de uso
- * `GetAmountRangeFiltersUseCase`, que las obtiene del puerto
- * `IAmountRangeProvider`. Así el filtro no duplica la lista de rangos y
- * cambiarlos es cambiar un dato, no un componente.
+ * Los rangos NO están escritos aquí: llegan del caso de uso
+ * `GetAmountRangeFiltersUseCase`, que los obtiene del puerto
+ * `IAmountRangeProvider`. Así el filtro no duplica la lista y cambiarlos es
+ * cambiar un dato, no un componente.
+ *
+ * Se pinta como deslizador en lugar de desplegable porque recorrer rangos
+ * ordenados de menor a mayor es un gesto continuo, no una elección entre
+ * opciones sueltas. El control sigue siendo un `input[type=range]` nativo:
+ * flechas, inicio y fin funcionan sin añadir una línea de JavaScript, y
+ * `aria-valuetext` hace que un lector de pantalla anuncie «Hasta $5.000.000»
+ * en vez de «2».
  *
  * @param {{
  *   ranges: Array<{ index: number, label: string }>,
@@ -21,26 +28,39 @@ export function AmountRangeFilter({
   value,
   onChange,
   id = 'filter-range',
-  label = 'Filtrar por rango de monto',
+  label = 'Monto deseado',
 }) {
+  // Sin rangos cargados todavía no hay nada que deslizar.
+  if (ranges.length === 0) return null;
+
+  const lastIndex = ranges.length - 1;
+  const current = ranges[value] ?? ranges[0];
+
   return (
-    <div>
-      <label className="label label--block" htmlFor={id}>
+    <div className="filters__group">
+      <label className="filters__legend" htmlFor={id}>
         {label}
       </label>
-      <select
+
+      <input
         id={id}
         name="rangeIndex"
-        className="control control--select"
+        type="range"
+        className="range-control"
+        min="0"
+        max={lastIndex}
+        step="1"
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-      >
-        {ranges.map((range) => (
-          <option key={range.index} value={range.index}>
-            {range.label}
-          </option>
-        ))}
-      </select>
+        aria-valuetext={current.label}
+      />
+
+      {/* Un solo texto bajo el deslizador: el rango elegido. Poner además
+          los extremos de la escala repetiría «Todos los montos» dos veces y
+          no ayudaría a leer en qué posición se está. */}
+      <p className="amount-filter__current" aria-live="polite">
+        {current.label}
+      </p>
     </div>
   );
 }

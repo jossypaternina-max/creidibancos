@@ -1,56 +1,95 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
-import { ROUTES } from '../config/routes.js';
+import { NAV_ITEMS, ROUTES } from '../config/routes.js';
+import { Icon } from './Icon.jsx';
+import { Logo } from './Logo.jsx';
+import { ThemeToggle } from './ThemeToggle.jsx';
 
 /**
  * Navbar — barra superior de navegación.
  *
- * Componente reutilizable y sin estado: su única entrada son las rutas, y
- * React Router decide cuál está activa. Réplica de la barra de la Actividad 1:
+ * Cinco destinos, un CTA y el conmutador de tema. En escritorio la
+ * navegación va centrada; por debajo de 1024 px se pliega en un panel
+ * desplegable simple —no un off-canvas con foco atrapado, que exigiría
+ * lógica de modal que el proyecto no necesita.
  *
- *  - Marca "CreditSmart" con "Smart" en esmeralda + "by FinTech Solutions".
- *  - Tres enlaces: Catálogo · Simulador · Solicitar.
- *  - El enlace de la ruta activa se resalta.
- *  - "Solicitar" se pinta como CTA sólido cuando NO es la ruta activa.
+ * La ruta activa se marca con `aria-current="page"`, que es a la vez la
+ * semántica correcta y el gancho del CSS: no hay una clase paralela que
+ * pueda quedar desincronizada.
  *
  * Capa: PRESENTACIÓN (componente).
  */
-
-/** Enlaces de la barra. `cta` marca el botón de llamada a la acción. */
-const NAV_ITEMS = Object.freeze([
-  { path: ROUTES.CATALOG, label: 'Catálogo', cta: false },
-  { path: ROUTES.SIMULATOR, label: 'Simulador', cta: false },
-  { path: ROUTES.APPLICATION, label: 'Solicitar', cta: true },
-]);
-
 export function Navbar() {
-  return (
-    <nav className="navbar">
-      <div className="navbar__inner container container--7xl">
-        <div className="brand">
-          <span className="brand__name">
-            Credit<span className="brand__name-accent">Smart</span>
-          </span>
-          <span className="brand__tagline">by FinTech Solutions</span>
-        </div>
+  const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
 
-        <div className="navbar__links">
-          {NAV_ITEMS.map(({ path, label, cta }) => (
+  /* Navegar cierra el panel: si no, al volver de una ruta el menú seguiría
+     abierto tapando el contenido. */
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  return (
+    <nav className="navbar" aria-label="Navegación principal">
+      <div className="navbar__inner container container--wide">
+        <Link className="navbar__brand" to={ROUTES.CATALOG} aria-label="CreditSmart, ir al inicio">
+          <Logo />
+        </Link>
+
+        <div className="navbar__nav">
+          {NAV_ITEMS.map(({ path, label }) => (
             <NavLink
               key={path}
               to={path}
               end={path === ROUTES.CATALOG}
-              className={({ isActive }) =>
-                ['navlink', isActive && 'navlink--active', !isActive && cta && 'navlink--cta']
-                  .filter(Boolean)
-                  .join(' ')
-              }
+              className="navbar__link"
             >
               {label}
             </NavLink>
           ))}
         </div>
+
+        <div className="navbar__actions">
+          <ThemeToggle />
+
+          <Link className="btn btn--primary navbar__cta" to={ROUTES.APPLICATION}>
+            Iniciar solicitud
+          </Link>
+
+          <button
+            type="button"
+            className="navbar__menu-btn"
+            onClick={() => setIsOpen((open) => !open)}
+            aria-expanded={isOpen}
+            aria-controls="navbar-drawer"
+            aria-label={isOpen ? 'Cerrar el menú' : 'Abrir el menú'}
+          >
+            <Icon name={isOpen ? 'close' : 'menu'} className="ui-icon ui-icon--sm" />
+          </button>
+        </div>
       </div>
+
+      {isOpen && (
+        <div className="navbar__drawer" id="navbar-drawer">
+          <div className="navbar__drawer-inner container container--wide">
+            {NAV_ITEMS.map(({ path, label }) => (
+              <NavLink
+                key={path}
+                to={path}
+                end={path === ROUTES.CATALOG}
+                className="navbar__link"
+              >
+                {label}
+              </NavLink>
+            ))}
+
+            <Link className="btn btn--primary btn--block" to={ROUTES.APPLICATION}>
+              Iniciar solicitud
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

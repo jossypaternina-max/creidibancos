@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Ilustración financiera CreditSmart</title><desc id="d">Escena abstracta de una pareja revisando opciones de crédito en un portátil, con elementos de seguridad y crecimiento.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#F1F7FD"/><stop offset="1" stop-color="#DDEBFA"/></linearGradient>
+  <linearGradient id="mint" x1="0" x2="1"><stop stop-color="#DFF4E7"/><stop offset="1" stop-color="#B6E4C7"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#0B2C4D" flood-opacity=".14"/></filter>
+</defs>
+<rect width="1200" height="720" rx="36" fill="url(#bg)"/>
+<circle cx="1010" cy="90" r="160" fill="#FFFFFF" opacity=".62"/>
+<circle cx="130" cy="610" r="210" fill="#F0FAF4"/>
+<path d="M0 560C170 510 310 530 430 590c145 74 294 55 430-20 123-68 232-70 340-25v175H0Z" fill="#BED5F1" opacity=".5"/>
+<!-- personas abstractas -->
+<circle cx="575" cy="255" r="76" fill="#E9B391"/>
+<path d="M500 248c8-86 128-110 160-22 7 20 7 43 2 63-22-18-51-25-84-22-34 3-58-1-78-19Z" fill="#233746"/>
+<path d="M474 497c0-116 44-177 108-177s106 62 106 177v83H474Z" fill="#1455A3"/>
+<circle cx="760" cy="282" r="68" fill="#F0C3A7"/>
+<path d="M695 278c-3-82 102-118 145-47 14 23 17 53 8 82-18-26-44-44-78-51-29-6-54-1-75 16Z" fill="#394D5D"/>
+<path d="M676 503c0-103 35-158 91-158 57 0 96 55 96 158v79H676Z" fill="#10743F"/>
+<!-- laptop -->
+<g filter="url(#shadow)"><path d="M422 438h420l-38 190H460Z" fill="#FFFFFF" stroke="#BDCAD2" stroke-width="5"/><path d="M356 628h520c18 0 28 12 22 25-7 16-25 27-45 27H385c-21 0-39-10-46-25-6-14 1-27 17-27Z" fill="#0B2C4D"/><circle cx="632" cy="536" r="20" fill="#F1F7FD"/><path d="M624 537l8 8 15-18" fill="none" stroke="#10743F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<!-- floating cards -->
+<g filter="url(#shadow)"><rect x="878" y="160" width="250" height="170" rx="24" fill="#FFFFFF"/><circle cx="926" cy="212" r="28" fill="url(#mint)"/><path d="M916 219v-15m10 15v-25m10 25v-34" fill="none" stroke="#10743F" stroke-width="6" stroke-linecap="round"/><text x="970" y="206" font-family="system-ui,Segoe UI,Arial" font-size="18" font-weight="700" fill="#0B2338">Tu progreso</text><text x="970" y="232" font-family="system-ui,Segoe UI,Arial" font-size="15" fill="#536779">empieza con una</text><text x="970" y="254" font-family="system-ui,Segoe UI,Arial" font-size="15" fill="#536779">decisión informada.</text><rect x="914" y="286" width="168" height="8" rx="4" fill="#DDEBFA"/><rect x="914" y="286" width="112" height="8" rx="4" fill="#1455A3"/></g>
+<g filter="url(#shadow)"><rect x="76" y="105" width="232" height="136" rx="22" fill="#FFFFFF"/><path d="M124 145 94 158v24c0 31 18 54 47 68 29-14 47-37 47-68v-24l-47-20Z" fill="#F0FAF4" transform="scale(.55) translate(115 85)"/><path d="M121 174l13 13 28-30" fill="none" stroke="#10743F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><text x="168" y="165" font-family="system-ui,Segoe UI,Arial" font-size="16" font-weight="700" fill="#0B2338">100% en línea</text><text x="168" y="193" font-family="system-ui,Segoe UI,Arial" font-size="14" fill="#536779">Datos protegidos</text></g>
+</svg>
