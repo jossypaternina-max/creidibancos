@@ -1,580 +1,827 @@
 /* ============================================================
-   05-components.css — Componentes de UI reutilizables
+   05-components.css — Componentes de interfaz reutilizables.
+
+   Ningún hex aquí: todo sale de 02-tokens.css.
+   Todo control interactivo declara default, hover, focus-visible,
+   disabled y —cuando aplica— estado activo o de carga.
    ============================================================ */
 
 /* ------------------------------------------------------------
    Navbar
    ------------------------------------------------------------ */
 .navbar {
-  background-color: var(--surface);
-  box-shadow: var(--shadow-sm);
-  border-bottom: 1px solid var(--color-gray-200);
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
+  background: var(--surface-glass);
+  border-bottom: 1px solid var(--surface-border);
+  backdrop-filter: blur(16px);
 }
 
 .navbar__inner {
+  min-height: var(--nav-height);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 4rem;
+  gap: var(--space-4);
+  /* Sin esto, un hijo que no quepa ensancha el documento entero y aparece
+     scroll horizontal en toda la página, no solo en la barra. */
+  min-width: 0;
 }
 
-/* ---------- Marca ---------- */
-.brand {
+.navbar__inner > * { min-width: 0; }
+
+.navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.navbar__brand:hover { text-decoration: none; }
+
+.navbar__nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-1);
+  margin-inline: auto;
+}
+
+.navbar__link {
+  min-height: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+}
+
+.navbar__link:hover {
+  color: var(--brand);
+  background: var(--brand-soft);
+  text-decoration: none;
+}
+
+/* La ruta actual se marca por semántica, no por una clase paralela. */
+.navbar__link[aria-current="page"] {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.navbar__actions {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  margin-left: auto;
 }
 
-.brand__name {
-  font-size: var(--text-xl);
-  line-height: var(--leading-xl);
-  font-weight: var(--fw-bold);
-  color: var(--brand-strong);
-  letter-spacing: -0.015em;
-}
+/* La especificidad importa: `.btn` declara `display: inline-flex` más
+   abajo en este archivo, así que una regla de una sola clase no basta
+   para ocultar el CTA en móvil. */
+.navbar .navbar__cta { display: none; }
 
-/* La marca es monocroma: «Smart» usa otro tono del mismo azul, no un segundo
-   color. Antes era verde y, junto al azul del banner, daba una combinación
-   que no armonizaba. */
-.brand__name-accent {
-  color: var(--brand-light);
-}
-
-.brand__tagline {
-  display: none;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--text-faint);
-  margin-left: var(--space-1);
-}
-
-/* ---------- Enlaces de navegación ---------- */
-.navbar__links {
-  display: flex;
-  gap: var(--space-1);
-}
-
-.navlink {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  font-weight: var(--fw-medium);
+/* Disparador del menú en móvil */
+.navbar__menu-btn {
+  width: var(--touch-target);
+  height: var(--touch-target);
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
   color: var(--text-body);
-  transition: background-color var(--transition-base) var(--ease),
-              color var(--transition-base) var(--ease);
-  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
 }
 
-.navlink:hover {
-  background-color: var(--color-gray-100);
-}
-
-/* Estado activo: página actual */
-.navlink--active {
-  font-weight: var(--fw-semibold);
+.navbar__menu-btn:hover {
   color: var(--brand);
-  background-color: var(--brand-soft);
+  background: var(--brand-soft);
+  border-color: var(--brand-soft-border);
 }
 
-.navlink--active:hover {
-  background-color: var(--brand-soft);
+/* Panel desplegable: una sección simple, no un off-canvas con foco atrapado.
+   El proyecto no tiene lógica para gestionar un modal y no hace falta. */
+.navbar__drawer {
+  border-top: 1px solid var(--surface-border);
+  background: var(--surface);
 }
 
-/* CTA: "Solicitar" cuando no es la página activa */
-.navlink--cta {
-  background-color: var(--brand);
-  color: var(--color-white);
-  font-weight: var(--fw-medium);
+.navbar__drawer-inner {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-3);
 }
 
-.navlink--cta:hover {
-  background-color: var(--brand-hover);
+.navbar__drawer .navbar__link {
+  justify-content: flex-start;
+  font-size: var(--text-base);
+}
+
+.navbar__drawer .btn { margin-top: var(--space-2); }
+
+@media (min-width: 64rem) {
+  .navbar__nav { display: flex; }
+  .navbar .navbar__cta { display: inline-flex; }
+  .navbar__menu-btn { display: none; }
+  .navbar__drawer { display: none; }
 }
 
 /* ------------------------------------------------------------
    Botones
    ------------------------------------------------------------ */
-/* Una acción principal en azul corporativo, una secundaria de contorno y una
-   clara para fondos oscuros. Ningún botón decorativo. */
+/* Cuatro variantes y ninguna decorativa. El verde es exclusivo de
+   progreso o confirmación; la acción primaria normal es azul. */
 .btn {
+  min-height: var(--touch-target);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
+  padding: 0.7rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  font-weight: var(--fw-semibold);
-  border-radius: var(--radius-xl);
-  padding: 0.625rem 1.25rem;
-  transition: background-color var(--transition-base) var(--ease),
-              color var(--transition-base) var(--ease),
-              border-color var(--transition-base) var(--ease);
+  font-weight: var(--font-bold);
+  line-height: 1;
   text-align: center;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.btn:hover { text-decoration: none; }
+.btn:hover:not(:disabled):not([aria-disabled="true"]) { transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(0); }
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.52;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn--primary {
-  background-color: var(--brand);
-  color: var(--color-white);
+  background: var(--brand-strong);
+  color: var(--text-inverse);
+  border-color: var(--brand-strong);
 }
-.btn--primary:hover { background-color: var(--brand-hover); }
+.btn--primary:hover:not(:disabled) {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
 
-/* Acción principal sobre el banner oscuro: blanco sobre azul. Máximo
-   contraste y ningún color nuevo. Antes era un botón verde. */
-.btn--accent {
-  background-color: var(--color-white);
-  color: var(--brand-strong);
-  font-weight: var(--fw-semibold);
-  padding: var(--space-3) var(--space-6);
+.btn--growth {
+  background: var(--growth);
+  color: var(--growth-on);
+  border-color: var(--growth);
 }
-.btn--accent:hover { background-color: var(--color-blue-50); }
-
-.btn--ghost-light {
-  background-color: transparent;
-  color: var(--color-white);
-  border: 1px solid rgb(255 255 255 / 0.45);
-  padding: var(--space-3) var(--space-6);
+.btn--growth:hover:not(:disabled) {
+  background: var(--growth-hover);
+  border-color: var(--growth-hover);
 }
-.btn--ghost-light:hover { background-color: rgb(255 255 255 / 0.12); }
 
 .btn--outline {
-  border: 1px solid var(--color-gray-200);
-  color: var(--text-body);
-  font-weight: var(--fw-medium);
-}
-.btn--outline:hover { background-color: var(--color-gray-50); }
-
-.btn--outline-brand {
-  border: 1px solid var(--brand-soft-border);
+  background: var(--surface);
   color: var(--brand);
+  border-color: var(--brand-soft-border);
 }
-.btn--outline-brand:hover { background-color: var(--brand-soft); }
+.btn--outline:hover:not(:disabled) {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+}
 
-.btn--outline-gray {
-  border: 1px solid var(--color-gray-300);
+.btn--ghost {
+  background: transparent;
   color: var(--text-body);
 }
-.btn--outline-gray:hover { background-color: var(--color-gray-100); }
+.btn--ghost:hover:not(:disabled) { background: var(--surface-soft); }
 
-.btn--block {
-  width: 100%;
-  padding-block: var(--space-3);
-  font-weight: var(--fw-bold);
+/* Sobre una superficie azul oscura la acción va en blanco: es el único
+   elemento claro del bloque, así que la atención cae donde debe sin añadir
+   un color nuevo a la paleta. */
+.btn--on-dark {
+  background: var(--brand-panel-control-bg);
+  color: var(--brand-panel-control-text);
+  border-color: var(--brand-panel-control-bg);
 }
-
-.btn--card {
-  flex: 1 1 0%;
-  padding-block: var(--space-2);
-  padding-inline: var(--space-2);
-}
-
-.btn--system {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--text-sm);
-  font-weight: var(--fw-medium);
-  color: var(--color-slate-700);
-  background-color: var(--color-white);
-  border: 1px solid var(--color-slate-200);
-  border-radius: var(--radius-lg);
-  transition: background-color var(--transition-base) var(--ease),
-              border-color var(--transition-base) var(--ease);
-}
-.btn--system:hover {
-  background-color: var(--color-slate-50);
-  border-color: var(--color-slate-300);
-}
-.btn--system:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--color-white), 0 0 0 4px var(--color-slate-500);
+.btn--on-dark:hover:not(:disabled) {
+  background: var(--brand-panel-muted);
+  border-color: var(--brand-panel-muted);
 }
 
-.btn__icon {
+/* Sobre el panel azul del simulador el contorno se dibuja en claro. */
+.btn--on-panel {
+  background: transparent;
+  color: var(--brand-panel-text);
+  border-color: var(--brand-panel-faint);
+}
+.btn--on-panel:hover:not(:disabled) { background: var(--surface-glass-hover); }
+
+.btn--lg { min-height: var(--control-h-lg); padding: 0.9rem 1.5rem; font-size: var(--text-base); }
+.btn--sm { min-height: var(--control-h-sm); padding: 0.5rem 0.85rem; font-size: var(--text-xs); }
+.btn--block { width: 100%; }
+
+/* Píldora: la usan el CTA del hero y el de la banda institucional, que en el
+   diseño aprobado van completamente redondeados. El resto de los botones
+   mantiene el radio corto, más corporativo. */
+.btn--pill { border-radius: var(--radius-pill); padding-inline: 1.6rem; }
+
+/* Estado de carga: el texto no cambia de sitio, solo se le suma el giro. */
+.btn__spinner {
   width: 1rem;
   height: 1rem;
-  margin-right: var(--space-2);
-  stroke: currentColor;
-  fill: none;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: cs-spin 0.7s linear infinite;
 }
 
 /* ------------------------------------------------------------
-   Card de producto
+   Theme toggle
    ------------------------------------------------------------ */
-/* Tarjeta sobria: superficie blanca, borde de 1 px y una línea superior azul
-   que da jerarquía sin colorear la tarjeta entera. Antes cada cabecera era un
-   degradado de un color distinto, y seis degradados en la misma rejilla
-   saturaban la pantalla. */
+.theme-toggle {
+  width: var(--touch-target);
+  height: var(--touch-target);
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-body);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+
+.theme-toggle:hover {
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-color: var(--brand-soft-border);
+}
+
+/* ------------------------------------------------------------
+   Tarjeta de producto
+   ------------------------------------------------------------ */
 .product-card {
-  background-color: var(--surface);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-200);
-  border-top: 3px solid var(--product-accent);
-  overflow: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
-  transition: box-shadow var(--transition-base) var(--ease),
-              border-color var(--transition-base) var(--ease);
+  min-height: 100%;
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--duration-base) var(--ease-emphasized),
+              box-shadow var(--duration-base) var(--ease-standard),
+              border-color var(--duration-base) var(--ease-standard);
 }
 
 .product-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--brand-soft-border);
   box-shadow: var(--shadow-md);
-  border-color: var(--color-blue-200);
 }
 
-.product-card__header {
-  padding: var(--space-5) var(--space-5) var(--space-4);
-  border-bottom: 1px solid var(--color-gray-100);
+/* La tarjeta conserva dos acciones distintas, así que NO se convierte en un
+   único enlace. El halo al enfocar cualquiera de ellas sitúa al usuario. */
+.product-card:focus-within {
+  border-color: var(--focus-ring);
+  box-shadow: var(--shadow-focus), var(--shadow-sm);
+}
+
+.product-card__top {
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.product-card--compact .product-card__header {
-  padding: var(--space-4) var(--space-4) var(--space-3);
-  gap: var(--space-3);
-}
-
-/* El pictograma va dentro de un chip neutro, no suelto sobre un color */
-.product-card__icon {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  font-size: var(--text-xl);
-  line-height: 1;
-  background-color: var(--product-chip-bg);
-  border: 1px solid var(--product-chip-border);
-  border-radius: var(--radius-lg);
-  /* El pictograma del producto es un emoji a todo color: desaturarlo lo
-     integra en la paleta corporativa sin tocar el dato del catalogo. */
-  filter: grayscale(1) contrast(0.9);
-  opacity: 0.85;
-}
-
-.product-card--compact .product-card__icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  font-size: var(--text-lg);
-}
-
-.product-card__name {
-  color: var(--text-strong);
-  font-weight: var(--fw-semibold);
-  font-size: var(--text-base);
-  line-height: 1.3;
-}
-
-.product-card--compact .product-card__name {
-  font-size: var(--text-sm);
-}
-
-.product-card__term {
-  color: var(--text-muted);
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-}
-
-.product-card--compact .product-card__term {
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-}
-
-.product-card__body {
-  padding: var(--space-5);
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.product-card__desc {
-  color: var(--text-muted);
-  font-size: var(--text-sm);
-  line-height: 1.625;
-}
-
-.product-card__metrics {
-  display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
-  padding-top: var(--space-1);
-}
-
-.metric__label {
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--text-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-}
-
-.metric__value {
-  font-size: var(--text-xl);
-  line-height: var(--leading-xl);
-  font-weight: var(--fw-bold);
-  color: var(--brand-strong);
-  font-variant-numeric: tabular-nums;
-}
-
-.metric__value--sm {
-  font-size: var(--text-base);
-  line-height: var(--leading-base);
-  font-weight: var(--fw-semibold);
-  color: var(--color-gray-700);
-}
-
-.metric--right {
-  text-align: right;
-}
-
-.product-card__requirements {
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--text-faint);
-}
-
-.product-card__requirements strong {
-  font-weight: var(--fw-semibold);
-  color: var(--text-muted);
-}
-
-.product-card__footer {
-  padding: 0 var(--space-5) var(--space-5);
-  display: flex;
-  gap: var(--space-2);
-}
-
-/* ---------- Badge de rango de monto ---------- */
-.badge-amount {
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  font-weight: var(--fw-medium);
-  font-variant-numeric: tabular-nums;
-  background-color: var(--product-badge-bg);
-  border: 1px solid var(--product-badge-border);
-  color: var(--product-badge-fg);
-}
-
-/* ------------------------------------------------------------
-   Panel / Card genérica
-   ------------------------------------------------------------ */
-.panel {
-  background-color: var(--surface);
-  border-radius: var(--radius-2xl);
-  border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-6);
-}
-
-.panel--filters {
-  margin-bottom: var(--space-8);
-}
-
-.panel__title {
-  font-size: var(--text-lg);
-  line-height: var(--leading-lg);
-  font-weight: var(--fw-bold);
-  color: var(--text-strong);
-  margin-bottom: var(--space-1);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.panel__hint {
-  font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--text-faint);
+  gap: var(--space-4);
   margin-bottom: var(--space-5);
 }
 
-/* ------------------------------------------------------------
-   Alerta informativa
-   ------------------------------------------------------------ */
-.alert {
-  border-radius: var(--radius-xl);
-  padding: var(--space-3) var(--space-4);
-  margin-bottom: var(--space-8);
+/* El pictograma es el ancla visual de la tarjeta: en el diseño aprobado ocupa
+   cerca de una cuarta parte del ancho. A 3.5rem se leía como un adorno. */
+.product-card__icon {
+  width: 4.75rem;
+  height: 4.75rem;
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  background: var(--chip-brand-bg);
+  border-radius: var(--radius-pill);
+}
+
+.product-card__icon--growth {
+  color: var(--growth);
+  background: var(--chip-growth-bg);
+}
+
+.product-card__icon .ui-icon { width: 2.25rem; height: 2.25rem; }
+
+.product-card__badge {
+  align-self: start;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--growth-soft);
+  border: 1px solid var(--growth-soft-border);
+  color: var(--growth);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  white-space: nowrap;
+}
+
+.product-card__name {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xl);
+  color: var(--brand-strong);
+}
+
+.product-card__rate {
+  margin-bottom: var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--text-base);
+}
+
+.product-card__rate strong {
+  color: var(--brand-strong);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.product-card__desc {
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.product-card__facts {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.product-card__fact {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
+  font-variant-numeric: tabular-nums;
 }
 
-/* El aviso informativo era amarillo: un cuarto color en pantalla para algo
-   que solo informa. Ahora usa el azul corporativo en su tono más claro. */
-.alert--info {
-  background-color: var(--brand-soft);
-  border: 1px solid var(--brand-soft-border);
+.product-card__fact .ui-icon { color: var(--text-faint); width: 1.15rem; height: 1.15rem; }
+
+.product-card__requirements {
+  margin-bottom: var(--space-5);
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+}
+
+.product-card__requirements strong { color: var(--text-muted); }
+
+.product-card__footer {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.product-card__footer .btn { flex: 1 1 auto; white-space: nowrap; }
+
+/* Acción de la tarjeta: relleno suave sin borde, como en el diseño aprobado.
+   No compite con el azul sólido del CTA global y sigue leyéndose como
+   pulsable por el fondo y la flecha. */
+.btn--soft {
+  background: var(--surface-soft);
+  color: var(--brand-strong);
+  border-color: transparent;
+}
+.btn--soft:hover:not(:disabled) {
+  background: var(--brand-soft);
   color: var(--brand);
 }
 
-.alert--empty {
-  background-color: var(--surface);
-  border: 1px dashed var(--color-gray-300);
+.product-card--compact { padding: var(--space-5); }
+.product-card--compact .product-card__icon { width: 2.75rem; height: 2.75rem; }
+.product-card--compact .product-card__top { margin-bottom: var(--space-4); }
+
+/* ------------------------------------------------------------
+   Accesos rápidos de producto (banda de la home)
+   ------------------------------------------------------------ */
+/* Compacto a propósito: en el diseño aprobado cada acceso mide unos 115 px
+   de alto. Es un atajo, no una tarjeta de producto; si respira como una
+   tarjeta, la fila entera deja de leerse como una sola banda. */
+.product-tile {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--duration-base) var(--ease-emphasized),
+              box-shadow var(--duration-base) var(--ease-standard),
+              border-color var(--duration-base) var(--ease-standard);
+}
+
+.product-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--brand-soft-border);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+.product-tile__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  color: var(--brand);
+  background: var(--chip-brand-bg);
+  border-radius: var(--radius-pill);
+}
+
+.product-tile__icon--growth { color: var(--growth); background: var(--chip-growth-bg); }
+.product-tile__icon .ui-icon { width: 1.25rem; height: 1.25rem; }
+
+.product-tile__name {
+  color: var(--brand-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+}
+
+.product-tile__benefit {
+  margin: 0;
   color: var(--text-muted);
-  justify-content: center;
-  padding-block: var(--space-10);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
 }
 
 /* ------------------------------------------------------------
-   Formularios
+   Búsqueda
    ------------------------------------------------------------ */
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.search-bar { position: relative; }
+
+.search-bar__icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-faint);
+  pointer-events: none;
 }
 
-.label {
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--color-gray-700);
-}
-
-.label--block {
-  display: block;
-  margin-bottom: var(--space-1);
-}
-
-.control {
+.search-bar__input {
   width: 100%;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-xl);
-  padding: 0.625rem var(--space-4);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  background-color: var(--color-white);
-  color: var(--color-gray-900);
-  transition: box-shadow var(--transition-fast) var(--ease),
-              border-color var(--transition-fast) var(--ease);
+  min-height: var(--control-h);
+  padding: 0.65rem 0.8rem 0.65rem 2.5rem;
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-standard);
 }
 
-.control:hover {
-  border-color: var(--color-gray-300);
-}
+.search-bar__input::placeholder { color: var(--text-faint); }
+.search-bar__input:hover { border-color: var(--surface-border-strong); }
+.search-bar__input:focus-visible { border-color: var(--focus-ring); }
 
-.control:focus {
-  outline: none;
-  border-color: var(--brand-light);
-  box-shadow: 0 0 0 3px var(--color-blue-100);
-}
+/* ------------------------------------------------------------
+   Filtro de monto
+   ------------------------------------------------------------ */
+.amount-filter { display: grid; gap: var(--space-3); }
 
-.control--textarea {
-  resize: none;
-}
-
-.control--select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right var(--space-3) center;
-  background-size: 1.25rem 1.25rem;
-  padding-right: var(--space-10);
-}
-
-.control.is-invalid {
-  border-color: var(--color-red-500);
-  background-color: #fef2f2;
-}
-
-.field__error {
+.amount-filter__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  color: var(--text-muted);
   font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--color-red-600);
-  font-weight: var(--fw-medium);
-  min-height: var(--leading-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-filter input[type="range"],
+.range-control {
+  width: 100%;
+  min-height: var(--touch-target);
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
+.amount-filter__current {
+  margin: 0;
+  color: var(--brand);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-filter__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.amount-filter__preset {
+  min-height: 2rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+
+.amount-filter__preset:hover,
+.amount-filter__preset[aria-pressed="true"] {
+  color: var(--brand);
+  border-color: var(--brand-soft-border);
+  background: var(--brand-soft);
+}
+
+/* ------------------------------------------------------------
+   Select
+   ------------------------------------------------------------ */
+/* Control nativo: accesible de fábrica, con teclado y lector de pantalla
+   ya resueltos. Solo se le cambia el chevron. */
+.select-wrap { position: relative; }
+
+.select-wrap select {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0.65rem 2.4rem 0.65rem 0.8rem;
+  appearance: none;
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+
+.select-wrap select:hover { border-color: var(--surface-border-strong); }
+.select-wrap select:focus-visible { border-color: var(--focus-ring); }
+
+.select-wrap__chevron {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.1rem;
+  height: 1.1rem;
+  pointer-events: none;
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------
+   Casillas
+   ------------------------------------------------------------ */
+.checkbox {
+  min-height: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-body);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+}
+
+.checkbox input[type="checkbox"] {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--brand);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------
+   Avisos
+   ------------------------------------------------------------ */
+/* Flex, no grid de dos columnas: así una alerta sin icono ocupa todo el
+   ancho en vez de dejar una columna vacía. */
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-4);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  color: var(--text-body);
+  font-size: var(--text-sm);
+}
+
+.alert > div { flex: 1 1 auto; min-width: 0; }
+.alert__icon { width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; flex: 0 0 auto; }
+.alert__title { margin-bottom: 0.15rem; color: var(--text-strong); font-weight: var(--font-bold); }
+.alert__text { margin: 0; color: var(--text-muted); }
+
+.alert--info    { background: var(--brand-soft);  border-color: var(--brand-soft-border); }
+.alert--info .alert__icon { color: var(--brand); }
+
+.alert--success { background: var(--growth-soft); border-color: var(--growth-soft-border); }
+.alert--success .alert__icon { color: var(--growth); }
+
+.alert--error   { background: var(--danger-100);  border-color: var(--danger); }
+.alert--error .alert__icon { color: var(--danger); }
+
+/* Estado vacío: una sola columna centrada, sin icono obligatorio. */
+.alert--empty {
+  display: block;
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  background: var(--surface);
+  border-style: dashed;
+}
+
+.alert--empty .alert__title { margin-bottom: var(--space-2); }
+.alert--empty .btn { margin-top: var(--space-5); }
+
+/* ------------------------------------------------------------
+   Campos de formulario
+   ------------------------------------------------------------ */
+.field { display: grid; gap: 0.4rem; }
+
+.field__label {
+  color: var(--text-strong);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.field__required { color: var(--required); }
+.field__hint { color: var(--text-muted); font-size: var(--text-xs); }
+
+.field__control {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0.68rem 0.8rem;
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+}
+
+.field__control::placeholder { color: var(--text-faint); }
+.field__control:hover { border-color: var(--surface-border-strong); }
+.field__control:focus-visible { border-color: var(--focus-ring); }
+.field__control:disabled { opacity: 0.6; cursor: not-allowed; }
+
+textarea.field__control { min-height: 7rem; resize: vertical; }
+
+select.field__control {
+  appearance: none;
+  padding-right: 2.4rem;
+  cursor: pointer;
+}
+
+/* El error no depende solo del rojo: hay borde, fondo y texto. */
+.field__control[aria-invalid="true"] {
+  border-color: var(--danger);
+  background: var(--danger-100);
+}
+
+/* Hueco reservado: el mensaje aparece sin empujar el resto del formulario. */
+.field__error {
+  min-height: 1.2em;
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
 }
 
 .form-actions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: var(--space-3);
 }
 
+.form-actions .btn { flex: 1 1 12rem; }
+
 .form-note {
-  text-align: center;
+  margin: 0;
+  color: var(--text-faint);
   font-size: var(--text-xs);
-  line-height: var(--leading-xs);
-  color: var(--text-faint);
 }
 
 /* ------------------------------------------------------------
-   Footer
-   ------------------------------------------------------------ */
-.footer {
-  background-color: var(--brand-strong);
-  color: var(--text-faint);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  padding: var(--space-8) var(--space-4);
-  text-align: center;
-  margin-top: var(--space-8);
-}
-
-.footer--spaced {
-  margin-top: var(--space-12);
-}
-
-.footer__brand {
-  font-weight: var(--fw-semibold);
-  color: var(--color-white);
-  margin-bottom: var(--space-1);
-}
-
-/* ------------------------------------------------------------
-   Notificaciones (toasts)
+   Notificaciones
    ------------------------------------------------------------ */
 .notifications {
   position: fixed;
   right: var(--space-4);
   bottom: var(--space-4);
   z-index: var(--z-toast);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  max-width: min(24rem, calc(100vw - 2rem));
+  width: min(24rem, calc(100vw - 2rem));
+  display: grid;
+  gap: var(--space-3);
   pointer-events: none;
 }
 
 .toast {
   pointer-events: auto;
-  background-color: var(--color-white);
-  border-radius: var(--radius-xl);
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-left-width: 4px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  border-left: 4px solid var(--brand);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-sm);
-  line-height: var(--leading-sm);
-  color: var(--color-gray-700);
-  animation: toast-in var(--transition-base) var(--ease);
+  animation: toast-in var(--duration-base) var(--ease-emphasized);
 }
 
-/* Los tres únicos usos de color con significado: éxito, error e información */
+/* Los tres únicos usos de color con significado en un aviso. */
 .toast--success { border-left-color: var(--success); }
-.toast--error   { border-left-color: var(--color-red-600); }
+.toast--error   { border-left-color: var(--danger); }
 .toast--info    { border-left-color: var(--brand); }
 
-.toast__title {
-  font-weight: var(--fw-bold);
-  color: var(--text-strong);
-  margin-bottom: 0.125rem;
-}
+.toast__title { color: var(--text-strong); font-weight: var(--font-bold); }
+
+/* El cuerpo del aviso lo pinta `ToastNotifier` como un `div` sin clase. Se
+   estiliza por posición en vez de pedirle a un adaptador de infraestructura
+   que conozca el nombre de una clase de la hoja de estilos. */
+.toast__text,
+.toast > div:not(.toast__title) { color: var(--text-muted); font-size: var(--text-sm); }
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(0.5rem); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------------
+   Pie de página
+   ------------------------------------------------------------ */
+.footer {
+  margin-top: auto;
+  background: var(--brand-panel-bg);
+  color: var(--brand-panel-text);
+}
+
+.footer__inner {
+  min-height: 6rem;
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+  padding-block: var(--space-6);
+  text-align: center;
+  justify-items: center;
+}
+
+.footer__tagline {
+  margin: 0;
+  color: var(--brand-panel-muted);
+  font-size: var(--text-sm);
+}
+
+.footer__quote {
+  margin: 0;
+  color: var(--brand-panel-muted);
+  font-size: var(--text-sm);
+  font-style: italic;
+}
+
+.footer__quote::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 2px;
+  margin: var(--space-3) auto 0;
+  background: var(--growth);
+}
+
+.footer__copy {
+  margin: 0;
+  color: var(--brand-panel-faint);
+  font-size: var(--text-xs);
+}
+
+@media (min-width: 64rem) {
+  .footer__inner {
+    grid-template-columns: auto 1fr auto;
+    text-align: left;
+    justify-items: start;
+  }
+
+  .footer__center { justify-self: center; text-align: center; }
+  .footer__end { justify-self: end; text-align: right; }
 }

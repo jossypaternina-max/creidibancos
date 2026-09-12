@@ -1,151 +1,164 @@
 /* ============================================================
-   02-tokens.css — Design tokens (paleta, tipografía, radios,
-   sombras, espaciado y breakpoints). Única fuente de verdad
-   visual: los componentes solo consumen variables.
+   02-tokens.css — Design tokens. ÚNICA fuente de verdad visual.
+
+   Regla innegociable: ningún otro archivo de esta cascada declara un
+   hex, un rgb() o un hsl(). Si un componente necesita un color, existe
+   como token aquí o no existe.
+
+   Tres colores y ni uno más:
+     1. Azul financiero  — identidad, acciones, navegación, jerarquía.
+     2. Verde progreso   — confianza, éxito, la cuota, la seguridad.
+     3. Neutros          — fondos, bordes, texto. No compiten.
+   Rojo y ámbar aparecen solo como estados semánticos, nunca como adorno.
+
+   Tres modos: claro, oscuro explícito y automático por sistema.
    ============================================================ */
 
 :root {
-  /* ---------- Tipografía ---------- */
-  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-heading: var(--font-body);
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  color-scheme: light;
 
-  --text-xs: 0.75rem;      --leading-xs: 1rem;
-  --text-sm: 0.875rem;     --leading-sm: 1.25rem;
-  --text-base: 1rem;       --leading-base: 1.5rem;
-  --text-lg: 1.125rem;     --leading-lg: 1.75rem;
-  --text-xl: 1.25rem;      --leading-xl: 1.75rem;
-  --text-2xl: 1.5rem;      --leading-2xl: 2rem;
-  --text-3xl: 1.875rem;    --leading-3xl: 2.25rem;
-  --text-4xl: 2.25rem;     --leading-4xl: 2.5rem;
-  --text-5xl: 3rem;        --leading-5xl: 1;
-  --text-7xl: 4.5rem;      --leading-7xl: 1;
+  /* ---------- Escala azul financiero ---------- */
+  --blue-950: #071f36;
+  --blue-900: #0b2c4d;
+  --blue-800: #0f3c69;
+  --blue-700: #1455a3;
+  --blue-600: #1d68c1;
+  --blue-500: #2877d7;
+  --blue-400: #5d96df;
+  --blue-300: #93b9ea;
+  --blue-200: #bed5f1;
+  --blue-100: #ddebfa;
+  --blue-50:  #f1f7fd;
 
-  --fw-normal: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
-  --fw-bold: 700;
-  --fw-black: 900;
+  /* ---------- Escala verde progreso ---------- */
+  --green-800: #0c5b32;
+  --green-700: #10743f;
+  --green-600: #148a4d;
+  --green-500: #1b9a57;
+  --green-300: #7acb99;
+  --green-200: #b6e4c7;
+  --green-100: #dff4e7;
+  --green-50:  #f0faf4;
 
-  /* ---------- Gris ---------- */
-  --color-gray-50:  #f9fafb;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
+  /* ---------- Neutros ---------- */
+  --gray-950: #0b1722;
+  --gray-900: #122433;
+  --gray-800: #233746;
+  --gray-700: #394d5d;
+  --gray-600: #536779;
+  --gray-500: #708392;
+  --gray-400: #96a6b2;
+  --gray-300: #bdc9d2;
+  --gray-200: #d7e2ea;
+  --gray-100: #eaf0f4;
+  --gray-50:  #f4f8fb;
+  --white:    #ffffff;
 
-  /* ---------- Slate (páginas de sistema: 404 / acceso) ---------- */
-  --color-slate-50:  #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
+  /* ---------- Estados: solo semánticos ---------- */
+  --success-700: #10743f;
+  --success-100: #dff4e7;
+  --danger-700:  #c53030;
+  --danger-100:  #fde8e8;
+  --warning-700: #855b00;
+  --warning-100: #fff4cf;
+  --info-700:    #1455a3;
+  --info-100:    #ddebfa;
 
-  /* ---------- Azul corporativo (color primario, y practicamente el unico)
-     Escala navy de una sola familia. Reemplaza al azul royal saturado de la
-     primera version: un producto financiero necesita sobriedad, no viveza. --- */
-  --color-blue-50:  #f4f7fb;
-  --color-blue-100: #e5ecf5;
-  --color-blue-200: #c7d6e8;
-  --color-blue-400: #7390b5;
-  --color-blue-500: #45648f;
-  --color-blue-600: #2d4c75;
-  --color-blue-700: #1f3a5f;
-  --color-blue-800: #182e4c;
-  --color-blue-900: #101f35;
+  /* ---------- Aliases semánticos — tema claro ---------- */
+  --page-bg: #f4f8fb;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-soft: #edf4f7;
+  --surface-brand-soft: #f1f7fd;
+  --surface-growth-soft: #f0faf4;
+  --surface-inverse: #0b2c4d;
+  --surface-border: #d7e2ea;
+  --surface-border-strong: #bdc9d2;
 
-  /* ---------- Verde de confirmacion (SOLO estados: exito de una operacion).
-     Desaturado a proposito: informa, no decora. --------------------------- */
-  --color-emerald-100: #dcefe8;
-  --color-emerald-400: #4d9c86;
-  --color-emerald-500: #2f7d68;
-  --color-emerald-600: #1f6654;
-  --color-emerald-700: #175043;
+  --text-strong: #0b2338;
+  --text-body: #233746;
+  --text-muted: #536779;
+  --text-faint: #708392;
+  --text-inverse: #ffffff;
 
-  /* ---------- Paletas heredadas de los temas de producto ----------
-     Los seis productos siguen declarando su paleta en el dominio
-     (ProductTheme), porque es un atributo del producto. Pero la interfaz ya no
-     la usa para pintar: los seis temas se resuelven al azul corporativo (ver
-     el bloque «Temas de producto» al final del archivo). Estos tokens quedan
-     como referencia del catalogo original y para posibles usos editoriales,
-     NO para superficies de la aplicacion. */
-  --color-violet-100: #ede9fe;
-  --color-violet-600: #7c3aed;
+  --brand: #1455a3;
+  --brand-hover: #0f3c69;
+  --brand-strong: #0b2c4d;
+  --brand-soft: #f1f7fd;
+  --brand-soft-border: #bed5f1;
+  --brand-on: #ffffff;
+  --brand-panel-bg: #0b2c4d;
+  --brand-panel-text: #ffffff;
+  --brand-panel-muted: #ddebfa;
+  --brand-panel-faint: #bed5f1;
+  --brand-panel-control-bg: #ffffff;
+  --brand-panel-control-text: #0b2338;
+  --brand-panel-overlay-strong: rgba(11, 44, 77, 0.94);
+  --brand-panel-overlay-soft: rgba(11, 44, 77, 0.20);
+  --surface-glass: rgba(255, 255, 255, 0.94);
+  --surface-glass-hover: rgba(255, 255, 255, 0.10);
 
-  /* Ámbar: solo se conserva para avisos de precaucion en documentacion */
-  --color-amber-50:  #fffbeb;
-  --color-amber-100: #fef3c7;
-  --color-amber-200: #fde68a;
-  --color-amber-500: #f59e0b;
-  --color-amber-600: #d97706;
-  --color-amber-700: #b45309;
+  --growth: #10743f;
+  --growth-hover: #0c5b32;
+  --growth-soft: #f0faf4;
+  --growth-soft-border: #b6e4c7;
+  --growth-on: #ffffff;
 
-  --color-rose-500: #f43f5e;
-  --color-teal-600: #0d9488;
+  --required: #c53030;
+  --danger: #c53030;
+  --success: #10743f;
+  --warning: #855b00;
+  --focus-ring: #2877d7;
 
-  /* ---------- Naranja / Rojo (estados) ---------- */
-  --color-orange-100: #ffedd5;
-  --color-orange-400: #fb923c;
-  --color-orange-600: #ea580c;
-  --color-red-500: #ef4444;
-  --color-red-600: #dc2626;
+  /* El trazo que cruza el símbolo de la marca: claro sobre el símbolo en
+     tema claro, oscuro en tema noche. Un solo token evita dos archivos. */
+  --logo-stroke: #ffffff;
 
-  --color-white: #ffffff;
+  /* Fondo de los chips de pictograma. Un tono por encima de
+     `--brand-soft`: a ese nivel el chip se perdía contra la tarjeta
+     blanca y el icono parecía flotar suelto. */
+  --chip-brand-bg: #ddebfa;
+  --chip-growth-bg: #dff4e7;
 
-  /* ---------- Alias semánticos ---------- */
-  --page-bg: var(--color-gray-50);
-  --surface: var(--color-white);
-  --surface-border: var(--color-gray-100);
-  --text-strong: var(--color-gray-800);
-  --text-body: var(--color-gray-600);
-  --text-muted: var(--color-gray-500);
-  --text-faint: var(--color-gray-400);
-  --brand: var(--color-blue-700);
-  --brand-hover: var(--color-blue-800);
-  --brand-strong: var(--color-blue-900);
-  --brand-soft: var(--color-blue-50);
-  --brand-soft-border: var(--color-blue-200);
-  --brand-light: var(--color-blue-500);
-  /* El «acento» ya no es un segundo color de marca: es el propio azul.
-     Tres colores en total: azul corporativo, gris neutro y verde de estado. */
-  --accent: var(--color-blue-700);
-  --accent-hover: var(--color-blue-800);
-  --success: var(--color-emerald-600);
-  --focus-ring: var(--color-blue-500);
-  --required: var(--color-red-600);
+  /* Atenuación de las fotografías. En claro se muestran tal cual; en
+     oscuro bajan un punto para que no deslumbren sobre el fondo. Es un
+     token y no dos juegos de imágenes: una foto no se invierte. */
+  --photo-dim: 1;
 
-  /* ---------- Radios ---------- */
-  --radius-md: 0.25rem;
-  --radius-lg: 0.375rem;
-  --radius-xl: 0.5rem;
-  --radius-2xl: 0.625rem;
-  --radius-full: 9999px;
+  /* ---------- Tipografía: sin webfont ----------
+     La sensación editorial se consigue con escala, peso y tracking, no
+     descargando una fuente. Cero bloqueo de render, cero CDN. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono-num: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 
-  /* ---------- Sombras ---------- */
-  --shadow-sm: 0 1px 2px 0 rgb(16 31 53 / 0.04);
-  --shadow-md: 0 2px 6px -1px rgb(16 31 53 / 0.08), 0 1px 3px -2px rgb(16 31 53 / 0.06);
-  --shadow-lg: 0 8px 20px -6px rgb(16 31 53 / 0.12), 0 2px 6px -4px rgb(16 31 53 / 0.08);
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
 
-  /* ---------- Anchos de contenedor ---------- */
-  --container-md: 28rem;   /* max-w-md  */
-  --container-2xl: 42rem;  /* max-w-2xl */
-  --container-3xl: 48rem;  /* max-w-3xl */
-  --container-4xl: 56rem;  /* max-w-4xl */
-  --container-7xl: 80rem;  /* max-w-7xl */
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
 
-  /* ---------- Espaciado ---------- */
+  --tracking-tight: -0.025em;
+  --tracking-heading: -0.015em;
+  --tracking-label: 0.045em;
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-black: 800;
+
+  /* ---------- Espaciado, base 4 px ---------- */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -157,42 +170,198 @@
   --space-12: 3rem;
   --space-14: 3.5rem;
   --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ---------- Radios ---------- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-pill: 999px;
+
+  /* ---------- Elevación ----------
+     La profundidad se reserva a lo interactivo o prioritario. Si todo
+     flota, nada destaca. */
+  --shadow-xs: 0 1px 2px rgba(11, 44, 77, 0.06);
+  --shadow-sm: 0 4px 12px rgba(11, 44, 77, 0.08);
+  --shadow-md: 0 12px 30px rgba(11, 44, 77, 0.12);
+  --shadow-lg: 0 22px 54px rgba(11, 44, 77, 0.16);
+  --shadow-focus: 0 0 0 4px rgba(40, 119, 215, 0.22);
+
+  /* ---------- Impresión ---------- */
+  --print-bg: #ffffff;
+  --print-text: #111111;
+  --print-muted: #333333;
+  --print-border: #bbbbbb;
+
+  /* ---------- Layout ---------- */
+  --container-sm: 40rem;
+  --container-md: 48rem;
+  --container-lg: 64rem;
+  --container-xl: 76rem;
+  --container-2xl: 90rem;
+  --content-gutter: clamp(1rem, 3vw, 2rem);
+  --nav-height: 4.5rem;
 
   /* ---------- Motion ---------- */
-  --transition-fast: 150ms;
-  --transition-base: 200ms;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+  --ease-standard: cubic-bezier(.2, .7, .2, 1);
+  --ease-emphasized: cubic-bezier(.16, 1, .3, 1);
 
   /* ---------- Z-index ---------- */
+  --z-base: 1;
+  --z-sticky: 30;
   --z-nav: 50;
   --z-toast: 100;
+
+  /* ---------- Controles ---------- */
+  --control-h-sm: 2.5rem;
+  --control-h: 2.875rem;
+  --control-h-lg: 3.25rem;
+  --touch-target: 2.75rem;
 }
 
-/* ---------- Temas de producto ----------
-   El dominio declara seis paletas (blue, emerald, violet, amber, rose, teal)
-   porque el tema es un atributo del producto. La decision VISUAL es otra: los
-   seis se resuelven al mismo azul corporativo.
+/* ============================================================
+   Tema oscuro explícito — gana sobre la preferencia del sistema.
+   Solo se redefinen aliases: las escalas crudas no cambian.
+   ============================================================ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
 
-   Por que: seis degradados de colores distintos en la misma rejilla saturan la
-   pantalla y, en un sitio financiero, restan credibilidad. Los productos se
-   distinguen por su nombre, su pictograma y sus cifras, no por el color.
+  --page-bg: #07131f;
+  --surface: #0d1e2d;
+  --surface-raised: #102435;
+  --surface-soft: #13293a;
+  --surface-brand-soft: #102c48;
+  --surface-growth-soft: #0f2d20;
+  --surface-inverse: #f4f8fb;
+  --surface-border: #284154;
+  --surface-border-strong: #395569;
 
-   Cambiar de criterio no exige tocar el dominio ni un solo componente: es este
-   bloque de tokens. */
+  --text-strong: #f4f8fb;
+  --text-body: #d7e2ea;
+  --text-muted: #a9bac7;
+  --text-faint: #8ea2b2;
+  --text-inverse: #07131f;
 
-.theme-blue,
-.theme-emerald,
-.theme-violet,
-.theme-amber,
-.theme-rose,
-.theme-teal {
-  /* Chip del pictograma: fondo azul muy claro, trazo azul corporativo */
-  --product-chip-bg: var(--color-blue-50);
-  --product-chip-border: var(--color-blue-100);
-  --product-accent: var(--color-blue-700);
+  --brand: #5ea0ff;
+  --brand-hover: #83b7ff;
+  --brand-strong: #ddebfa;
+  --brand-soft: #102c48;
+  --brand-soft-border: #335f88;
+  --brand-on: #07131f;
+  --brand-panel-bg: #102c48;
+  --brand-panel-text: #f4f8fb;
+  --brand-panel-muted: #d7e2ea;
+  --brand-panel-faint: #a9bac7;
+  --brand-panel-control-bg: #f4f8fb;
+  --brand-panel-control-text: #07131f;
+  --brand-panel-overlay-strong: rgba(7, 19, 31, 0.94);
+  --brand-panel-overlay-soft: rgba(7, 19, 31, 0.28);
+  --surface-glass: rgba(13, 30, 45, 0.94);
+  --surface-glass-hover: rgba(255, 255, 255, 0.08);
 
-  /* Badge del rango de monto */
-  --product-badge-bg: var(--color-blue-50);
-  --product-badge-fg: var(--color-blue-700);
-  --product-badge-border: var(--color-blue-100);
+  --growth: #4ed27d;
+  --growth-hover: #71dd98;
+  --growth-soft: #0f2d20;
+  --growth-soft-border: #2d6d46;
+  --growth-on: #07131f;
+
+  --required: #ff7b7b;
+  --danger: #ff7b7b;
+  --success: #4ed27d;
+  --warning: #ffd374;
+  --focus-ring: #83b7ff;
+
+  --danger-100: #2b1517;
+  --success-100: #0f2d20;
+  --warning-100: #2c2310;
+  --info-100: #102c48;
+
+  --logo-stroke: #07131f;
+  --chip-brand-bg: #12385c;
+  --chip-growth-bg: #123c29;
+  --photo-dim: 0.82;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.22);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.26);
+  --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.34);
+  --shadow-lg: 0 26px 64px rgba(0, 0, 0, 0.42);
+  --shadow-focus: 0 0 0 4px rgba(131, 183, 255, 0.24);
+}
+
+/* ============================================================
+   Tema automático — solo cuando el usuario no ha elegido.
+   El selector excluye ambos overrides para que una elección
+   explícita de tema claro no la pise el sistema.
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --page-bg: #07131f;
+    --surface: #0d1e2d;
+    --surface-raised: #102435;
+    --surface-soft: #13293a;
+    --surface-brand-soft: #102c48;
+    --surface-growth-soft: #0f2d20;
+    --surface-inverse: #f4f8fb;
+    --surface-border: #284154;
+    --surface-border-strong: #395569;
+
+    --text-strong: #f4f8fb;
+    --text-body: #d7e2ea;
+    --text-muted: #a9bac7;
+    --text-faint: #8ea2b2;
+    --text-inverse: #07131f;
+
+    --brand: #5ea0ff;
+    --brand-hover: #83b7ff;
+    --brand-strong: #ddebfa;
+    --brand-soft: #102c48;
+    --brand-soft-border: #335f88;
+    --brand-on: #07131f;
+    --brand-panel-bg: #102c48;
+    --brand-panel-text: #f4f8fb;
+    --brand-panel-muted: #d7e2ea;
+    --brand-panel-faint: #a9bac7;
+    --brand-panel-control-bg: #f4f8fb;
+    --brand-panel-control-text: #07131f;
+    --brand-panel-overlay-strong: rgba(7, 19, 31, 0.94);
+    --brand-panel-overlay-soft: rgba(7, 19, 31, 0.28);
+    --surface-glass: rgba(13, 30, 45, 0.94);
+    --surface-glass-hover: rgba(255, 255, 255, 0.08);
+
+    --growth: #4ed27d;
+    --growth-hover: #71dd98;
+    --growth-soft: #0f2d20;
+    --growth-soft-border: #2d6d46;
+    --growth-on: #07131f;
+
+    --required: #ff7b7b;
+    --danger: #ff7b7b;
+    --success: #4ed27d;
+    --warning: #ffd374;
+    --focus-ring: #83b7ff;
+
+    --danger-100: #2b1517;
+    --success-100: #0f2d20;
+    --warning-100: #2c2310;
+    --info-100: #102c48;
+
+    --logo-stroke: #07131f;
+    --chip-brand-bg: #12385c;
+    --chip-growth-bg: #123c29;
+    --photo-dim: 0.82;
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.22);
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.26);
+    --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.34);
+    --shadow-lg: 0 26px 64px rgba(0, 0, 0, 0.42);
+    --shadow-focus: 0 0 0 4px rgba(131, 183, 255, 0.24);
+  }
 }

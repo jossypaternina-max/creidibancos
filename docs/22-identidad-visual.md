@@ -2,11 +2,19 @@
 
 # 22 — Identidad visual: sobriedad para un producto financiero
 
-> Rediseño visual de la Actividad 2. Qué se cambió, por qué, y la regla que
-> debe seguir cualquier pantalla nueva.
+> **Primera corrección visual de la Actividad 2.** Qué se cambió, por qué, y la
+> regla que debe seguir cualquier pantalla nueva.
 >
-> Documento técnico complementario: [15 — Sistema de estilos](./15-sistema-de-estilos.md),
-> que describe la cascada de los siete archivos CSS y sigue vigente.
+> ⚠️ **Este documento describe un estado intermedio.** La paleta y el criterio
+> de «tres colores» que fija aquí siguen vigentes y son la base de todo lo que
+> vino después, pero los valores concretos de color, la iconografía y la
+> composición de las pantallas los reemplazó el rediseño completo:
+> [23 — Rediseño UI/UX](./23-rediseno-ui-ux.md).
+>
+> Se conserva porque explica **por qué** se retiraron los seis degradados de
+> producto, que es la decisión que originó todo lo demás.
+>
+> Documento técnico complementario: [15 — Sistema de estilos](./15-sistema-de-estilos.md).
 
 ---
 

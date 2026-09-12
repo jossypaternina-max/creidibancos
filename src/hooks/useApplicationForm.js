@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useDependencies } from './useDependencies.js';
 
@@ -20,8 +20,6 @@ const EMPTY_FORM = Object.freeze({
 /**
  * useApplicationForm — estado del formulario de solicitud.
  *
- * Hace el papel del `ApplicationController` de la Actividad 1:
- *
  *  - Guarda los valores de los once campos (formulario 100% controlado).
  *  - Valida en cada cambio con `ValidateCreditApplicationDraftUseCase`, que
  *    aplica las reglas de los value objects del dominio. La interfaz no
@@ -32,13 +30,24 @@ const EMPTY_FORM = Object.freeze({
  *  - Al enviar invoca `SubmitCreditApplicationUseCase`, avisa por el puerto
  *    `INotifier` y limpia el formulario si se radicó.
  *
+ * Admite un prellenado procedente del simulador. Los valores entran como
+ * cualquier otro: pasan por la MISMA validación. Venir de la URL no les da
+ * ningún privilegio —un enlace manipulado a mano se rechaza igual que un
+ * valor tecleado.
+ *
+ * @param {{ prefill?: Partial<typeof EMPTY_FORM>|null }} [options]
  * @returns {Object} Estado y acciones del formulario.
  *
  * Capa: PRESENTACIÓN (hook).
  */
-export function useApplicationForm() {
-  const { submitCreditApplication, validateApplicationDraft, getCreditProductNames, notifier, termOptions } =
-    useDependencies();
+export function useApplicationForm({ prefill = null } = {}) {
+  const {
+    submitCreditApplication,
+    validateApplicationDraft,
+    getCreditProductNames,
+    notifier,
+    termOptions,
+  } = useDependencies();
 
   const [values, setValues] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
@@ -46,6 +55,10 @@ export function useApplicationForm() {
   const [productNames, setProductNames] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reference, setReference] = useState(null);
+
+  /* El prellenado se aplica UNA vez. Sin esta marca, cada render con la
+     misma URL pisaría lo que el usuario acabara de escribir. */
+  const prefillApplied = useRef(false);
 
   /* Opciones del desplegable "Tipo de crédito": se derivan del catálogo, no se
      escriben a mano. Así no puede desincronizarse con los productos. */
@@ -69,6 +82,17 @@ export function useApplicationForm() {
       cancelled = true;
     };
   }, [getCreditProductNames, notifier]);
+
+  /* Traspaso desde el simulador. */
+  useEffect(() => {
+    if (prefillApplied.current || !prefill) return;
+
+    const entries = Object.entries(prefill).filter(([, value]) => value !== '' && value != null);
+    if (entries.length === 0) return;
+
+    prefillApplied.current = true;
+    setValues((current) => ({ ...current, ...Object.fromEntries(entries) }));
+  }, [prefill]);
 
   /* Validación en vivo con las reglas del dominio. */
   useEffect(() => {
@@ -102,6 +126,14 @@ export function useApplicationForm() {
     setTouched((current) => ({ ...current, [name]: true }));
   }, []);
 
+  /** Marca como tocados los campos indicados, para revelar sus errores. */
+  const markManyTouched = useCallback((names) => {
+    setTouched((current) => ({
+      ...current,
+      ...Object.fromEntries(names.map((name) => [name, true])),
+    }));
+  }, []);
+
   const reset = useCallback(() => {
     setValues(EMPTY_FORM);
     setErrors({});
@@ -114,7 +146,9 @@ export function useApplicationForm() {
    */
   const submit = useCallback(
     async (event) => {
-      event.preventDefault();
+      // Llega tanto del `onSubmit` del formulario como del `onClick` del
+      // botón final; en el segundo caso no hay nada que prevenir.
+      event?.preventDefault?.();
 
       // Al enviar se muestran todos los errores, no solo los de campos tocados.
       setTouched(Object.fromEntries(Object.keys(EMPTY_FORM).map((name) => [name, true])));
@@ -130,9 +164,7 @@ export function useApplicationForm() {
       }
 
       const { reference: radicado, applicantFirstName } = result.value;
-      notifier.success(
-        `${applicantFirstName}, tu solicitud quedó radicada con el número ${radicado}.`,
-      );
+      notifier.success(`Solicitud registrada correctamente para ${applicantFirstName}.`);
 
       setValues(EMPTY_FORM);
       setTouched({});
@@ -153,11 +185,27 @@ export function useApplicationForm() {
     [errors, touched],
   );
 
+  /**
+   * ¿Están libres de error los campos indicados? Lo usa el paso a paso para
+   * decidir si puede avanzar. Pregunta por `errors`, no por `touched`: un
+   * campo obligatorio que nunca se tocó sigue estando vacío y sigue siendo un
+   * error, aunque todavía no se le haya pintado el mensaje.
+   *
+   * @param {string[]} names
+   * @returns {boolean}
+   */
+  const areFieldsValid = useCallback(
+    (names) => names.every((name) => !errors[name]),
+    [errors],
+  );
+
   return {
     values,
     errorFor,
+    areFieldsValid,
     setValue,
     markTouched,
+    markManyTouched,
     submit,
     reset,
     productNames,

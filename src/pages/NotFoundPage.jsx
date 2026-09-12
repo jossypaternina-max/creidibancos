@@ -2,13 +2,14 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { NOT_FOUND_TITLE, ROUTES } from '../config/routes.js';
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
+import { Icon } from '../components/Icon.jsx';
 
 /**
  * NotFoundPage — página de la ruta comodín `*`.
  *
- * Réplica de la pantalla 404 de la Actividad 1, incluida su paleta slate
- * distinta al resto del sitio, el código "404", la regla horizontal, el texto
- * "Page Not Found" y el botón "Go Home" con su icono SVG inline.
+ * Deja de ser una pantalla aislada: conserva la barra superior y el pie, usa
+ * los mismos tokens que el resto del sitio y está en español. Una página de
+ * error que parece de otra aplicación hace dudar de que se siga en la misma.
  *
  * Capa: PRESENTACIÓN (página).
  */
@@ -17,50 +18,31 @@ export function NotFoundPage() {
   useDocumentTitle(NOT_FOUND_TITLE);
 
   return (
-    <div className="sys-page">
-      <div className="sys-page__inner">
-        <div className="sys-block">
-          <div>
-            <h1 className="sys-code">404</h1>
-            <div className="sys-rule" />
-          </div>
+    <div className="container container--reading not-found">
+      <div className="not-found__card">
+        <p className="not-found__code" aria-hidden="true">
+          404
+        </p>
 
-          <div>
-            <h2 className="sys-title">Page Not Found</h2>
-            <p className="sys-text">
-              The page <span className="sys-text__highlight">&quot;{pathname}&quot;</span> could not
-              be found in this application.
-            </p>
-          </div>
+        <h1 className="not-found__title">No encontramos esta página</h1>
 
-          <div className="sys-actions">
-            <Link className="btn--system" to={ROUTES.CATALOG}>
-              <HomeIcon />
-              Go Home
-            </Link>
-          </div>
+        <p className="not-found__text">
+          La dirección puede haber cambiado o ya no estar disponible.
+        </p>
+
+        <p className="not-found__path">{pathname}</p>
+
+        <div className="not-found__actions">
+          <Link className="btn btn--primary" to={ROUTES.CATALOG}>
+            <Icon name="home" className="ui-icon ui-icon--sm" />
+            Volver al inicio
+          </Link>
+
+          <Link className="btn btn--outline" to={ROUTES.PRODUCTS}>
+            Ver productos
+          </Link>
         </div>
       </div>
     </div>
-  );
-}
-
-/** Icono "home" idéntico al SVG inline del original. */
-function HomeIcon() {
-  return (
-    <svg
-      className="btn__icon"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-      />
-    </svg>
   );
 }

@@ -10,15 +10,35 @@
 
 ## 14.1 Las rutas
 
-| Ruta | Controlador | Título del documento |
-|---|---|---|
-| `/` | `CatalogController` | CreditSmart — Catálogo |
-| `/simulador` | `SimulatorController` | CreditSmart — Simulador |
-| `/solicitar` | `ApplicationController` | CreditSmart — Solicitar |
-| `*` | `NotFoundController` | CreditSmart — Página no encontrada |
+> **Actividad 2.** El enrutado propio de la Actividad 1 (`HistoryRouter`,
+> `UrlBuilder`, `ROUTE_TABLE` con controladores) lo sustituyó React Router; el
+> detalle está en [21 §2](./21-migracion-a-react-ev2.md). Lo que sigue
+> describiendo este documento y **sí sigue vigente** es el porqué de las URLs
+> limpias, el prefijo de despliegue y la reescritura en el servidor.
 
-Las mismas del original (que usaba react-router en modo browser), con URLs limpias
-sin `#`.
+| Ruta | Página | Título del documento |
+|---|---|---|
+| `/` | `HomePage` | CreditSmart — Créditos que te impulsan |
+| `/productos` | `ProductsPage` | CreditSmart — Productos de crédito |
+| `/simulador` | `SimulatorPage` | CreditSmart — Simulador de crédito |
+| `/solicitar` | `ApplicationPage` | CreditSmart — Solicitud de crédito |
+| `/ayuda` | `HelpPage` | CreditSmart — Preguntas frecuentes |
+| `*` | `NotFoundPage` | CreditSmart — Página no encontrada |
+
+Las tres rutas del original conservan su path, así que ningún enlace guardado
+deja de funcionar. El rediseño añadió `/productos` y `/ayuda`
+([23 §6](./23-rediseno-ui-ux.md)).
+
+El simulador traspasa la simulación al formulario por cadena de consulta:
+
+```
+/solicitar?product=<id>&amount=<number>&term=<months>
+```
+
+Se eligió cadena de consulta y no estado del router para que el enlace
+sobreviva a un refresco y se pueda compartir. Los tres valores vuelven a
+pasar por la validación del dominio: venir de la URL no les da ningún
+privilegio.
 
 ## 14.2 El puerto `IRouter`
 
@@ -386,15 +406,22 @@ se pueda configurar el servidor.
 // src/config/routes.js
 export const ROUTES = Object.freeze({
   CATALOG: '/',
+  PRODUCTS: '/productos',
   SIMULATOR: '/simulador',
   APPLICATION: '/solicitar',
+  HELP: '/ayuda',
   HISTORY: '/mis-solicitudes',        // ← nueva
 });
 
-export const ROUTE_TABLE = Object.freeze([
+export const ROUTE_TITLES = Object.freeze({
   // …
-  Object.freeze({ path: ROUTES.HISTORY, controller: 'historyController',
-                  title: 'CreditSmart — Mis solicitudes' }),
+  [ROUTES.HISTORY]: 'CreditSmart — Mis solicitudes',
+});
+
+// Y, si debe aparecer en la barra superior:
+export const NAV_ITEMS = Object.freeze([
+  // …
+  Object.freeze({ path: ROUTES.HISTORY, label: 'Mis solicitudes' }),
 ]);
 ```
 

@@ -1,96 +1,118 @@
 /* ============================================================
-   07-responsive.css — Breakpoints (mobile-first)
-   sm: 640px · lg: 1024px  (idénticos al diseño original)
+   07-responsive.css — Utilidades por viewport y hoja de impresión.
+
+   Los breakpoints de layout viven junto a su componente. Aquí solo
+   quedan las utilidades transversales, los ajustes de pantalla grande
+   y la impresión.
    ============================================================ */
 
-@media (min-width: 640px) {
-  .container {
-    padding-inline: var(--space-6);
-  }
+@media (max-width: 39.99rem) {
+  .hide-mobile { display: none !important; }
 
-  .brand__tagline {
-    display: inline;
-  }
+  /* En móvil las acciones principales ocupan el ancho: el pulgar no apunta
+     con precisión y dos botones de anchos distintos se leen como uno
+     importante y otro secundario cuando no lo son. */
+  .btn--block-mobile { width: 100%; }
+  .hero__actions .btn { width: 100%; }
+}
 
-  .navbar__links {
-    gap: var(--space-2);
-  }
+@media (min-width: 40rem) {
+  .show-mobile-only { display: none !important; }
+}
 
-  .grid-products {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .grid-form,
-  .filters__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .sim-result__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .hero__title {
-    font-size: var(--text-5xl);
-    line-height: 1.1;
-  }
-
-  .form-actions {
-    flex-direction: row;
-  }
-
-  .form-page {
-    padding-inline: var(--space-6);
+@media (min-width: 64rem) {
+  /* Paneles que acompañan al scroll sin taparse con la navbar. */
+  .desktop-sticky {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-6));
   }
 }
 
-@media (min-width: 1024px) {
-  .container {
-    padding-inline: var(--space-8);
-  }
-
-  .grid-products {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  /* Los tres campos del simulador caben en una fila. */
-  .panel--simulator .grid-form {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  /* Los tres controles del catalogo, tambien: buscar, rango y orden. */
-  .filters__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .sim-result__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+/* Pantallas grandes: más respiración, mismo tamaño de letra. */
+@media (min-width: 90rem) {
+  :root {
+    --container-xl: 82rem;
+    --container-2xl: 96rem;
   }
 }
 
-/* Pantallas muy angostas: la navbar se compacta */
-@media (max-width: 400px) {
-  .brand__name {
-    font-size: var(--text-xl);
-  }
-
-  .navlink {
-    padding-inline: var(--space-2);
-    font-size: var(--text-xs);
-  }
+@media (min-width: 120rem) {
+  :root { --content-gutter: 2.5rem; }
 }
 
+/* ============================================================
+   Impresión — una simulación impresa es un documento financiero,
+   no una captura de la web.
+   ============================================================ */
 @media print {
+  :root {
+    color-scheme: light;
+    --page-bg: var(--print-bg);
+    --surface: var(--print-bg);
+    --surface-raised: var(--print-bg);
+    --surface-soft: var(--print-bg);
+    --surface-brand-soft: var(--print-bg);
+    --surface-growth-soft: var(--print-bg);
+    --brand-panel-bg: var(--print-bg);
+    --brand-panel-text: var(--print-text);
+    --brand-panel-muted: var(--print-muted);
+    --brand-panel-faint: var(--print-muted);
+    --text-strong: var(--print-text);
+    --text-body: var(--print-text);
+    --text-muted: var(--print-muted);
+    --text-faint: var(--print-muted);
+    --brand: var(--print-text);
+    --growth: var(--print-text);
+    --surface-border: var(--print-border);
+  }
+
+  /* Fuera todo lo que no se puede pulsar en un papel. */
   .navbar,
   .footer,
   .notifications,
+  .theme-toggle,
+  .skip-link,
   .hero__actions,
+  .filters,
   .filters__actions,
   .form-actions,
-  .product-card__footer {
+  .sim-result__actions,
+  .product-card__footer,
+  .no-print,
+  [data-print="hide"] {
     display: none !important;
   }
 
-  .page {
-    background: #fff;
+  body {
+    background: var(--print-bg);
+    color: var(--print-text);
+    font-size: 10.5pt;
   }
+
+  .page__main,
+  .section { padding: 0; }
+
+  .surface,
+  .product-card,
+  .sim-result,
+  .sim-schedule,
+  .application-summary,
+  .security-panel {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border-color: var(--print-border) !important;
+  }
+
+  /* La tabla de amortización se imprime entera: es el anexo del documento. */
+  .sim-schedule__scroll {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .sim-table thead th { position: static; }
+  .sim-table { min-width: 0; }
+  .sim-table thead { display: table-header-group; }
+  .sim-table tr { break-inside: avoid; }
+
+  a { color: var(--print-text); text-decoration: none; }
 }

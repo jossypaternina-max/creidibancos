@@ -1,3 +1,5 @@
+import { Icon } from './Icon.jsx';
+
 /**
  * AmortizationTable — tabla de amortización de la simulación.
  *
@@ -6,6 +8,12 @@
  *
  * Las filas llegan ya calculadas en el `SimulationDTO`, en sus dos niveles de
  * detalle (`schedule` mes a mes y `yearlySummary` por año).
+ *
+ * Cada fila añade una barra con el reparto capital/interés de ese pago. La
+ * proporción se calcula aquí a partir de cifras crudas que ya venían en el
+ * DTO —no se recalcula ningún importe— y es un COMPLEMENTO visual: los
+ * números siguen estando en sus columnas, que es lo que se puede leer con un
+ * lector de pantalla y lo que se imprime.
  *
  * @param {{
  *   simulation: Object,
@@ -19,7 +27,7 @@
  */
 export function AmortizationTable({ simulation, isOpen, mode, onToggle, onModeChange }) {
   return (
-    <section className="sim-schedule">
+    <section className="sim-schedule" aria-labelledby="amortizacion-titulo">
       <div className="sim-schedule__bar">
         <button
           type="button"
@@ -27,16 +35,17 @@ export function AmortizationTable({ simulation, isOpen, mode, onToggle, onModeCh
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls="sim-schedule-table"
+          id="amortizacion-titulo"
         >
-          {isOpen ? 'Ocultar' : 'Ver'} tabla de amortización ({simulation.schedule.length}{' '}
-          cuotas)
+          <Icon name={isOpen ? 'eye' : 'document'} className="ui-icon ui-icon--sm" />
+          {isOpen ? 'Ocultar' : 'Ver'} tabla de amortización ({simulation.schedule.length} cuotas)
         </button>
 
         {isOpen && (
           <div className="sim-schedule__modes" role="group" aria-label="Nivel de detalle">
             <button
               type="button"
-              className={`btn btn--system ${mode === 'yearly' ? 'is-active' : ''}`}
+              className="sim-schedule__mode"
               onClick={() => onModeChange('yearly')}
               aria-pressed={mode === 'yearly'}
             >
@@ -44,13 +53,26 @@ export function AmortizationTable({ simulation, isOpen, mode, onToggle, onModeCh
             </button>
             <button
               type="button"
-              className={`btn btn--system ${mode === 'monthly' ? 'is-active' : ''}`}
+              className="sim-schedule__mode"
               onClick={() => onModeChange('monthly')}
               aria-pressed={mode === 'monthly'}
             >
               Detalle mensual
             </button>
           </div>
+        )}
+
+        {isOpen && (
+          <p className="amortization-legend">
+            <span className="amortization-legend__item">
+              <span className="amortization-legend__swatch amortization-legend__swatch--capital" aria-hidden="true" />
+              Capital
+            </span>
+            <span className="amortization-legend__item">
+              <span className="amortization-legend__swatch amortization-legend__swatch--interest" aria-hidden="true" />
+              Interés
+            </span>
+          </p>
         )}
       </div>
 
@@ -67,13 +89,31 @@ export function AmortizationTable({ simulation, isOpen, mode, onToggle, onModeCh
   );
 }
 
+/**
+ * Reparto capital / interés de un pago, en porcentaje.
+ *
+ * @param {number} principal
+ * @param {number} interest
+ */
+function SplitBar({ principal, interest }) {
+  const total = principal + interest;
+  if (total <= 0) return null;
+
+  const capitalPct = (principal / total) * 100;
+
+  return (
+    <span className="amortization-bar" aria-hidden="true">
+      <span className="amortization-bar__capital" style={{ width: `${capitalPct}%` }} />
+      <span className="amortization-bar__interest" style={{ width: `${100 - capitalPct}%` }} />
+    </span>
+  );
+}
+
 /** @param {{ simulation: Object }} props */
 function YearlyTable({ simulation }) {
   return (
     <table className="sim-table">
-      <caption className="sim-table__caption">
-        Resumen por año — {simulation.productName}
-      </caption>
+      <caption>Resumen por año — {simulation.productName}</caption>
       <thead>
         <tr>
           <th scope="col">Año</th>
@@ -82,6 +122,7 @@ function YearlyTable({ simulation }) {
           <th scope="col">Intereses</th>
           <th scope="col">Capital</th>
           <th scope="col">Saldo</th>
+          <th scope="col">Reparto</th>
         </tr>
       </thead>
       <tbody>
@@ -93,6 +134,9 @@ function YearlyTable({ simulation }) {
             <td>{block.interestLabel}</td>
             <td>{block.principalLabel}</td>
             <td>{block.remainingBalanceLabel}</td>
+            <td>
+              <SplitBar principal={block.principal} interest={block.interest} />
+            </td>
           </tr>
         ))}
       </tbody>
@@ -104,9 +148,7 @@ function YearlyTable({ simulation }) {
 function MonthlyTable({ simulation }) {
   return (
     <table className="sim-table">
-      <caption className="sim-table__caption">
-        Detalle mes a mes — {simulation.productName}
-      </caption>
+      <caption>Detalle mes a mes — {simulation.productName}</caption>
       <thead>
         <tr>
           <th scope="col">Cuota</th>
@@ -114,6 +156,7 @@ function MonthlyTable({ simulation }) {
           <th scope="col">Intereses</th>
           <th scope="col">Capital</th>
           <th scope="col">Saldo</th>
+          <th scope="col">Reparto</th>
         </tr>
       </thead>
       <tbody>
@@ -124,6 +167,9 @@ function MonthlyTable({ simulation }) {
             <td>{row.interestLabel}</td>
             <td>{row.principalLabel}</td>
             <td>{row.remainingBalanceLabel}</td>
+            <td>
+              <SplitBar principal={row.principal} interest={row.interest} />
+            </td>
           </tr>
         ))}
       </tbody>

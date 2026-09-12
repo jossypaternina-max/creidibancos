@@ -2,28 +2,22 @@
 
 # 19 — Pruebas y verificación
 
-> **Actividad 2 — React.** De las tres suites solo sigue vigente
-> `tests/01-domain-application.mjs`, que cubre dominio y aplicación y sigue
-> dando `TODO OK`. Las suites 02 y 03 probaban el render de plantillas de
-> cadena y el arranque con jsdom, que ya no existen; se sustituyen por
-> `npm run build`. Ver [21 §6](./21-migracion-a-react-ev2.md).
+> Dos suites automáticas, cuatro comprobaciones estructurales con `grep` y una
+> pasada por el navegador. Ninguno de los tres niveles sobra: cada uno atrapa
+> fallos que los otros dos no ven.
 
-## 19.1 Las tres suites
+## 19.1 Las dos suites
 
 ```
 tests/
-├── 01-domain-application.mjs      Núcleo, sin DOM, sin dependencias
-├── 02-presentation-render.mjs     Vistas como strings, sin DOM
-└── 03-boot-jsdom.mjs              Sistema completo en un DOM real
+├── 01-domain-application.mjs   Núcleo, sin DOM, sin dependencias
+└── 02-boot-jsdom.mjs           La interfaz real montada en un DOM simulado
 ```
 
 | Suite | Qué cubre | Dependencias | Aserciones |
 |---|---|---|---|
-| 01 | Value objects, entidades, servicios de dominio, simulación, criterios, los 6 casos de uso, repositorios | **ninguna** | 85 |
-| 02 | `Html.js`, las 5 vistas, el simulador, componentes, `UrlBuilder`, router, contratos, contenedor | **ninguna** | 89 |
-| 03 | Arranque completo, navegación, simulador en vivo, filtros, formulario, persistencia, 404 | jsdom (solo pruebas) | 66 |
-
-Total: **240 aserciones**, todas en verde.
+| 01 | Value objects, entidades, servicios de dominio, simulación, criterios, los 7 casos de uso, repositorios | **ninguna** | 85 |
+| 02 | Grafo de dependencias completo, las 6 rutas montadas y pintadas, armazón común, ausencia de errores | jsdom + Vite (solo pruebas) | 19 |
 
 Ejecución:
 
@@ -31,20 +25,27 @@ Ejecución:
 cd C:/laragon/www/crediSmart
 
 node tests/01-domain-application.mjs
-node tests/02-presentation-render.mjs
 
 npm install jsdom --no-save        # una sola vez
-node tests/03-boot-jsdom.mjs
+node tests/02-boot-jsdom.mjs
 ```
 
-Las tres imprimen `TODO OK` y devuelven código de salida 0. Cualquier fallo
+Las dos imprimen `TODO OK` y devuelven código de salida 0. Cualquier fallo
 imprime `FAIL: <descripción>` y sale con 1, así que sirven en un pipeline de CI
 sin adaptación.
 
-**No hay framework de pruebas.** No hay Jest, ni Vitest, ni Mocha. Son tres
-scripts con un `ok(condición, mensaje)` de tres líneas. Coherente con la decisión
-de proyecto sin build: la única dependencia de todo el repositorio es jsdom, y
-solo para la tercera suite.
+**No hay framework de pruebas.** No hay Jest, ni Vitest, ni Mocha. Son dos
+scripts con un `check(condición, mensaje)` de tres líneas. La aplicación no
+tiene más dependencias de runtime que React y React Router; jsdom es solo para
+la segunda suite.
+
+### Histórico
+
+En la Actividad 1 había tres suites: dominio/aplicación, render de las vistas
+como cadenas y arranque en jsdom. Las dos últimas probaban plantillas de cadena
+y un router propio que ya no existen. La suite 02 actual las sustituye montando
+la aplicación React de verdad, que es lo que hay que proteger ahora.
+
 
 ## 19.2 Suite 01 — Dominio y aplicación
 
@@ -187,261 +188,168 @@ const normalizeSpaces = (value) => value.replace(/\s/g, ' ');
 ok(normalizeSpaces(list.value.products[0].amountRangeLabel) === '$ 1.000.000 – $ 30.000.000', …);
 ```
 
-## 19.3 Suite 02 — Presentación como strings
+## 19.3 Suite 02 — Arranque de la interfaz
 
-`tests/02-presentation-render.mjs`
+`tests/02-boot-jsdom.mjs`
 
-Las vistas son funciones de `viewModel → string`, así que se pueden probar sin
-DOM. Solo hacen falta dos stubs mínimos:
-
-```js
-globalThis.document = { baseURI: 'http://localhost/crediSmart/',
-                        getElementById: () => null, querySelector: () => null };
-globalThis.window = { location: { pathname: '/crediSmart/', search: '', hash: '' } };
-```
+Monta la aplicación real —el mismo `App.jsx`, el mismo contenedor de
+dependencias— dentro de un DOM simulado y recorre las seis rutas.
 
 ### Qué verifica
 
-**`Html.js`**: `escapeHtml` escapa `<`, `>`, `"`, `&`; `html`
-escapa por defecto; `raw()` inserta tal cual; `null`/`undefined`/`false`/`true`
-producen cadena vacía; los arrays se unen.
+1. **Que el grafo de dependencias se resuelve entero.** `eagerResolveAll()`
+   construye todas las dependencias al arrancar, así que un contrato roto falla
+   aquí y no a mitad de una navegación.
+2. **Que cada ruta pinta su contenido sin lanzar.** `/`, `/productos`,
+   `/simulador`, `/solicitar`, `/ayuda` y una ruta inexistente.
+3. **Que el armazón común está en todas.** Enlace de salto al contenido, barra
+   de navegación, pie y conmutador de tema.
+4. **Que no queda ningún emoji de interfaz en el marcado**, que es una de las
+   reglas de la identidad visual.
+5. **Que ninguna ruta deja errores en consola.**
 
-**HTML bien formado**: un verificador de balance de etiquetas
-recorre cada vista con una pila, saltando elementos vacíos
-(`br`, `input`, `path`, …) y auto-cerrados, y comprueba que cada cierre
-corresponde al último abierto.
+### Cómo está montada
 
-**Catálogo**: textos literales del original (*"Tu crédito ideal,"*,
-*"en un solo lugar"*, el subtítulo completo, *"Nuestros Productos"*), 6 tarjetas,
-`href` con prefijo de despliegue, `data-link`, `navlink--active` + `navlink--cta`,
-`aria-current="page"`, requisitos visibles, botón "Ver detalles", footer con el
-texto largo, clases de tema, emojis.
-
-**Simulador — filtro del catálogo**: título y ambos subtítulos, placeholder
-*"Ej: Crédito Vehículo..."*, botones *"🔍 Buscar"* y *"Limpiar"*, tarjetas
-compactas, **ausencia** de requisitos y de "Ver detalles", el aviso con
-`<strong>estático</strong>`, contador ausente cuando `isFiltered` es false y
-presente cuando es true, valor buscado conservado, estado vacío.
-
-Las aserciones negativas importan tanto como las positivas: son las que verifican
-que la variante compacta *es* distinta.
-
-**Simulador — cálculo**: el `SimulationDTO` que se pinta lo produce el mismo
-`SimulateCreditUseCase` que usa la aplicación, no un objeto inventado para la
-prueba. Se comprueban los tres campos, el botón, que los inputs hereden los
-límites del producto (`min="1000000"`, `max="30000000"`, `max="60"`), y que la
-cuota, el total de intereses, el total a pagar y la tasa mensual aparezcan con el
-valor exacto del DTO.
-
-Y una aserción negativa que vigila la regla de la capa:
+El DOM simulado se crea **antes** de cargar nada de la aplicación, porque el
+adaptador de avisos busca `#notifications` y el repositorio de solicitudes usa
+`localStorage` en cuanto se construyen:
 
 ```js
-ok(!/Math\.(pow|round)/.test(simulatorHtml), 'la vista no filtra cálculos al HTML');
-```
+const dom = new JSDOM('…<div id="root"></div><div id="notifications"></div>…');
+globalThis.window = dom.window;
+globalThis.document = dom.window.document;
+globalThis.localStorage = dom.window.localStorage;
 
-**Simulador — tabla de amortización**: plegada por defecto (`aria-expanded="false"`
-y sin `.sim-table`), el botón anuncia *"(36 cuotas)"*; en modo anual hay **3 filas**
-para 36 meses y el primer bloque dice *"Cuotas 1–12"*; en modo mensual hay **36**.
-El recuento se hace contando `<tr>` dentro de `<tbody>`, no sobre el HTML entero.
-
-**Simulador — errores**: el mensaje del dominio se pinta bajo su campo, el control
-recibe `is-invalid` y `aria-invalid="true"`, y —lo que importa— la última cuota
-válida **sigue en pantalla** mientras se corrige. Sin simulación, en su lugar se
-explica qué falta y no se pinta tabla alguna.
-
-**Formulario**: título y subtítulo, 3 secciones, ambos
-placeholders de select, ambos botones, 11 marcas de obligatorio, opciones de
-plazo, los 6 productos en el select, campo con error, `aria-invalid` +
-`aria-describedby`, `role="alert"`.
-
-Y la prueba de XSS:
-
-```js
-values: { fullName: 'Ana <script>alert(1)</script>' }
-// …
-ok(applicationHtml.includes('Ana &lt;script&gt;'), 'XSS: valor del usuario escapado');
-ok(!applicationHtml.includes('<script>alert(1)</script>'), 'XSS: no hay script inyectado');
-```
-
-**Pantallas de sistema**: 404 con `>404<`, *"Page Not Found"*,
-*"Go Home"*, la ruta solicitada entre comillas, el enlace con prefijo; y
-*"Access Restricted"*.
-
-**Router, contratos y contenedor**:
-
-```js
-try {
-  router.register('/x', { handle() {} });     // le falta dispose()
-  ok(false, 'debe rechazar un controlador incompleto');
-} catch (e) {
-  ok(e.code === 'CONTRACT_VIOLATION', `rechaza controlador incompleto (${e.code})`);
-  ok(e.details.missingMethods.includes('dispose'), 'informa del método que falta');
-}
-```
-
-Más: `currentPath` respeta el `basePath`, `toRoutePath` lo quita, `href` lo añade,
-`normalizeBase('apps/credito')` → `/apps/credito/`, detección de dependencia
-circular, y rechazo de registro duplicado en el contenedor.
-
-### Dos detalles que costaron una iteración
-
-1. **`class="product-card theme-blue"`**: la primera versión contaba
-   `/product-card"/g`, que nunca coincide porque la clase de tema va detrás. Se
-   cambió a contar `data-product-id="`.
-2. **Atributos multilínea**: el `html` con sangría produce
-   `<option\n  value="Crédito…`, así que `/<option value="Crédito/` no coincidía.
-   Se relajó a `/value="Crédito/`.
-
-Ambos son la lección habitual de las pruebas sobre HTML como texto: **afirma sobre
-la estructura, no sobre el formato**.
-
-## 19.4 Suite 03 — Arranque completo en jsdom
-
-`tests/03-boot-jsdom.mjs`
-
-La única que necesita una dependencia. Carga el `index.html` **real** del proyecto
-y ejecuta el sistema entero.
-
-```js
-const indexHtml = fs.readFileSync(path.join(PROJECT_ROOT, 'index.html'), 'utf8');
-
-const dom = new JSDOM(indexHtml, {
-  url: 'http://localhost/crediSmart/',
-  runScripts: 'outside-only',      // los módulos se importan a mano
-  pretendToBeVisual: true,
+// jsdom no implementa matchMedia y el conmutador de tema lo consulta.
+dom.window.matchMedia = () => ({
+  matches: false, addEventListener() {}, removeEventListener() {},
 });
 ```
 
-`url` con subdirectorio a propósito: así se verifica de paso la autodetección del
-prefijo de despliegue.
+Vite se usa **solo** para traducir JSX y resolver los imports de CSS
+(`vite.ssrLoadModule`); React se importa directo. La aplicación se ejecuta tal
+cual, sin adaptaciones para la prueba.
 
-Dos parches necesarios porque jsdom no implementa scroll:
+### Dos detalles que costaron una iteración
+
+**`globalThis.navigator` no se puede asignar** en Node 22: solo tiene getter.
+Como jsdom ya expone el suyo a través de `window`, basta con no tocarlo.
+
+**El paquete construido no sirve para esta prueba.** El primer intento cargaba
+`dist/` con `window.eval()` y fallaba con `Cannot use 'import.meta' outside a
+module`: el bundle de Vite usa `import.meta`, que no existe fuera de un módulo
+ES. De ahí el cambio a `ssrLoadModule` sobre el código fuente.
+
+
+## 19.4 Verificación estructural con `grep`
+
+Complementa las suites: comprueba la **arquitectura**, no el comportamiento.
+
+```bash
+cd C:/laragon/www/crediSmart
+
+# 1. El dominio no importa nada de fuera del dominio
+grep -rn "from '\.\./\.\./\(application\|infrastructure\|presentation\|config\)" src/domain/
+
+# 2. La aplicación no importa infraestructura, presentación ni config
+grep -rn "from '\.\./\.\./\(infrastructure\|presentation\|config\)" src/application/
+
+# 3. La presentación no importa infraestructura
+grep -rn "infrastructure" src/components/ src/pages/ src/hooks/ src/context/ src/App.jsx
+
+# 4. Ningún color fuera del archivo de tokens
+grep -rn "#[0-9a-fA-F]\{3,8\}" assets/css/ --include=*.css | grep -v 02-tokens.css
+```
+
+Las cuatro deben devolver **cero líneas**. Estado actual: cero, cero, cero, cero.
+
+Durante la construcción, la comprobación 3 detectó el único incumplimiento real:
+un controlador importaba las opciones de plazo directamente del datasource. Se
+corrigió inyectando `termOptions` desde `dependencies.js`.
+
+La comprobación 4 es la que mantiene honesto el sistema de estilos: es fácil
+escribir un `#fff` «solo por esta vez», y es justo así como una paleta de tres
+colores acaba teniendo nueve.
+
+## 19.5 Verificación en el navegador
+
+Lo que las suites no cubren: apariencia y comportamiento real del navegador.
+**No es opcional.** La última pasada destapó tres fallos que las capturas
+automatizadas daban por buenos, incluido un formulario que se autoenviaba al
+llegar al último paso ([23 §12](./23-rediseno-ui-ux.md)).
+
+### Rutas y recarga
+
+| Prueba | Esperado |
+|---|---|
+| Abrir `/` | Hero, seis accesos de producto y banda institucional |
+| Clic en «Productos» | Cambia sin recarga (sin parpadeo) |
+| **Recargar** en `/simulador` | Carga el simulador, no un 404 de Apache |
+| **Recargar** en `/productos` | Carga el catálogo |
+| Abrir `/loquesea` | Pantalla 404 con la ruta pedida |
+| Botón atrás/adelante | Navega correctamente |
+| Ctrl+clic en un enlace | Abre en pestaña nueva (no lo intercepta el router) |
+
+Si recargar da 404: falta la reescritura del servidor
+([14 §14.5](./14-enrutado-y-urls.md)).
+
+### Flujos completos, pulsando
+
+| Flujo | Qué comprobar |
+|---|---|
+| Simulador | Cambiar producto, monto y plazo recalcula la cuota sin pulsar nada; los atajos de porcentaje mueven el deslizador y el campo a la vez |
+| Amortización | Se despliega, alterna resumen anual y detalle mensual, y la tabla scrollea sin mover la página |
+| Puente | «Solicitar este crédito» lleva a `/solicitar?product=&amount=&term=` con el resumen prellenado |
+| Formulario | Los tres pasos avanzan **sin** revelar errores del paso siguiente; enviar produce radicado y aviso |
+| Filtros | Búsqueda incremental, tipo, monto, plazo, orden y «Limpiar filtros» |
+
+El cuarto es el que más vigilancia merece: un formulario por pasos **no se
+valida con capturas**, hay que pulsarlo.
+
+### Medir, no mirar
+
+Conviene comprobar posiciones en el DOM en vez de fiarse de una captura:
 
 ```js
-window.scrollTo = () => {};
-window.HTMLElement.prototype.scrollIntoView = () => {};
+const r = (s) => document.querySelector(s).getBoundingClientRect();
+
+r('.hero__visual').right === document.documentElement.clientWidth;   // llega al borde
+r('#confianza-home').x === r('.home-products .container').x;         // sigue la retícula
+document.documentElement.scrollWidth === document.documentElement.clientWidth;
 ```
 
-### Qué verifica
+Las dos primeras fallaban a 1912 px y pasaban a 1440. Una captura a un solo
+ancho no lo habría enseñado nunca.
 
-**Arranque**: `#root` y `#notifications` presentes en el `index.html` real,
-**34 dependencias** resueltas, `basePath` autodetectado como `/crediSmart/`.
+### Responsive
 
-**Catálogo**: renderizado, 6 tarjetas en el DOM real, título del documento
-puesto por el decorador, enlace activo correcto, hero y footer presentes.
+| Ancho | Esperado |
+|---|---|
+| 375 / 414 | Sin desbordamiento horizontal; menú plegado; 1 tarjeta por fila |
+| 768 / 820 | 2 tarjetas por fila; filtros sobre la rejilla |
+| 1024 | 3 tarjetas; filtros como barra lateral |
+| 1440 / 1920 | Más aire; la fotografía del hero llega al borde de la ventana |
 
-**Navegación**: un `MouseEvent` real sobre el enlace del simulador cambia
-`window.location.pathname` **sin recargar**, el título se actualiza, la vista es la
-del simulador, las tarjetas son compactas, hay 5 opciones de rango.
+### Temas
 
-**Filtros en vivo**:
+Claro forzado, oscuro forzado y automático. Con el sistema en oscuro y sin
+elección previa, el sitio debe abrir **en oscuro**: es el comportamiento
+correcto, no un fallo de estilos.
 
-```js
-queryInput.value = 'vivienda';
-queryInput.dispatchEvent(new window.Event('input', { bubbles: true }));
-await tick();
+### Accesibilidad
 
-ok(document.querySelectorAll('.product-card').length === 1, 'búsqueda "vivienda" → 1 tarjeta');
-ok(document.querySelector('.results-count')?.textContent.includes('1'), 'contador de resultados');
-ok(document.activeElement?.id === 'filter-query', 'foco conservado tras el re-render');
-```
+- Tabular por toda la página: cada control muestra el anillo de foco.
+- El enlace «Saltar al contenido» aparece al primer tabulador.
+- Con lector de pantalla: errores (`role="alert"`) y avisos se anuncian; los
+  deslizadores anuncian el importe, no el índice.
+- Activar «reducir movimiento»: transiciones y animaciones se detienen.
 
-Esa tercera aserción es la que protege la corrección del foco descrita en
-[04 §4.3](./04-mvc-presentacion.md): sin ella, una regresión haría que el usuario
-solo pudiera escribir una letra por pulsación, y ninguna otra prueba lo detectaría.
+### Consola
 
-Además: filtro por rango → 4 tarjetas, estado vacío con `.alert--empty`, y
-"Limpiar" → 6 tarjetas.
+Cero errores. Un `ContractViolationError` o un `Dependencia no registrada`
+aparece al cargar, no durante la navegación — por diseño.
 
-**Simulador en vivo**: es la prueba que demuestra que el simulador *funciona*,
-no que se pinta. Al entrar en la ruta ya hay una simulación hecha
-(`$ 1.000.000 / 12 m` → **$ 91.250**); teclear `10000000` en el monto la
-recalcula a **$ 912.498** sin recargar y sin perder el foco; un monto de
-`99000000` en Libre Inversión marca el campo y muestra *"El monto debe estar
-entre $1.000.000 y $30.000.000"* **conservando** la cuota anterior; cambiar de
-producto reencaja el monto en el rango nuevo; desplegar la tabla da 1 bloque
-anual y 12 filas mensuales, con la última dejando el saldo en `$ 0`; y
-*"Reiniciar"* vuelve al estado de partida.
 
-Dos detalles que hacen falta para que esta prueba sea honesta:
-
-```js
-// Cada interacción re-renderiza la vista entera y sustituye los nodos: guardar
-// una referencia entre pasos daría un elemento huérfano sin listeners.
-const $sim = (id) => document.getElementById(id);
-
-// El formateador es-CO separa el símbolo con espacio duro (U+00A0).
-const norm = (text) => String(text ?? '').replace(/\s+/g, ' ').trim();
-```
-
-La primera versión de la prueba fallaba en seis aserciones por guardar
-`const amountInput = …` y reutilizarlo tras un re-render: el nodo ya no estaba en
-el documento y el evento no llegaba a ningún sitio.
-
-**Formulario**: 3 secciones, selects con el número correcto de opciones;
-envío vacío → **11 campos con `.is-invalid`** y toast con `role="alert"`; envío
-válido → cero errores, toast de éxito con radicado `CS-XXXXXXXX` y saludo por el
-primer nombre, persistencia real en `localStorage` con `status: 'RADICADA'`, y
-formulario limpio.
-
-Y la política de dominio a través de toda la pila:
-
-```js
-setValue('field-amount', '1000');            // fuera del rango del Crédito Vehículo
-// …enviar…
-const amountError = document.getElementById('field-amount-error');
-ok(amountError?.textContent.includes('El monto debe estar entre'), 'política de dominio aplicada');
-```
-
-**404 y vuelta**: ruta inexistente → `.sys-code` con `404`, la ruta solicitada
-visible, título correcto; y navegar a `/` restaura el hero y las 6 tarjetas.
-
-### Salida real (extracto)
-
-```
---- Arranque ---
-ok  : contenedor #root encontrado en index.html
-ok  : grafo completo resuelto (34 dependencias)
-ok  : basePath autodetectado (/crediSmart/)
-
---- Navegación sin recarga ---
-ok  : URL cambiada sin recarga (/crediSmart/simulador)
-ok  : título actualizado por el decorador
-
---- Simulador: cálculo sobre el DOM real ---
-ok  : arranca en el monto mínimo del primer producto (1000000)
-ok  : simula al entrar en la ruta ($ 91.250)
-ok  : recalcula al teclear el monto ($ 912.498)
-ok  : foco conservado en el monto (sim-amount)
-ok  : monto fuera de rango marca el campo
-ok  : se conserva la última cuota válida mientras se corrige
-ok  : el monto sube al mínimo del producto elegido (5000000)
-ok  : detalle mensual: 12 filas (12)
-ok  : la última fila deja el saldo en cero ($ 0)
-ok  : reiniciar restaura la simulación inicial ($ 91.250)
-
---- Filtros del simulador ---
-ok  : búsqueda "vivienda" → 1 tarjeta (1)
-ok  : foco conservado tras el re-render (filter-query)
-ok  : rango "Hasta $5.000.000" → 4 tarjetas (4)
-ok  : "Limpiar" restaura las 6 tarjetas
-
---- Formulario de solicitud (/solicitar) ---
-ok  : 11 campos inválidos (11)
-ok  : toast de error mostrado
-ok  : radicado en el mensaje (Solicitud enviada Juan, tu solicitud quedó radicada
-      con el número CS-190ED978. Un asesor se comunicará contigo.)
-ok  : solicitud persistida en localStorage
-ok  : política de dominio aplicada (El monto debe estar entre $5.000.000 y
-      $120.000.000 para Crédito Vehículo.)
-
---- Ruta inexistente ---
-ok  : 404 renderizado
-
-TODO OK
-```
-
-## 19.5 Verificación estructural con `grep`
 
 Complementa las suites: comprueba la **arquitectura**, no el comportamiento.
 
@@ -471,74 +379,28 @@ Durante la construcción, la comprobación 3 detectó el único incumplimiento r
 `ApplicationController` importaba `STATIC_TERM_OPTIONS` del datasource. Se corrigió
 inyectando `termOptions` desde `dependencies.js`.
 
-## 19.6 Verificación manual en el navegador
-
-Lo que las suites no cubren: apariencia, comportamiento real del navegador y
-servidor.
-
-### Rutas y recarga
-
-| Prueba | Esperado |
-|---|---|
-| Abrir `/` | Catálogo con 6 tarjetas |
-| Clic en "Simulador" | Cambia sin recarga (sin parpadeo) |
-| **Recargar** en `/simulador` | Carga el simulador, no un 404 de Apache |
-| **Recargar** en `/solicitar` | Carga el formulario |
-| Abrir `/loquesea` | Pantalla 404 con la ruta pedida |
-| Botón atrás/adelante | Navega correctamente |
-| Ctrl+clic en un enlace | Abre en pestaña nueva (no lo intercepta el router) |
-| Clic central | Igual |
-
-Si recargar da 404: falta la reescritura del servidor
-([14 §14.5](./14-enrutado-y-urls.md)).
-
-### Responsive
-
-| Ancho | Esperado |
-|---|---|
-| 320 px | Sin desbordamiento horizontal; navbar compacta; 1 tarjeta por fila |
-| 375 px | Igual |
-| 640 px (`sm`) | 2 tarjetas por fila; aparece "by FinTech Solutions"; botones del formulario en fila |
-| 1024 px (`lg`) | 3 tarjetas por fila |
-
-### Accesibilidad
-
-- Tabular por toda la página: cada control muestra el anillo de foco
-  (`:focus-visible`).
-- Enviar el formulario vacío: el foco salta al primer campo con error.
-- Con un lector de pantalla: los mensajes de error se anuncian (`role="alert"`), y
-  los toasts también.
-- Activar "reducir movimiento" en el sistema: el spinner y las transiciones se
-  detienen.
-- Comprobar contraste con las herramientas del navegador.
-
-### Consola
-
-Cero errores. Un `ContractViolationError` o un `Dependencia no registrada` aparece
-al cargar, no durante la navegación — por diseño.
-
-## 19.7 Qué NO está cubierto
+## 19.6 Qué NO está cubierto
 
 Honestidad sobre los límites:
 
 | No cubierto | Por qué / mitigación |
 |---|---|
-| Pruebas visuales de regresión | Requerirían capturas de referencia y un navegador headless |
+| Pruebas visuales de regresión automáticas | Se hacen a mano contra el mockup aprobado; automatizarlas exigiría capturas de referencia versionadas |
 | Navegadores reales (Safari, Firefox) | jsdom no es un navegador; verificación manual |
 | Rendimiento con catálogos grandes | Con 6 productos el re-render completo es instantáneo; con 500 haría falta render incremental |
 | Rehidratar solicitudes desde `localStorage` | El repositorio persiste `toJSON()`, pero no reconstruye entidades: nadie consume el histórico todavía |
-| Restauración exacta del scroll con el botón atrás | `ViewRenderer.mount()` sube al inicio; guardar el scroll por entrada de historial queda pendiente |
+| Restauración exacta del scroll con el botón atrás | `ScrollToTop` sube al inicio en cada cambio de ruta; guardar el scroll por entrada de historial queda pendiente |
 | Tipos de los parámetros de los contratos | `assertImplements` verifica existencia de métodos, no firmas; ver [06 §6.9](./06-contratos-e-interfaces.md) |
 
-## 19.8 Añadir pruebas
+## 19.7 Añadir pruebas
 
 Ubicación por capa:
 
-| Qué pruebas | Suite |
+| Qué pruebas | Dónde |
 |---|---|
-| Un value object, una entidad, un servicio de dominio, un caso de uso | 01 |
-| Una vista, un componente, el escapado, un contrato | 02 |
-| Una interacción completa del usuario | 03 |
+| Un value object, una entidad, un servicio de dominio, un caso de uso | suite 01 |
+| Una ruta nueva, un componente del armazón, un contrato | suite 02 |
+| Una interacción completa del usuario | navegador (§19.5) |
 
 El helper es siempre el mismo:
 
@@ -563,13 +425,15 @@ Convenciones:
   (`!simulatorHtml.includes('Requisitos:')`).
 - **Normalizar espacios** al comparar salidas de `Intl`.
 
-## 19.9 Nota sobre `node_modules`
+## 19.8 Nota sobre `node_modules`
 
-`npm install jsdom --no-save` crea un `node_modules/` de ~25 MB en la raíz. Es
-**solo** para la suite 03: la aplicación no tiene dependencias de runtime y se
-sirve tal cual. El `.gitignore` incluido lo excluye.
+`npm install jsdom --no-save` añade jsdom al `node_modules/` que ya crea
+`npm install`. Es **solo** para la suite 02: el paquete de producción no lo
+incluye. El `.gitignore` excluye `node_modules/`.
 
-## 19.10 Siguiente lectura
+## 19.9 Siguiente lectura
 
+- [23 — Rediseño UI/UX](./23-rediseno-ui-ux.md): los tres fallos que solo
+  aparecieron al pulsar la aplicación en el navegador, con su causa.
 - [20 — Glosario y convenciones](./20-glosario-y-convenciones.md)
 - [18 — Guía de extensión](./18-guia-de-extension.md)

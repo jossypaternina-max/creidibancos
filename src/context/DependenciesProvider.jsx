@@ -36,6 +36,13 @@ export function DependenciesProvider({ container, children }) {
         validateApplicationDraft: container.resolve('validateCreditApplicationDraftUseCase'),
         notifier: container.resolve('notifier'),
         termOptions: container.resolve('termOptions'),
+
+        /* Puerto `IMoneyFormatter`, no el adaptador. Lo necesita el resumen
+           de la solicitud, que muestra un monto que el usuario acaba de
+           teclear y para el que todavía no existe ningún DTO. La alternativa
+           —formatear pesos a mano en la vista— duplicaría la moneda y el
+           locale fuera de `AppConfig`. La vista sigue sin conocer `Intl`. */
+        moneyFormatter: container.resolve('moneyFormatter'),
       }),
     [container],
   );

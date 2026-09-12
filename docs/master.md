@@ -17,16 +17,16 @@
 | Stack | React 19 · React Router 7 · Vite 8 · CSS3 plano · JavaScript ES2022 |
 | Dependencias de runtime | React y React Router. Dominio, aplicación e infraestructura siguen sin ninguna |
 | Capas | `domain` · `application` · `infrastructure` · presentación React (+ `config`, `data`) |
-| Archivos JS/JSX | 82 — `domain` 26 · presentación 25 (`components` 11 · `hooks` 7 · `pages` 4 · `context` 1 · `App` · `main`) · `application` 16 · `infrastructure` 10 · `config` 4 · `data` 1 |
-| Archivos CSS | 7 en cascada explícita — heredados de la Actividad 1 y con la paleta rediseñada en la 2 ([22](./22-identidad-visual.md)) |
+| Archivos JS/JSX | 96 — `domain` 26 · presentación 38 (`components` 21 · `hooks` 8 · `pages` 6 · `context` 1 · `App` · `main`) · `application` 16 · `infrastructure` 10 · `config` 5 · `data` 1 |
+| Archivos CSS | 7 en cascada explícita — rediseñados por completo en la Actividad 2, con tema claro/oscuro/automático ([23](./23-rediseno-ui-ux.md)) |
 | Contratos (interfaces) | 9 puertos de dominio y aplicación (los 3 de presentación los impone React) |
 | Casos de uso | 7 |
 | Entidades | 2 · Value objects: 10 |
 | Productos del catálogo | 6 (5 replicados del original + `Crédito de Libranza`) |
-| Paletas de tema | 6 declaradas en el dominio (`blue` · `emerald` · `violet` · `amber` · `rose` · `teal`), las seis resueltas al azul corporativo en la interfaz |
+| Paletas de tema | 6 declaradas en el dominio (`blue` · `emerald` · `violet` · `amber` · `rose` · `teal`), las seis resueltas al azul corporativo en la interfaz. El pictograma y el tono de cada producto los fija `config/productVisualMap.js` ([23 §4](./23-rediseno-ui-ux.md)) |
 | Adaptadores | 10 · Servicios de dominio: 2 |
 | Dependencias en el contenedor | 20 (la presentación la construye React) |
-| Rutas | `/` · `/simulador` · `/solicitar` · `*` (404) |
+| Rutas | `/` · `/productos` · `/simulador` · `/solicitar` · `/ayuda` · `*` (404) |
 
 ---
 
@@ -115,7 +115,7 @@ Tres itinerarios según para qué vengas:
 | 12 | [Vistas, controladores y componentes](./12-vistas-controladores-componentes.md) | `BaseView`, `BaseController`, las 6 vistas, los 4 componentes, el escapado por defecto, la gestión de listeners. **Histórico de la Actividad 1**: sustituido por [21](./21-migracion-a-react-ev2.md) |
 | 13 | [Inyección de dependencias](./13-inyeccion-de-dependencias.md) | El `Container`, el Composition Root, el grafo de dependencias, detección de ciclos. **En React**: `DependenciesProvider` ([21 §3](./21-migracion-a-react-ev2.md)) |
 | 14 | [Enrutado y URLs](./14-enrutado-y-urls.md) | `HistoryRouter`, `UrlBuilder`, prefijo de despliegue, delegación de clics, reescritura en Apache/Nginx. **En React**: React Router ([21 §2](./21-migracion-a-react-ev2.md)) |
-| 15 | [Sistema de estilos](./15-sistema-de-estilos.md) | Los 7 archivos CSS en cascada, los design tokens, el mapeo Tailwind → CSS plano, los temas de producto. **Paleta actual**: [22](./22-identidad-visual.md) |
+| 15 | [Sistema de estilos](./15-sistema-de-estilos.md) | Los 7 archivos CSS en cascada, los design tokens, el mapeo Tailwind → CSS plano, los temas de producto. **Sistema actual**: [23](./23-rediseno-ui-ux.md) |
 
 ### Síntesis y operación
 
@@ -124,10 +124,11 @@ Tres itinerarios según para qué vengas:
 | 16 | [Catálogo de patrones](./16-catalogo-de-patrones.md) | Los 14 patrones de diseño usados (+4 menores): qué problema resuelve cada uno, dónde está, y qué pasaría sin él |
 | 17 | [Flujos end-to-end](./17-flujos-end-to-end.md) | Diagramas de secuencia: arranque, cargar catálogo, filtrar en el simulador, radicar una solicitud, 404 |
 | 18 | [Guía de extensión](./18-guia-de-extension.md) | 10 recetas paso a paso: añadir producto, campo, página, adaptador HTTP, contrato nuevo… |
-| 19 | [Pruebas y verificación](./19-pruebas-y-verificacion.md) | Las 3 suites ejecutadas, qué cubre cada una, cómo re-ejecutarlas, qué verificar antes de dar por bueno un cambio |
+| 19 | [Pruebas y verificación](./19-pruebas-y-verificacion.md) | Las suites ejecutadas, qué cubre cada una, cómo re-ejecutarlas, qué verificar antes de dar por bueno un cambio. **Prueba de arranque de la interfaz**: [23 §13](./23-rediseno-ui-ux.md) |
 | 20 | [Glosario y convenciones](./20-glosario-y-convenciones.md) | Vocabulario del proyecto, convenciones de nombres, de archivos, de comentarios y de commits |
 | 21 | [Migración a React (Actividad 2)](./21-migracion-a-react-ev2.md) | Qué cambió y qué no al sustituir la interfaz vanilla por React: tabla de equivalencias, inyección con contexto, los 3 cambios que exigió, verificación |
 | 22 | [Identidad visual](./22-identidad-visual.md) | La paleta corporativa de tres colores, por qué se retiraron los seis degradados de producto, y qué comprobar antes de dar por buena una pantalla nueva |
+| 23 | [Rediseño UI/UX](./23-rediseno-ui-ux.md) | La aplicación del kit de rediseño: tokens con tema día/noche, el set de iconos propio, las cinco pantallas, el puente simulador → solicitud, y qué se decidió NO pintar del mockup y por qué |
 
 ---
 
@@ -212,9 +213,12 @@ Dónde está declarado cada nombre propio del proyecto.
 | `Applicant` | Value object | `src/domain/valueobjects/Applicant.js` | [08](./08-value-objects.md) |
 | `APPLICATION_STATUS` | Enum | `src/domain/entities/CreditApplication.js` | [07](./07-entidades.md) |
 | `ApplicationPage` | Página React | `src/pages/ApplicationPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `ApplicationStepper` | Componente | `src/components/ApplicationStepper.jsx` | [23](./23-rediseno-ui-ux.md) |
+| `ApplicationSummary` | Componente | `src/components/ApplicationSummary.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `assertImplements` | Función | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
+| `Breadcrumb` | Componente | `src/components/Breadcrumb.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `buildContainer` | Composition Root | `src/config/dependencies.js` | [13](./13-inyeccion-de-dependencias.md) |
-| `CatalogPage` | Página React | `src/pages/CatalogPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `CatalogFilters` | Componente | `src/components/CatalogFilters.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `ConsoleLogger` | Adaptador | `src/infrastructure/logging/ConsoleLogger.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `Container` | Contenedor DI | `src/config/Container.js` | [13](./13-inyeccion-de-dependencias.md) |
 | `Contract.js` | Fábrica de interfaces | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
@@ -238,8 +242,12 @@ Dónde está declarado cada nombre propio del proyecto.
 | `FormField` | Componente React | `src/components/FormField.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `GetAmountRangeFiltersUseCase` | Caso de uso | `src/application/usecases/GetAmountRangeFiltersUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `GetCreditProductNamesUseCase` | Caso de uso | `src/application/usecases/GetCreditProductNamesUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
+| `GoalPanel` | Componente | `src/components/GoalPanel.jsx` | [23](./23-rediseno-ui-ux.md) |
+| `HelpPage` | Página | `src/pages/HelpPage.jsx` | [23](./23-rediseno-ui-ux.md) |
+| `HomePage` | Página | `src/pages/HomePage.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `IAmountRangeProvider` | Puerto | `src/domain/contracts/IAmountRangeProvider.js` | [06](./06-contratos-e-interfaces.md) |
 | `IClock` | Puerto | `src/domain/contracts/IClock.js` | [06](./06-contratos-e-interfaces.md) |
+| `Icon` | Componente | `src/components/Icon.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `ICreditApplicationRepository` | Puerto | `src/domain/contracts/ICreditApplicationRepository.js` | [06](./06-contratos-e-interfaces.md) |
 | `ICreditProductRepository` | Puerto | `src/domain/contracts/ICreditProductRepository.js` | [06](./06-contratos-e-interfaces.md) |
 | `IIdGenerator` | Puerto | `src/domain/contracts/IIdGenerator.js` | [06](./06-contratos-e-interfaces.md) |
@@ -253,18 +261,23 @@ Dónde está declarado cada nombre propio del proyecto.
 | `IUseCase` | Puerto | `src/application/contracts/IUseCase.js` | [06](./06-contratos-e-interfaces.md) |
 | `ListCreditProductsUseCase` | Caso de uso | `src/application/usecases/ListCreditProductsUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `LocalStorageCreditApplicationRepository` | Adaptador | `src/infrastructure/persistence/LocalStorageCreditApplicationRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
+| `Logo` | Componente | `src/components/Logo.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `main.jsx` | Composition Root | `src/main.jsx` | [13](./13-inyeccion-de-dependencias.md) · [21](./21-migracion-a-react-ev2.md) |
 | `Money` | Value object | `src/domain/valueobjects/Money.js` | [08](./08-value-objects.md) |
 | `Navbar` | Componente React | `src/components/Navbar.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `NotFoundPage` | Página React | `src/pages/NotFoundPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `NotImplementedError` | Error | `src/domain/errors/NotImplementedError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `ProductSearchCriteria` | Specification | `src/domain/criteria/ProductSearchCriteria.js` | [09](./09-dominio-servicios-criterios-errores.md) |
+| `ProductsPage` | Página | `src/pages/ProductsPage.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `ProductTheme` | Value object | `src/domain/valueobjects/ProductTheme.js` | [08](./08-value-objects.md) |
+| `ProductTile` | Componente | `src/components/ProductTile.jsx` | [23](./23-rediseno-ui-ux.md) |
+| `productVisualMap` | Configuración | `src/config/productVisualMap.js` | [23](./23-rediseno-ui-ux.md) |
 | `RequestedCredit` | Value object | `src/domain/valueobjects/RequestedCredit.js` | [08](./08-value-objects.md) |
 | `Result` | Tipo de retorno | `src/application/shared/Result.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `ROUTES` / `ROUTE_TITLES` | Configuración | `src/config/routes.js` | [14](./14-enrutado-y-urls.md) · [21](./21-migracion-a-react-ev2.md) |
 | `SearchBar` | Componente React | `src/components/SearchBar.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `SearchCreditProductsUseCase` | Caso de uso | `src/application/usecases/SearchCreditProductsUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
+| `SecurityPanel` | Componente | `src/components/SecurityPanel.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `SimulateCreditUseCase` | Caso de uso | `src/application/usecases/SimulateCreditUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SimulationDTO` | DTO | `src/application/dto/SimulationDTO.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SimulationMapper` | Mapper | `src/application/mappers/SimulationMapper.js` | [10](./10-casos-de-uso-y-dtos.md) |
@@ -277,8 +290,10 @@ Dónde está declarado cada nombre propio del proyecto.
 | `SubmitCreditApplicationUseCase` | Caso de uso | `src/application/usecases/SubmitCreditApplicationUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `SystemClock` | Adaptador | `src/infrastructure/time/SystemClock.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `Term` | Value object | `src/domain/valueobjects/Term.js` | [08](./08-value-objects.md) |
+| `ThemeToggle` | Componente | `src/components/ThemeToggle.jsx` | [23](./23-rediseno-ui-ux.md) |
 | `ToastNotifier` | Adaptador | `src/infrastructure/notification/ToastNotifier.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `useApplicationForm` | Hook | `src/hooks/useApplicationForm.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useCatalogRefinement` | Hook | `src/hooks/useCatalogRefinement.js` | [23](./23-rediseno-ui-ux.md) |
 | `useCreditProducts` | Hook | `src/hooks/useCreditProducts.js` | [21](./21-migracion-a-react-ev2.md) |
 | `useCreditSearch` | Hook | `src/hooks/useCreditSearch.js` | [21](./21-migracion-a-react-ev2.md) |
 | `useDependencies` | Hook | `src/hooks/useDependencies.js` | [21](./21-migracion-a-react-ev2.md) |
@@ -287,6 +302,31 @@ Dónde está declarado cada nombre propio del proyecto.
 | `useSimulation` | Hook | `src/hooks/useSimulation.js` | [21](./21-migracion-a-react-ev2.md) |
 | `ValidateCreditApplicationDraftUseCase` | Caso de uso | `src/application/usecases/ValidateCreditApplicationDraftUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) · [21](./21-migracion-a-react-ev2.md) |
 | `ValidationError` | Error | `src/domain/errors/ValidationError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
+
+---
+
+## 5 bis. Qué cambió en el rediseño de la interfaz
+
+Detalle completo en [23 — Rediseño UI/UX](./23-rediseno-ui-ux.md).
+
+| Capa | Archivo | Cambio |
+|---|---|---|
+| Estilos | `02-tokens.css` | Reescrito: tres modos de tema, aliases semánticos, `--photo-dim`, `--chip-*` |
+| Estilos | `03` · `04` · `05` · `06` · `07` | Reescritos sobre esos tokens |
+| Presentación | `components/Icon.jsx` | **nuevo** — 36 trazos inline con `currentColor` |
+| Presentación | `components/ThemeToggle.jsx` | **nuevo** — claro / oscuro, recordado en `localStorage` |
+| Presentación | `pages/HomePage.jsx` · `ProductsPage.jsx` · `HelpPage.jsx` | **nuevos** — sustituyen a `CatalogPage` y añaden dos rutas |
+| Presentación | `components/ApplicationStepper.jsx` + 6 componentes más | **nuevos** — pasos, resumen, seguridad, filtros, accesos, migas |
+| Presentación | `hooks/useCatalogRefinement.js` | **nuevo** — filtros de tipo y plazo, decisión de interfaz |
+| Config | `config/productVisualMap.js` | **nuevo** — pictograma y frase corta por producto, fuera del dominio |
+| Config | `config/routes.js` | 3 rutas → 5 + comodín; `NAV_ITEMS` y `PREFILL_PARAMS` |
+| Presentación | `context/DependenciesProvider.jsx` | **única línea fuera de presentación**: expone el puerto `IMoneyFormatter` |
+| Pruebas | `tests/02-boot-jsdom.mjs` | **nuevo** — monta las 6 rutas en un DOM simulado |
+
+**Cero cambios de comportamiento en `domain/`, `application/` e
+`infrastructure/`.** Ningún contrato nuevo, ningún caso de uso nuevo, ningún
+endpoint. Todo el estado que añadió el rediseño —tema, paso del formulario,
+filtros de interfaz, prellenado— vive en presentación.
 
 ---
 
@@ -393,4 +433,4 @@ Se añadió `iudigital_doc/`: el documento de arquitectura (44 páginas, 21 figu
 32 tablas) y los scripts que lo generan, con el patrón de diseño del documento
 guía de la institución. El generador escribe en `..._generado.docx` y nunca sobre
 la copia que se edita a mano; el porqué de esa regla está en el
-[README del generador](./iudigital_doc/generador/README.md).
+[README del generador](./iudigital_doc/EV1/generador/README.md).

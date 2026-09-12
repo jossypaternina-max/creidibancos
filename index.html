@@ -5,14 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CreditSmart</title>
 
-  <meta name="description" content="Consulta, simula y solicita créditos de forma rápida, segura y 100% en línea." />
+  <meta name="description" content="Compara, simula y solicita créditos de forma segura, clara y 100% en línea." />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="CreditSmart" />
-  <meta name="theme-color" content="#1d4ed8" />
 
-  <link rel="icon" type="image/png" href="https://media.base44.com/images/public/6a7d2f90c3c6cae43f73f77b/b344403c4_logo.png" />
+  <!-- La barra del navegador acompaña al tema en vez de quedarse fija -->
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f8fb" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#07131f" />
+
+  <link rel="icon" type="image/svg+xml" href="/assets/logo/creditsmart-mark.svg" />
   <link rel="manifest" href="/manifest.json" />
+
+  <script>
+    /* Aplica el tema guardado ANTES del primer pintado.
+       Si se hiciera desde React, la página aparecería un instante en claro
+       antes de pasar a oscuro. Sin valor guardado no se toca nada y manda
+       `prefers-color-scheme`. */
+    (function () {
+      try {
+        var saved = localStorage.getItem('creditsmart-theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (error) {
+        /* Modo privado o almacenamiento bloqueado: se queda en automático. */
+      }
+    })();
+  </script>
 </head>
 <body>
   <!-- Punto de montaje único de React (Composition Root de la presentación).
