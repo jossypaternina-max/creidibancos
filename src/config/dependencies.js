@@ -14,6 +14,7 @@ import { IIdGenerator } from '../domain/contracts/IIdGenerator.js';
 import { ILogger } from '../application/contracts/ILogger.js';
 import { INotifier } from '../application/contracts/INotifier.js';
 import { CreditProductMapper } from '../application/mappers/CreditProductMapper.js';
+import { CreditApplicationMapper } from '../application/mappers/CreditApplicationMapper.js';
 import { SimulationMapper } from '../application/mappers/SimulationMapper.js';
 import { ListCreditProductsUseCase } from '../application/usecases/ListCreditProductsUseCase.js';
 import { SearchCreditProductsUseCase } from '../application/usecases/SearchCreditProductsUseCase.js';
@@ -22,10 +23,12 @@ import { GetCreditProductNamesUseCase } from '../application/usecases/GetCreditP
 import { SimulateCreditUseCase } from '../application/usecases/SimulateCreditUseCase.js';
 import { SubmitCreditApplicationUseCase } from '../application/usecases/SubmitCreditApplicationUseCase.js';
 import { ValidateCreditApplicationDraftUseCase } from '../application/usecases/ValidateCreditApplicationDraftUseCase.js';
+import { ListMyApplicationsUseCase } from '../application/usecases/ListMyApplicationsUseCase.js';
 
 /* ---------- Infraestructura (adaptadores) ---------- */
-import { InMemoryCreditProductRepository } from '../infrastructure/persistence/InMemoryCreditProductRepository.js';
-import { LocalStorageCreditApplicationRepository } from '../infrastructure/persistence/LocalStorageCreditApplicationRepository.js';
+import { FirebaseClient } from '../infrastructure/firebase/FirebaseClient.js';
+import { FirestoreCreditProductRepository } from '../infrastructure/persistence/FirestoreCreditProductRepository.js';
+import { FirestoreCreditApplicationRepository } from '../infrastructure/persistence/FirestoreCreditApplicationRepository.js';
 import { StaticAmountRangeProvider } from '../infrastructure/persistence/StaticAmountRangeProvider.js';
 import { IntlMoneyFormatter } from '../infrastructure/formatters/IntlMoneyFormatter.js';
 import { SystemClock } from '../infrastructure/time/SystemClock.js';
@@ -33,6 +36,28 @@ import { CryptoIdGenerator } from '../infrastructure/identity/CryptoIdGenerator.
 import { ConsoleLogger } from '../infrastructure/logging/ConsoleLogger.js';
 import { ToastNotifier } from '../infrastructure/notification/ToastNotifier.js';
 import { STATIC_TERM_OPTIONS } from '../infrastructure/persistence/datasources/StaticCreditProductDataSource.js';
+
+/**
+ * Configuración de Firebase leída de las variables de entorno de Vite
+ * (`import.meta.env.VITE_FIREBASE_*`). Se lee AQUÍ, en el composition root, y
+ * se inyecta por constructor a `FirebaseClient`: ninguna otra clase lee
+ * configuración global. Las credenciales nunca están en el código: viven en
+ * `.env` (ignorado por git); `.env.example` documenta las claves.
+ *
+ * @returns {Object}
+ */
+function readFirebaseConfig() {
+  const env = import.meta.env ?? {};
+  return {
+    apiKey: env.VITE_FIREBASE_API_KEY,
+    authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: env.VITE_FIREBASE_APP_ID,
+    measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
+  };
+}
 
 /**
  * buildContainer — COMPOSITION ROOT.
@@ -106,11 +131,35 @@ export function buildContainer({ config = AppConfig, notificationsElement = null
     ),
   );
 
+  /* Cliente de Firebase: recurso técnico compartido (como la conexión a una
+     base de datos). No implementa ningún puerto, así que no lleva
+     `assertImplements`. Si faltan credenciales, degrada solo. */
+  container.register(
+    'firebaseClient',
+    (c) =>
+      new FirebaseClient({
+        config: readFirebaseConfig(),
+        logger: c.resolve('logger'),
+      }),
+  );
+
   /* ============================================================
      2. Persistencia (adaptadores de puertos del dominio)
+
+     Productos y solicitudes se persisten en Cloud Firestore. El cambio
+     respecto a la Actividad 2 vive SOLO aquí: el dominio, la aplicación y la
+     interfaz no se enteran de que la fuente pasó de estática/localStorage a
+     Firestore. Si Firebase no está configurado, ambos adaptadores degradan a
+     datos locales.
      ============================================================ */
-  container.register('productRepository', () =>
-    assertImplements(new InMemoryCreditProductRepository(), ICreditProductRepository),
+  container.register('productRepository', (c) =>
+    assertImplements(
+      new FirestoreCreditProductRepository({
+        firebaseClient: c.resolve('firebaseClient'),
+        logger: c.resolve('logger'),
+      }),
+      ICreditProductRepository,
+    ),
   );
 
   container.register('amountRangeProvider', () =>
@@ -119,7 +168,11 @@ export function buildContainer({ config = AppConfig, notificationsElement = null
 
   container.register('applicationRepository', (c) =>
     assertImplements(
-      new LocalStorageCreditApplicationRepository({ idGenerator: c.resolve('idGenerator') }),
+      new FirestoreCreditApplicationRepository({
+        firebaseClient: c.resolve('firebaseClient'),
+        idGenerator: c.resolve('idGenerator'),
+        logger: c.resolve('logger'),
+      }),
       ICreditApplicationRepository,
     ),
   );
@@ -135,6 +188,11 @@ export function buildContainer({ config = AppConfig, notificationsElement = null
   container.register(
     'simulationMapper',
     (c) => new SimulationMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
+  );
+
+  container.register(
+    'applicationMapper',
+    (c) => new CreditApplicationMapper({ moneyFormatter: c.resolve('moneyFormatter') }),
   );
 
   container.register(
@@ -195,6 +253,15 @@ export function buildContainer({ config = AppConfig, notificationsElement = null
   container.register(
     'validateCreditApplicationDraftUseCase',
     () => new ValidateCreditApplicationDraftUseCase(),
+  );
+
+  container.register(
+    'listMyApplicationsUseCase',
+    (c) =>
+      new ListMyApplicationsUseCase({
+        applicationRepository: c.resolve('applicationRepository'),
+        applicationMapper: c.resolve('applicationMapper'),
+      }),
   );
 
   return container;

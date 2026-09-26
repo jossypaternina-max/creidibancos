@@ -110,6 +110,7 @@ const ROUTES = [
   { path: '/productos', expect: 'Nuestros productos' },
   { path: '/simulador', expect: 'Simula tu crédito' },
   { path: '/solicitar', expect: 'Solicitud de crédito' },
+  { path: '/mis-solicitudes', expect: 'Mis solicitudes' },
   { path: '/ayuda', expect: 'Preguntas frecuentes' },
   { path: '/ruta-que-no-existe', expect: 'No encontramos esta página' },
 ];

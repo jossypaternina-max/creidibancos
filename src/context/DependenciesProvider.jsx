@@ -34,6 +34,7 @@ export function DependenciesProvider({ container, children }) {
         simulateCredit: container.resolve('simulateCreditUseCase'),
         submitCreditApplication: container.resolve('submitCreditApplicationUseCase'),
         validateApplicationDraft: container.resolve('validateCreditApplicationDraftUseCase'),
+        listMyApplications: container.resolve('listMyApplicationsUseCase'),
         notifier: container.resolve('notifier'),
         termOptions: container.resolve('termOptions'),
 

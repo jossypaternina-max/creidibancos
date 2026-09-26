@@ -17,6 +17,12 @@ desktop.ini
 __pycache__/
 *.pyc
 
+# Variables de entorno: contienen la configuración de Firebase y NUNCA se
+# versionan. `.env.example` sí se versiona (documenta las claves sin valores).
+.env
+.env.local
+.env.*.local
+
 # Logs y temporales
 *.log
 *.tmp

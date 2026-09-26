@@ -11,6 +11,7 @@ import { defineContract } from './Contract.js';
  *  - save(application): Promise<CreditApplication>
  *  - findById(id): Promise<CreditApplication|null>
  *  - findAll(): Promise<CreditApplication[]>
+ *  - findByApplicantEmail(email): Promise<CreditApplication[]>
  *  - nextIdentity(): string
  *
  * Capa: DOMINIO (puerto).
@@ -19,5 +20,6 @@ export const ICreditApplicationRepository = defineContract('ICreditApplicationRe
   'save',
   'findById',
   'findAll',
+  'findByApplicantEmail',
   'nextIdentity',
 ]);

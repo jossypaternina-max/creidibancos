@@ -1,0 +1,158 @@
+S40 - EA3: Integración con Backend Firebase - CreditSmart
+Fecha de entrega Martes a las 23:59 Puntos 100 Entregando una carga de archivo Disponible 14 de sep en 0:00 - 29 de sep en 23:59
+S40 - EA3: Integración con Backend Firebase - CreditSmart
+ 
+Bot_Ejercicio_peq.svg
+Objetivo
+Aplicar los conceptos de persistencia de datos, base de datos NoSQL (Firestore), operaciones CRUD y comunicación asíncrona para integrar CreditSmart con Firebase, permitiendo que los datos se almacenen en la nube, se consulten en tiempo real y persistan entre sesiones, completando así el ciclo completo de una aplicación web moderna.
+
+ 
+
+Instrucciones
+Para el desarrollo de la actividad se debe realizar lo siguiente:
+
+Leer detenidamente el documento Actividad_3.pdf.
+
+Configurar Firebase
+
+Crear Aplicación Web en Firebase
+
+Habilitar Firestore Database
+
+Instalación y configuración en proyecto de Reac
+
+Recursos de Apoyo:
+
+Documentación oficial de FirebaseLinks to an external site.
+
+Firestore Get StartedLinks to an external site.
+
+Firestore CRUD OperationsLinks to an external site.
+
+React con Firebase TutorialLinks to an external site.
+
+Material de encuentros sincrónicos 
+
+Grabaciones en Canvas 
+
+Asistencia a encuentros sincrónicos es CRÍTICA para esta actividad
+
+ 
+
+Entregar:
+Repositorio Git Actualizado
+
+Código fuente completo con integración Firebase
+
+.env.example (SIN las credenciales reales)
+
+.gitignore que incluya .env
+
+README.md actualizado
+
+Vídeo demostrativo (duración 3-4minutos)
+
+Firebase Console con las colecciones y documentos
+
+Aplicación cargando datos desde Firestore
+
+Crear nueva solicitud
+
+Verificar en Firebase Console que se guardó
+
+Consultar solicitudes guardadas
+
+Mensaje de loading mientras carga
+
+Manejo de errores (desconectar internet y probar)
+
+Criterios de Evaluación:
+
+Ver rúbrica detallada en la siguiente sección.
+
+ 
+
+Notas Importantes:
+
+Esta es la actividad más compleja del curso - inicia con tiempo
+
+Firebase tiene límites gratuitos - 50K lecturas/día, 20K escrituras/día
+
+NUNCA subas credenciales al repositorio
+
+Prueba localmente antes de entregar
+
+Haz backup de tu código frecuentemente
+
+El video es OBLIGATORIO - sin él no se califica
+
+Pregunta en tutorías si algo no funciona
+
+Firebase Console es tu amigo - úsalo para verificar datos
+
+ 
+Haz clic en Siguiente para continuar.
+
+ 
+0%
+Rúbrica
+Rúbrica: S40 - EA3: Integración con Backend Firebase - CreditSmart
+Rúbrica: S40 - EA3: Integración con Backend Firebase - CreditSmart
+Criterios	Calificaciones	Pts
+Este criterio depende de una competencia de aprendizajeConfiguración de Firebase
+20 pts
+Proyecto Firebase correctamente configurado. Firestore habilitado. Colecciones creadas con estructura adecuada. Variables de entorno implementadas. Archivo .env incluido en .gitignore.
+10 pts
+Configuración básica funcional. Colecciones con errores. Sin variables de entorno.
+0 pts
+Firebase no configurado o no funcional. Sin colecciones.
+20 pts
+Este criterio depende de una competencia de aprendizajeOperación READ - Listar Créditos
+15 pts
+getDocs() implementado perfectamente. Loading state durante la carga. Manejo de errores con try-catch. Datos mapeados correctamente con ID. Renderizado limpio.
+8 pts
+READ funcional, pero sin loading ni error states. Mapeo con problemas menores.
+0 pts
+No carga datos de Firestore o está completamente roto.
+15 pts
+Este criterio depende de una competencia de aprendizajeOperación CREATE - Guardar Solicitudes
+20 pts
+addDoc() implementado correctamente. Validaciones antes de guardar. Limpia el formulario tras el éxito. Redirección funcional.
+10 pts
+CREATE funcional, pero con validaciones incompletas. Faltan algunos estados.
+0 pts
+No guarda en Firestore o la función está rota.
+20 pts
+Este criterio depende de una competencia de aprendizajeConsultas y Filtros
+15 pts
+Queries con where() y orderBy(). Filtros múltiples funcionando. Página Mis Solicitudes implementada filtrando por email.
+7 pts
+Queries muy básicas. Filtrado con problemas.
+0 pts
+No implementa queries o no funcionan.
+15 pts
+Este criterio depende de una competencia de aprendizajeManejo de Errores
+10 pts
+Try-catch en todas las operaciones. Mensajes de error claros para el usuario.
+5 pts
+Try-catch incompleto. Mensajes genéricos. Poco logging.
+0 pts
+Sin manejo de errores o app se rompe con errores.
+10 pts
+Este criterio depende de una competencia de aprendizajeSeguridad - Variables de Entorno
+10 pts
+Credenciales en .env. .env en .gitignore. .env.example creado. Configuración correcta con import.meta.env. Sin credenciales en Git.
+5 pts
+Variables de entorno básicas. Algunos problemas de seguridad.
+0 pts
+Credenciales expuestas en el código o Git.
+10 pts
+Este criterio depende de una competencia de aprendizajeVideo Demostrativo
+10 pts
+Video claro (3-4 min). Muestra Firebase Console. Demuestra todas las operaciones CRUD. Explica el flujo. Buena calidad.
+5 pts
+Video muy corto o incompleto. No muestra Firebase Console. Calidad baja.
+0 pts
+Sin video o video no muestra funcionalidad.
+10 pts
+Puntos totales: 100

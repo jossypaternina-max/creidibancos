@@ -129,6 +129,7 @@ Tres itinerarios según para qué vengas:
 | 21 | [Migración a React (Actividad 2)](./21-migracion-a-react-ev2.md) | Qué cambió y qué no al sustituir la interfaz vanilla por React: tabla de equivalencias, inyección con contexto, los 3 cambios que exigió, verificación |
 | 22 | [Identidad visual](./22-identidad-visual.md) | La paleta corporativa de tres colores, por qué se retiraron los seis degradados de producto, y qué comprobar antes de dar por buena una pantalla nueva |
 | 23 | [Rediseño UI/UX](./23-rediseno-ui-ux.md) | La aplicación del kit de rediseño: tokens con tema día/noche, el set de iconos propio, las cinco pantallas, el puente simulador → solicitud, y qué se decidió NO pintar del mockup y por qué |
+| 24 | [Integración con Firebase (Actividad 3)](./24-integracion-firebase-ev3.md) | De memoria a Firestore: `FirebaseClient`, los repos de Firestore (CRUD con `addDoc`/`getDocs`/`where`+`orderBy`), la página *Mis solicitudes*, las variables de entorno, la degradación y el manejo de errores |
 
 ---
 
@@ -239,6 +240,9 @@ Dónde está declarado cada nombre propio del proyecto.
 | `DomainError` | Error base | `src/domain/errors/DomainError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `EmploymentInfo` | Value object | `src/domain/valueobjects/EmploymentInfo.js` | [08](./08-value-objects.md) |
 | `Footer` | Componente React | `src/components/Footer.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `FirebaseClient` | Recurso técnico | `src/infrastructure/firebase/FirebaseClient.js` | [24](./24-integracion-firebase-ev3.md) |
+| `FirestoreCreditApplicationRepository` | Adaptador | `src/infrastructure/persistence/FirestoreCreditApplicationRepository.js` | [24](./24-integracion-firebase-ev3.md) |
+| `FirestoreCreditProductRepository` | Adaptador | `src/infrastructure/persistence/FirestoreCreditProductRepository.js` | [24](./24-integracion-firebase-ev3.md) |
 | `FormField` | Componente React | `src/components/FormField.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `GetAmountRangeFiltersUseCase` | Caso de uso | `src/application/usecases/GetAmountRangeFiltersUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `GetCreditProductNamesUseCase` | Caso de uso | `src/application/usecases/GetCreditProductNamesUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
@@ -260,8 +264,10 @@ Dónde está declarado cada nombre propio del proyecto.
 | `IntlMoneyFormatter` | Adaptador | `src/infrastructure/formatters/IntlMoneyFormatter.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `IUseCase` | Puerto | `src/application/contracts/IUseCase.js` | [06](./06-contratos-e-interfaces.md) |
 | `ListCreditProductsUseCase` | Caso de uso | `src/application/usecases/ListCreditProductsUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
-| `LocalStorageCreditApplicationRepository` | Adaptador | `src/infrastructure/persistence/LocalStorageCreditApplicationRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
+| `ListMyApplicationsUseCase` | Caso de uso | `src/application/usecases/ListMyApplicationsUseCase.js` | [24](./24-integracion-firebase-ev3.md) |
+| `LocalStorageCreditApplicationRepository` | Adaptador (respaldo) | `src/infrastructure/persistence/LocalStorageCreditApplicationRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `Logo` | Componente | `src/components/Logo.jsx` | [23](./23-rediseno-ui-ux.md) |
+| `MyApplicationsPage` | Página | `src/pages/MyApplicationsPage.jsx` | [24](./24-integracion-firebase-ev3.md) |
 | `main.jsx` | Composition Root | `src/main.jsx` | [13](./13-inyeccion-de-dependencias.md) · [21](./21-migracion-a-react-ev2.md) |
 | `Money` | Value object | `src/domain/valueobjects/Money.js` | [08](./08-value-objects.md) |
 | `Navbar` | Componente React | `src/components/Navbar.jsx` | [21](./21-migracion-a-react-ev2.md) |
@@ -298,6 +304,7 @@ Dónde está declarado cada nombre propio del proyecto.
 | `useCreditSearch` | Hook | `src/hooks/useCreditSearch.js` | [21](./21-migracion-a-react-ev2.md) |
 | `useDependencies` | Hook | `src/hooks/useDependencies.js` | [21](./21-migracion-a-react-ev2.md) |
 | `useDocumentTitle` | Hook | `src/hooks/useDocumentTitle.js` | [21](./21-migracion-a-react-ev2.md) |
+| `useMyApplications` | Hook | `src/hooks/useMyApplications.js` | [24](./24-integracion-firebase-ev3.md) |
 | `useProductSorting` | Hook | `src/hooks/useProductSorting.js` | [21](./21-migracion-a-react-ev2.md) |
 | `useSimulation` | Hook | `src/hooks/useSimulation.js` | [21](./21-migracion-a-react-ev2.md) |
 | `ValidateCreditApplicationDraftUseCase` | Caso de uso | `src/application/usecases/ValidateCreditApplicationDraftUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) · [21](./21-migracion-a-react-ev2.md) |

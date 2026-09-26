@@ -35,6 +35,7 @@ Lo que cambió fue el adaptador de interfaz.
 | [React](https://react.dev) | 19 | Componentes, estado con hooks, render declarativo |
 | [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/productos`, `/simulador`, `/solicitar`, `/ayuda`, 404) |
 | [Vite](https://vite.dev) | 8 | Servidor de desarrollo y empaquetado |
+| [Firebase](https://firebase.google.com) / Firestore | 12 | Persistencia en la nube (NoSQL), CRUD y consultas |
 | JavaScript | ES2022 (módulos ES) | Dominio, aplicación e infraestructura, sin dependencias |
 | CSS3 | — | 7 hojas en cascada explícita, Grid y Flexbox, mobile-first, tema claro/oscuro |
 | Node.js | ≥ 18 (probado en 22.14) | Entorno de desarrollo |
@@ -54,9 +55,50 @@ ejecutan igual en Node (así corre la suite de pruebas) que en el navegador.
 git clone <url-del-repositorio>
 cd crediSmart
 
-npm install        # instala React, React Router y Vite
+npm install        # instala React, React Router, Vite y Firebase
+cp .env.example .env   # y rellena las credenciales de Firebase (ver §2.1)
 npm run dev        # servidor de desarrollo -> http://localhost:5173
 ```
+
+Sin `.env` la app arranca igual, en **modo degradado**: el catálogo se sirve
+desde los datos locales y las solicitudes quedan solo en memoria. Con `.env`
+configurado, todo pasa por Firestore.
+
+### 2.1 Configuración de Firebase (Actividad 3)
+
+CreditSmart persiste el catálogo y las solicitudes en **Cloud Firestore**. Para
+apuntar a tu propio proyecto:
+
+1. **Crear el proyecto** en [Firebase Console](https://console.firebase.google.com)
+   → *Agregar proyecto*.
+2. **Registrar una app web** (`</>`) y copiar el objeto `firebaseConfig`.
+3. **Habilitar Firestore**: *Compilación → Firestore Database → Crear base de
+   datos → modo de prueba* (reglas abiertas 30 días, suficiente para la
+   entrega). **Este paso es obligatorio**: sin él la API de Firestore está
+   deshabilitada y las lecturas/escrituras fallan.
+4. `cp .env.example .env` y pegar los valores en las variables
+   `VITE_FIREBASE_*`. `.env` está en `.gitignore`: **nunca se sube al repo**.
+5. `npm run dev`. Al abrir el catálogo por primera vez, la colección `productos`
+   se **siembra sola** con el catálogo base; las solicitudes se guardan en
+   `solicitudes`.
+
+**Colecciones de Firestore**
+
+| Colección | Escribe | Lee | Operaciones |
+|---|---|---|---|
+| `productos` | siembra automática | Catálogo, Home, Simulador, Solicitud | `getDocs`, `setDoc` (seed) |
+| `solicitudes` | Formulario de solicitud | Página *Mis solicitudes* | `addDoc`, `getDocs`, `where` + `orderBy` |
+
+La consulta de *Mis solicitudes* combina `where('applicantEmail','==',correo)` con
+`orderBy('createdAt','desc')`. Esa combinación pide un **índice compuesto** que
+Firestore ofrece crear con un clic la primera vez (el enlace aparece en la
+consola del navegador). Mientras el índice no exista, la app **degrada** a
+filtrar por `where` y ordenar en cliente, así que sigue funcionando.
+
+Todas las operaciones van dentro de `try/catch`; los errores se muestran al
+usuario mediante avisos (toasts) y estados de error en pantalla. Un tope de
+tiempo por operación convierte una desconexión de red en un error visible en
+lugar de un cuelgue.
 
 Otros comandos:
 
@@ -149,7 +191,10 @@ permite forzar claro u oscuro. La elección se recuerda en el navegador.
 | Puente simulador → solicitud con prellenado | `components/SimulationResult.jsx` + `pages/ApplicationPage.jsx` |
 | Formulario controlado de 11 campos en 3 pasos | `pages/ApplicationPage.jsx` + `components/FormField.jsx` |
 | Validación en vivo de correo, cédula, montos e ingresos | `hooks/useApplicationForm.js` + `application/usecases/ValidateCreditApplicationDraftUseCase.js` |
-| Radicado y persistencia de la solicitud | `infrastructure/persistence/LocalStorageCreditApplicationRepository.js` |
+| Radicado y persistencia de la solicitud en Firestore (`addDoc`) | `infrastructure/persistence/FirestoreCreditApplicationRepository.js` |
+| Catálogo leído desde Firestore (`getDocs`) con siembra automática | `infrastructure/persistence/FirestoreCreditProductRepository.js` |
+| Página *Mis solicitudes*: consulta por correo (`where` + `orderBy`) | `pages/MyApplicationsPage.jsx` + `hooks/useMyApplications.js` + `application/usecases/ListMyApplicationsUseCase.js` |
+| Estados de carga y error en las lecturas remotas | `hooks/useMyApplications.js` + `hooks/useCreditProducts.js` |
 | Preguntas frecuentes derivadas del catálogo | `pages/HelpPage.jsx` |
 | Avisos accesibles (toasts) | `infrastructure/notification/ToastNotifier.js` |
 | Tema claro / oscuro / automático | `assets/css/02-tokens.css` + `components/ThemeToggle.jsx` |

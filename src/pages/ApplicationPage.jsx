@@ -91,6 +91,7 @@ export function ApplicationPage() {
     termOptions,
     isSubmitting,
     reference,
+    submittedEmail,
   } = useApplicationForm({ prefill });
 
   const sections = buildSections({ productNames, termOptions, currentTerm: values.termInMonths });
@@ -154,11 +155,18 @@ export function ApplicationPage() {
             </p>
 
             <div className="confirmation__actions">
-              <Link className="btn btn--primary" to={ROUTES.CATALOG}>
+              <Link
+                className="btn btn--primary"
+                to={`${ROUTES.MY_APPLICATIONS}?email=${encodeURIComponent(submittedEmail)}`}
+              >
+                Ver mis solicitudes
+              </Link>
+
+              <Link className="btn btn--outline" to={ROUTES.CATALOG}>
                 Volver al inicio
               </Link>
 
-              <button type="button" className="btn btn--outline" onClick={startOver}>
+              <button type="button" className="btn btn--ghost" onClick={startOver}>
                 Registrar otra solicitud
               </button>
             </div>

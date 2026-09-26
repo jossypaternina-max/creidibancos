@@ -55,6 +55,7 @@ export function useApplicationForm({ prefill = null } = {}) {
   const [productNames, setProductNames] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reference, setReference] = useState(null);
+  const [submittedEmail, setSubmittedEmail] = useState('');
 
   /* El prellenado se aplica UNA vez. Sin esta marca, cada render con la
      misma URL pisaría lo que el usuario acabara de escribir. */
@@ -139,6 +140,7 @@ export function useApplicationForm({ prefill = null } = {}) {
     setErrors({});
     setTouched({});
     setReference(null);
+    setSubmittedEmail('');
   }, []);
 
   /**
@@ -166,6 +168,9 @@ export function useApplicationForm({ prefill = null } = {}) {
       const { reference: radicado, applicantFirstName } = result.value;
       notifier.success(`Solicitud registrada correctamente para ${applicantFirstName}.`);
 
+      // El correo se guarda ANTES de limpiar: la confirmación enlaza a
+      // "Mis solicitudes" prellenando la búsqueda con él.
+      setSubmittedEmail(String(values.email ?? '').trim().toLowerCase());
       setValues(EMPTY_FORM);
       setTouched({});
       setErrors({});
@@ -212,6 +217,7 @@ export function useApplicationForm({ prefill = null } = {}) {
     termOptions,
     isSubmitting,
     reference,
+    submittedEmail,
     hasErrors: Object.keys(errors).length > 0,
   };
 }

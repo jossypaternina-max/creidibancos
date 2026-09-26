@@ -25,6 +25,7 @@ export const ROUTES = Object.freeze({
   PRODUCTS: '/productos',
   SIMULATOR: '/simulador',
   APPLICATION: '/solicitar',
+  MY_APPLICATIONS: '/mis-solicitudes',
   HELP: '/ayuda',
 });
 
@@ -38,6 +39,7 @@ export const ROUTE_TITLES = Object.freeze({
   [ROUTES.PRODUCTS]: 'CreditSmart — Productos de crédito',
   [ROUTES.SIMULATOR]: 'CreditSmart — Simulador de crédito',
   [ROUTES.APPLICATION]: 'CreditSmart — Solicitud de crédito',
+  [ROUTES.MY_APPLICATIONS]: 'CreditSmart — Mis solicitudes',
   [ROUTES.HELP]: 'CreditSmart — Preguntas frecuentes',
 });
 
@@ -55,6 +57,7 @@ export const NAV_ITEMS = Object.freeze([
   Object.freeze({ path: ROUTES.PRODUCTS, label: 'Productos' }),
   Object.freeze({ path: ROUTES.SIMULATOR, label: 'Simulador' }),
   Object.freeze({ path: ROUTES.APPLICATION, label: 'Solicitar' }),
+  Object.freeze({ path: ROUTES.MY_APPLICATIONS, label: 'Mis solicitudes' }),
   Object.freeze({ path: ROUTES.HELP, label: 'Ayuda' }),
 ]);
 

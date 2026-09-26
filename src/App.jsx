@@ -8,6 +8,7 @@ import { HomePage } from './pages/HomePage.jsx';
 import { ProductsPage } from './pages/ProductsPage.jsx';
 import { SimulatorPage } from './pages/SimulatorPage.jsx';
 import { ApplicationPage } from './pages/ApplicationPage.jsx';
+import { MyApplicationsPage } from './pages/MyApplicationsPage.jsx';
 import { HelpPage } from './pages/HelpPage.jsx';
 import { NotFoundPage } from './pages/NotFoundPage.jsx';
 
@@ -42,6 +43,7 @@ export function App() {
           <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
           <Route path={ROUTES.SIMULATOR} element={<SimulatorPage />} />
           <Route path={ROUTES.APPLICATION} element={<ApplicationPage />} />
+          <Route path={ROUTES.MY_APPLICATIONS} element={<MyApplicationsPage />} />
           <Route path={ROUTES.HELP} element={<HelpPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

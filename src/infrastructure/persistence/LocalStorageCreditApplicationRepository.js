@@ -68,6 +68,18 @@ export class LocalStorageCreditApplicationRepository extends ICreditApplicationR
   }
 
   /**
+   * Solicitudes en memoria cuyo solicitante tiene ese correo. El correo se
+   * compara normalizado (el value object `Applicant` ya lo guarda en minúsculas).
+   * @param {string} email
+   * @returns {Promise<import('../../domain/entities/CreditApplication.js').CreditApplication[]>}
+   */
+  async findByApplicantEmail(email) {
+    const clean = String(email ?? '').trim().toLowerCase();
+    if (clean === '') return [];
+    return [...this.#memory.values()].filter((app) => app.applicant.email === clean);
+  }
+
+  /**
    * Registros serializados que sobrevivieron a recargas previas.
    * @returns {Array<Object>}
    */

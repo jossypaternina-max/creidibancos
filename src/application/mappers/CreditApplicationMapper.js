@@ -2,18 +2,83 @@ import { Applicant } from '../../domain/valueobjects/Applicant.js';
 import { RequestedCredit } from '../../domain/valueobjects/RequestedCredit.js';
 import { EmploymentInfo } from '../../domain/valueobjects/EmploymentInfo.js';
 import { ValidationError } from '../../domain/errors/ValidationError.js';
+import { assertImplements } from '../../domain/contracts/Contract.js';
+import { IMoneyFormatter } from '../../domain/contracts/IMoneyFormatter.js';
+import { freezeApplicationDTO } from '../dto/CreditApplicationDTO.js';
+
+/** Etiquetas legibles de cada estado de la solicitud. */
+const STATUS_LABELS = Object.freeze({
+  BORRADOR: 'Borrador',
+  RADICADA: 'Radicada',
+  EN_ESTUDIO: 'En estudio',
+  APROBADA: 'Aprobada',
+  RECHAZADA: 'Rechazada',
+});
 
 /**
- * CreditApplicationMapper — traductor ENTRADA CRUDA → VALUE OBJECTS.
+ * CreditApplicationMapper — traductor de solicitudes de crédito.
  *
- * Recibe el objeto plano que viene del formulario y construye los value
- * objects del dominio. Acumula los errores de las TRES secciones en un único
+ * Tiene dos responsabilidades simétricas:
+ *  - ENTRADA CRUDA → VALUE OBJECTS (estático `toValueObjects`), para el formulario.
+ *  - ENTIDAD → DTO (instancia `toDTO`), para el listado "Mis Solicitudes".
+ *
+ * Como instancia recibe el formateador por inyección (puerto `IMoneyFormatter`),
+ * nunca lo instancia: Principio de Inversión de Dependencias, igual que
+ * `CreditProductMapper`.
+ *
+ * `toValueObjects` acumula los errores de las TRES secciones en un único
  * `ValidationError`, para que el formulario pueda marcar todos los campos
  * fallidos en una sola pasada en vez de uno por intento.
  *
  * Capa: APLICACIÓN (mapper).
  */
 export class CreditApplicationMapper {
+  /** @type {IMoneyFormatter} */
+  #moneyFormatter;
+
+  /**
+   * @param {{ moneyFormatter: IMoneyFormatter }} deps
+   */
+  constructor({ moneyFormatter }) {
+    assertImplements(moneyFormatter, IMoneyFormatter);
+    this.#moneyFormatter = moneyFormatter;
+  }
+
+  /**
+   * Traduce una entidad de solicitud a un DTO plano y congelado.
+   * @param {import('../../domain/entities/CreditApplication.js').CreditApplication} application
+   * @returns {Readonly<import('../dto/CreditApplicationDTO.js').CreditApplicationDTO>}
+   */
+  toDTO(application) {
+    const requested = application.requestedCredit;
+    const amount = requested.amount.amount;
+    const months = requested.term.months;
+
+    return freezeApplicationDTO({
+      id: application.id,
+      reference: application.referenceNumber,
+      status: application.status,
+      statusLabel: STATUS_LABELS[application.status] ?? application.status,
+      createdAt: application.createdAt.toISOString(),
+      applicantName: application.applicant.fullName,
+      applicantEmail: application.applicant.email,
+      productName: requested.productName,
+      amount,
+      amountLabel: this.#moneyFormatter.format(amount),
+      termInMonths: months,
+      termLabel: `${months} meses`,
+      purpose: requested.purpose,
+    });
+  }
+
+  /**
+   * @param {Array<import('../../domain/entities/CreditApplication.js').CreditApplication>} applications
+   * @returns {Array<Readonly<import('../dto/CreditApplicationDTO.js').CreditApplicationDTO>>}
+   */
+  toDTOList(applications) {
+    return applications.map((application) => this.toDTO(application));
+  }
+
   /**
    * @param {{
    *   fullName?: string, idNumber?: string, email?: string, phone?: string,
