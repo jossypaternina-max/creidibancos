@@ -6,6 +6,12 @@ Qué ocurre exactamente, capa por capa, en cada interacción del sistema.
 Notación de capas: **[P]** presentación · **[A]** aplicación · **[D]** dominio ·
 **[I]** infraestructura · **[C]** config.
 
+> **Actividad 3 — Firebase.** Los flujos que persisten datos ahora terminan en
+> Firestore, no en memoria: registrar una solicitud llega hasta `addDoc` **[I]**
+> y consultar «Mis solicitudes» hasta `getDocs` con `where`+`orderBy` **[I]**.
+> Los pasos **[P]→[A]→[D]** no cambian; cambió el adaptador del último tramo.
+> El recorrido detallado está en [24](./24-integracion-firebase-ev3.md).
+
 ---
 
 ## 17.1 Arranque de la aplicación

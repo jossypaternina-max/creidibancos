@@ -7,6 +7,14 @@
 > router, y la interfaz recibe los casos de uso a través de
 > `DependenciesProvider`. Ver
 > [21 §3](./21-migracion-a-react-ev2.md).
+>
+> **Actividad 3 — Firebase.** El único cambio de cableado para ir a la nube
+> vive aquí: se registró `firebaseClient` (recurso técnico, sin
+> `assertImplements`) y los repositorios `productRepository` y
+> `applicationRepository` pasaron a sus adaptadores de Firestore. También se
+> registraron `applicationMapper` y `listMyApplicationsUseCase`, y este último
+> se expone en `DependenciesProvider`. Ni el dominio ni los casos de uso
+> existentes se tocaron. Ver [24 §5.2](./24-integracion-firebase-ev3.md).
 
 ## 13.1 El principio operativo
 

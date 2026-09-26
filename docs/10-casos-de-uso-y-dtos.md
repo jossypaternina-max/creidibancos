@@ -31,7 +31,7 @@ Un solo método. Consecuencias:
   Un `CachedUseCase` o un `LoggedUseCase` funcionaría con los cinco.
 - **Testeable**: la superficie a probar es una función.
 
-## 10.3 Los 6 casos de uso
+## 10.3 Los casos de uso
 
 | Caso de uso | Tipo | Dependencias | Devuelve |
 |---|---|---|---|
@@ -41,10 +41,17 @@ Un solo método. Consecuencias:
 | `GetCreditProductNamesUseCase` | Query | `productRepository` | `Result<string[]>` |
 | `SimulateCreditUseCase` | Query | `productRepository`, `simulationMapper` | `Result<SimulationDTO>` |
 | `SubmitCreditApplicationUseCase` | Command | `applicationRepository`, `productRepository`, `clock`, `logger` | `Result<{ reference, status, applicantFirstName, affordability }>` |
+| `ListMyApplicationsUseCase` | Query | `applicationRepository`, `applicationMapper` | `Result<{ applications, total }>` |
 
-Cinco queries y un command. La separación no es formalmente CQRS, pero la
+Queries y un command. La separación no es formalmente CQRS, pero la
 distinción es útil: las queries no mutan estado y podrían cachearse; el command
 sí muta y por eso registra en el log.
+
+> **Actividad 3 — Firebase.** `ListMyApplicationsUseCase` (query) sirve la página
+> «Mis solicitudes»: pide al repositorio las solicitudes de un correo
+> (consulta `where`+`orderBy`) y las devuelve como `CreditApplicationDTO`
+> planos, vía el nuevo `CreditApplicationMapper.toDTO`. Ver
+> [24](./24-integracion-firebase-ev3.md).
 
 ### `ListCreditProductsUseCase`
 

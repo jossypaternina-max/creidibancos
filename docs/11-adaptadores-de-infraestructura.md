@@ -2,6 +2,17 @@
 
 # 11 — Adaptadores de infraestructura
 
+> **Actividad 3 — Firebase.** La persistencia pasó a Cloud Firestore. Se
+> añadieron tres artefactos en `src/infrastructure/`: `firebase/FirebaseClient.js`
+> (recurso técnico que inicializa Firestore desde variables de entorno; no
+> implementa puerto, es la tercera excepción legítima de esta capa),
+> `persistence/FirestoreCreditProductRepository.js` (adaptador de
+> `ICreditProductRepository`: `getDocs` + siembra automática) y
+> `persistence/FirestoreCreditApplicationRepository.js` (adaptador de
+> `ICreditApplicationRepository`: `addDoc`, `getDocs`, `where`+`orderBy`). Los
+> adaptadores estático y `localStorage` quedan como respaldo/legado. Detalle en
+> [24](./24-integracion-firebase-ev3.md).
+
 ## 11.1 Qué va en esta capa
 
 Todo lo que **sabe de una tecnología concreta**: `Intl`, `Date`, `crypto`,

@@ -22,12 +22,15 @@
 | `/productos` | `ProductsPage` | CreditSmart — Productos de crédito |
 | `/simulador` | `SimulatorPage` | CreditSmart — Simulador de crédito |
 | `/solicitar` | `ApplicationPage` | CreditSmart — Solicitud de crédito |
+| `/mis-solicitudes` | `MyApplicationsPage` | CreditSmart — Mis solicitudes |
 | `/ayuda` | `HelpPage` | CreditSmart — Preguntas frecuentes |
 | `*` | `NotFoundPage` | CreditSmart — Página no encontrada |
 
 Las tres rutas del original conservan su path, así que ningún enlace guardado
 deja de funcionar. El rediseño añadió `/productos` y `/ayuda`
-([23 §6](./23-rediseno-ui-ux.md)).
+([23 §6](./23-rediseno-ui-ux.md)); la Actividad 3 añadió `/mis-solicitudes`,
+que consulta las solicitudes de un correo en Firestore
+([24 §9](./24-integracion-firebase-ev3.md)).
 
 El simulador traspasa la simulación al formulario por cadena de consulta:
 

@@ -2,6 +2,12 @@
 
 # 01 — Visión general
 
+> **Actividad 3 — Firebase.** Los datos dejaron de vivir solo en memoria: el
+> catálogo y las solicitudes se persisten en Cloud Firestore. La aplicación lee
+> con `getDocs`, crea con `addDoc` y consulta con `where`+`orderBy`, con manejo
+> de errores y variables de entorno. Fue un cambio de adaptador de persistencia,
+> no del núcleo. Detalle en [24](./24-integracion-firebase-ev3.md).
+
 ## 1.1 Qué es este proyecto
 
 CreditSmart es una plataforma de consulta, simulación y solicitud de créditos.

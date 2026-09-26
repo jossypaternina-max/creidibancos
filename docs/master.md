@@ -225,6 +225,8 @@ Dónde está declarado cada nombre propio del proyecto.
 | `Contract.js` | Fábrica de interfaces | `src/domain/contracts/Contract.js` | [06](./06-contratos-e-interfaces.md) |
 | `ContractViolationError` | Error | `src/domain/errors/ContractViolationError.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `CreditApplication` | Entidad | `src/domain/entities/CreditApplication.js` | [07](./07-entidades.md) |
+| `CreditApplicationDTO` | DTO | `src/application/dto/CreditApplicationDTO.js` | [24](./24-integracion-firebase-ev3.md) |
+| `CreditApplicationFactory` | Factory / ACL | `src/infrastructure/persistence/factories/CreditApplicationFactory.js` | [24](./24-integracion-firebase-ev3.md) |
 | `CreditApplicationMapper` | Mapper | `src/application/mappers/CreditApplicationMapper.js` | [10](./10-casos-de-uso-y-dtos.md) |
 | `CreditApplicationPolicy` | Servicio de dominio | `src/domain/services/CreditApplicationPolicy.js` | [09](./09-dominio-servicios-criterios-errores.md) |
 | `CreditCard` | Componente React | `src/components/CreditCard.jsx` | [21](./21-migracion-a-react-ev2.md) |
@@ -257,7 +259,7 @@ Dónde está declarado cada nombre propio del proyecto.
 | `IIdGenerator` | Puerto | `src/domain/contracts/IIdGenerator.js` | [06](./06-contratos-e-interfaces.md) |
 | `ILogger` | Puerto | `src/application/contracts/ILogger.js` | [06](./06-contratos-e-interfaces.md) |
 | `IMoneyFormatter` | Puerto | `src/domain/contracts/IMoneyFormatter.js` | [06](./06-contratos-e-interfaces.md) |
-| `InMemoryCreditProductRepository` | Adaptador | `src/infrastructure/persistence/InMemoryCreditProductRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
+| `InMemoryCreditProductRepository` | Adaptador (legado, sin cablear en EV3) | `src/infrastructure/persistence/InMemoryCreditProductRepository.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `INotifier` | Puerto | `src/application/contracts/INotifier.js` | [06](./06-contratos-e-interfaces.md) |
 | `Installment` | Value object | `src/domain/valueobjects/Installment.js` | [08](./08-value-objects.md) |
 | `InterestRate` | Value object | `src/domain/valueobjects/InterestRate.js` | [08](./08-value-objects.md) |
@@ -328,7 +330,7 @@ Detalle completo en [23 — Rediseño UI/UX](./23-rediseno-ui-ux.md).
 | Config | `config/productVisualMap.js` | **nuevo** — pictograma y frase corta por producto, fuera del dominio |
 | Config | `config/routes.js` | 3 rutas → 5 + comodín; `NAV_ITEMS` y `PREFILL_PARAMS` |
 | Presentación | `context/DependenciesProvider.jsx` | **única línea fuera de presentación**: expone el puerto `IMoneyFormatter` |
-| Pruebas | `tests/02-boot-jsdom.mjs` | **nuevo** — monta las 6 rutas en un DOM simulado |
+| Pruebas | `tests/02-boot-jsdom.mjs` | **nuevo** — monta las 7 rutas en un DOM simulado |
 
 **Cero cambios de comportamiento en `domain/`, `application/` e
 `infrastructure/`.** Ningún contrato nuevo, ningún caso de uso nuevo, ningún

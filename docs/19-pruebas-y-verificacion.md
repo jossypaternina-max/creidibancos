@@ -17,7 +17,7 @@ tests/
 | Suite | Qué cubre | Dependencias | Aserciones |
 |---|---|---|---|
 | 01 | Value objects, entidades, servicios de dominio, simulación, criterios, los 7 casos de uso, repositorios | **ninguna** | 85 |
-| 02 | Grafo de dependencias completo, las 6 rutas montadas y pintadas, armazón común, ausencia de errores | jsdom + Vite (solo pruebas) | 19 |
+| 02 | Grafo de dependencias completo, las 7 rutas montadas y pintadas, armazón común, ausencia de errores | jsdom + Vite (solo pruebas) | 19 |
 
 Ejecución:
 
@@ -193,7 +193,11 @@ ok(normalizeSpaces(list.value.products[0].amountRangeLabel) === '$ 1.000.000 –
 `tests/02-boot-jsdom.mjs`
 
 Monta la aplicación real —el mismo `App.jsx`, el mismo contenedor de
-dependencias— dentro de un DOM simulado y recorre las seis rutas.
+dependencias— dentro de un DOM simulado y recorre las siete rutas (incluida
+`/mis-solicitudes`). El grafo construye el cliente de Firebase y los
+repositorios de Firestore al arrancar; como el render de la prueba no ejecuta
+efectos, no se hace ninguna llamada de red. Ver
+[24 §12](./24-integracion-firebase-ev3.md).
 
 ### Qué verifica
 

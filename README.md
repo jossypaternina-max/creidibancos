@@ -5,8 +5,7 @@ Búsqueda en tiempo real, filtros dinámicos, cálculo automático de la cuota
 mensual con tabla de amortización y formulario de solicitud por pasos,
 completamente controlado.
 
-Es la **Actividad 2** de Ingeniería Web, en dos movimientos sobre la misma
-arquitectura hexagonal:
+Cubre tres actividades de Ingeniería Web sobre la misma arquitectura hexagonal:
 
 1. La interfaz de la Actividad 1 (JavaScript vanilla, sin build) reescrita en
    **React + Vite + React Router** —
@@ -14,9 +13,12 @@ arquitectura hexagonal:
 2. Un **rediseño completo de la interfaz** a partir del kit de diseño aprobado:
    tokens con tema claro/oscuro, iconografía propia, cinco pantallas y tres
    flujos rehechos — [`docs/23`](./docs/23-rediseno-ui-ux.md).
+3. La **persistencia en la nube con Firebase / Firestore** (Actividad 3): CRUD
+   de productos y solicitudes, consultas por correo y manejo de errores —
+   [`docs/24`](./docs/24-integracion-firebase-ev3.md).
 
-En ninguno de los dos se tocó el dominio, la aplicación ni la infraestructura.
-Lo que cambió fue el adaptador de interfaz.
+En ninguna se tocó el dominio: en la 2 cambió el adaptador de interfaz, y en la
+3, el adaptador de persistencia. Esa es la tesis que la arquitectura sostiene.
 
 | Dato | Valor |
 |---|---|
@@ -24,7 +26,8 @@ Lo que cambió fue el adaptador de interfaz.
 | Docente | Jorge Armando Julio |
 | Curso | Ingeniería Web — PREICA2602B010133 |
 | Institución | Institución Universitaria Digital de Antioquia — 2026-S2 |
-| Entrega anterior | Actividad 1, congelada en el tag `ev1-entrega` |
+| Entregas anteriores | Actividad 1 (tag `ev1-entrega`) · Actividad 2 (rama `ev2-react`) |
+| Entrega actual | Actividad 3 — Firebase, rama `ev3-firebase` |
 
 ---
 
@@ -33,7 +36,7 @@ Lo que cambió fue el adaptador de interfaz.
 | Tecnología | Versión | Para qué |
 |---|---|---|
 | [React](https://react.dev) | 19 | Componentes, estado con hooks, render declarativo |
-| [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/productos`, `/simulador`, `/solicitar`, `/ayuda`, 404) |
+| [React Router](https://reactrouter.com) | 7 | Enrutado SPA (`/`, `/productos`, `/simulador`, `/solicitar`, `/mis-solicitudes`, `/ayuda`, 404) |
 | [Vite](https://vite.dev) | 8 | Servidor de desarrollo y empaquetado |
 | [Firebase](https://firebase.google.com) / Firestore | 12 | Persistencia en la nube (NoSQL), CRUD y consultas |
 | JavaScript | ES2022 (módulos ES) | Dominio, aplicación e infraestructura, sin dependencias |
@@ -221,8 +224,8 @@ crediSmart/
 │   ├── data/
 │   │   └── creditsData.js      Catálogo, rangos de monto y plazos (dato puro)
 │   ├── components/             21 componentes reutilizables, props desestructuradas
-│   ├── pages/                  6 páginas, una por ruta
-│   ├── hooks/                  8 hooks: estado de UI + invocación de casos de uso
+│   ├── pages/                  7 páginas, una por ruta (incl. Mis solicitudes)
+│   ├── hooks/                  9 hooks: estado de UI + invocación de casos de uso
 │   ├── context/
 │   │   └── DependenciesProvider.jsx   Inyecta los casos de uso en el árbol React
 │   ├── domain/                 Entidades, value objects, servicios, puertos, errores
@@ -231,8 +234,8 @@ crediSmart/
 │   └── config/                 AppConfig, Container, dependencies, routes, productVisualMap
 ├── tests/
 │   ├── 01-domain-application.mjs   Dominio y aplicación (85 aserciones)
-│   └── 02-boot-jsdom.mjs           Arranque de la interfaz: 6 rutas en un DOM simulado
-└── docs/                       23 documentos + capturas + kit de rediseño
+│   └── 02-boot-jsdom.mjs           Arranque de la interfaz: 7 rutas en un DOM simulado
+└── docs/                       24 documentos + capturas + kit de rediseño
 ```
 
 Las tres carpetas que pide la rúbrica —`components/`, `pages/`, `data/`— están
@@ -248,7 +251,7 @@ en la raíz de `src/`. Las cuatro capas de la arquitectura conviven con ellas:
 ```
                  ┌──────────────────────────────┐
    React  ─────► │  application (casos de uso)  │ ─────► adaptadores
-  (pages,        │        domain (núcleo)       │        (localStorage,
+  (pages,        │        domain (núcleo)       │        (Firestore, localStorage,
    hooks)        └──────────────────────────────┘         Intl, crypto…)
 ```
 
@@ -354,7 +357,7 @@ React monta dos veces en modo estricto.
 ```bash
 node tests/01-domain-application.mjs   # 85 aserciones -> TODO OK
 npm install jsdom --no-save
-node tests/02-boot-jsdom.mjs           # las 6 rutas montan y pintan -> TODO OK
+node tests/02-boot-jsdom.mjs           # las 7 rutas montan y pintan -> TODO OK
 npm run build                          # compila sin errores
 ```
 
@@ -366,7 +369,7 @@ grep -rn "#[0-9a-fA-F]\{3,8\}" assets/css/ --include=*.css | grep -v 02-tokens.c
 ```
 
 Comprobado además **en navegador, pulsando la aplicación**: navegación entre las
-seis rutas sin recarga, recarga directa en rutas profundas, búsqueda
+siete rutas sin recarga, recarga directa en rutas profundas, búsqueda
 incremental, recálculo de la cuota, traspaso del simulador a la solicitud con
 prellenado, los tres pasos del formulario, envío real con radicado y aviso,
 404 en una ruta inexistente, tema claro y oscuro, y sin desplazamiento
@@ -381,7 +384,7 @@ paso—. Están documentados con su causa en
 
 ## 9. Documentación
 
-**Índice maestro: [`docs/master.md`](./docs/master.md)** — 23 documentos sobre el
+**Índice maestro: [`docs/master.md`](./docs/master.md)** — 24 documentos sobre el
 patrón de diseño, las entidades, los value objects, los contratos, los casos de
 uso, los adaptadores, la inyección de dependencias, el enrutado, los estilos,
 los flujos end-to-end, las recetas de extensión y las convenciones.
@@ -390,6 +393,7 @@ Lecturas recomendadas para esta entrega:
 
 | Documento | Qué responde |
 |---|---|
+| [24 — Integración con Firebase (Actividad 3)](./docs/24-integracion-firebase-ev3.md) | La persistencia en la nube: `FirebaseClient`, los repositorios de Firestore (CRUD con `addDoc`/`getDocs`/`where`+`orderBy`), la página *Mis solicitudes*, las variables de entorno, la degradación y el manejo de errores |
 | [23 — Rediseño UI/UX](./docs/23-rediseno-ui-ux.md) | El rediseño completo: tokens con tema día/noche, iconografía propia, las cinco pantallas, el puente simulador → solicitud, qué se decidió NO pintar del mockup y los tres fallos que solo aparecieron en el navegador |
 | [21 — Migración a React](./docs/21-migracion-a-react-ev2.md) | Qué cambió y qué no al pasar de vanilla a React, y por qué |
 | [22 — Identidad visual](./docs/22-identidad-visual.md) | La corrección de paleta previa: por qué se retiraron los seis degradados de producto |

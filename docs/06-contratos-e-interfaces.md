@@ -2,6 +2,12 @@
 
 # 06 — Contratos e interfaces
 
+> **Actividad 3 — Firebase.** El puerto `ICreditApplicationRepository` ganó un
+> método, `findByApplicantEmail(email)`, para la consulta de «Mis solicitudes».
+> Se añadió al contrato del dominio y a sus dos implementaciones (Firestore y la
+> de `localStorage`, de respaldo): `assertImplements` comprueba en el arranque
+> que ambas lo cumplen. Ver [24](./24-integracion-firebase-ev3.md).
+
 ## 6.1 El problema: JavaScript no tiene `interface`
 
 En TypeScript, Java o C# el compilador garantiza que una clase cumple una

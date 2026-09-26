@@ -277,6 +277,12 @@ de tecnología (`IHttpClient` en lugar de `ICreditProductRepository`).
 **Archivos: 3.** Receta completa con el código del adaptador en
 [11 §11.8](./11-adaptadores-de-infraestructura.md).
 
+> **Ejemplo real (Actividad 3).** Esta receta ya se ejecutó con Cloud Firestore:
+> se escribieron `FirestoreCreditProductRepository` y
+> `FirestoreCreditApplicationRepository`, y solo cambiaron unas líneas de
+> `config/dependencies.js`. El dominio, los casos de uso y los componentes no se
+> tocaron. Ver [24](./24-integracion-firebase-ev3.md).
+
 Resumen:
 
 1. `src/infrastructure/persistence/HttpCreditProductRepository.js` — nuevo,
