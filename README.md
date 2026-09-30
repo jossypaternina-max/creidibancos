@@ -65,7 +65,9 @@ npm run dev        # servidor de desarrollo -> http://localhost:5173
 
 Sin `.env` la app arranca igual, en **modo degradado**: el catálogo se sirve
 desde los datos locales y las solicitudes quedan solo en memoria. Con `.env`
-configurado, todo pasa por Firestore.
+configurado, todo pasa por Firestore, y si Firestore no responde (sin internet,
+API deshabilitada) la app muestra un **error de conexión** —no un catálogo por
+defecto.
 
 ### 2.1 Configuración de Firebase (Actividad 3)
 
@@ -89,8 +91,8 @@ apuntar a tu propio proyecto:
 
 | Colección | Escribe | Lee | Operaciones |
 |---|---|---|---|
-| `productos` | siembra automática | Catálogo, Home, Simulador, Solicitud | `getDocs`, `setDoc` (seed) |
-| `solicitudes` | Formulario de solicitud | Página *Mis solicitudes* | `addDoc`, `getDocs`, `where` + `orderBy` |
+| `productos` | siembra automática | Catálogo, Home, Simulador, Solicitud | `getDocsFromServer`, `setDoc` (seed) |
+| `solicitudes` | Formulario de solicitud | Página *Mis solicitudes* | `addDoc`, `getDocsFromServer`, `where` + `orderBy` |
 
 La consulta de *Mis solicitudes* combina `where('applicantEmail','==',correo)` con
 `orderBy('createdAt','desc')`. Esa combinación pide un **índice compuesto** que
@@ -100,8 +102,15 @@ filtrar por `where` y ordenar en cliente, así que sigue funcionando.
 
 Todas las operaciones van dentro de `try/catch`; los errores se muestran al
 usuario mediante avisos (toasts) y estados de error en pantalla. Un tope de
-tiempo por operación convierte una desconexión de red en un error visible en
-lugar de un cuelgue.
+tiempo por operación (`#withTimeout`, 12 s) convierte una desconexión de red en
+un error visible en lugar de un cuelgue.
+
+Las lecturas usan **`getDocsFromServer`** (no `getDocs`): así se saltan la caché
+local de Firestore y, sin internet, la app muestra un **error de conexión** en
+lugar de datos cacheados "por defecto". Mientras la consulta está en curso, cada
+pantalla que lee de Firebase muestra un **spinner** de carga (`components/Spinner.jsx`);
+si falla, el spinner deja paso a un aviso de error. El envío de la solicitud usa
+su propio spinner dentro del botón.
 
 Otros comandos:
 
@@ -195,9 +204,9 @@ permite forzar claro u oscuro. La elección se recuerda en el navegador.
 | Formulario controlado de 11 campos en 3 pasos | `pages/ApplicationPage.jsx` + `components/FormField.jsx` |
 | Validación en vivo de correo, cédula, montos e ingresos | `hooks/useApplicationForm.js` + `application/usecases/ValidateCreditApplicationDraftUseCase.js` |
 | Radicado y persistencia de la solicitud en Firestore (`addDoc`) | `infrastructure/persistence/FirestoreCreditApplicationRepository.js` |
-| Catálogo leído desde Firestore (`getDocs`) con siembra automática | `infrastructure/persistence/FirestoreCreditProductRepository.js` |
+| Catálogo leído desde Firestore (`getDocsFromServer`) con siembra automática | `infrastructure/persistence/FirestoreCreditProductRepository.js` |
 | Página *Mis solicitudes*: consulta por correo (`where` + `orderBy`) | `pages/MyApplicationsPage.jsx` + `hooks/useMyApplications.js` + `application/usecases/ListMyApplicationsUseCase.js` |
-| Estados de carga y error en las lecturas remotas | `hooks/useMyApplications.js` + `hooks/useCreditProducts.js` |
+| Spinner de carga y error de conexión en toda lectura remota | `components/Spinner.jsx` + `hooks/useCreditProducts.js` + `hooks/useMyApplications.js` |
 | Preguntas frecuentes derivadas del catálogo | `pages/HelpPage.jsx` |
 | Avisos accesibles (toasts) | `infrastructure/notification/ToastNotifier.js` |
 | Tema claro / oscuro / automático | `assets/css/02-tokens.css` + `components/ThemeToggle.jsx` |
@@ -223,7 +232,7 @@ crediSmart/
 │   ├── App.jsx                 Armazón (navbar, pie, salto al contenido) y tabla de rutas
 │   ├── data/
 │   │   └── creditsData.js      Catálogo, rangos de monto y plazos (dato puro)
-│   ├── components/             21 componentes reutilizables, props desestructuradas
+│   ├── components/             22 componentes reutilizables, props desestructuradas
 │   ├── pages/                  7 páginas, una por ruta (incl. Mis solicitudes)
 │   ├── hooks/                  9 hooks: estado de UI + invocación de casos de uso
 │   ├── context/
@@ -393,7 +402,7 @@ Lecturas recomendadas para esta entrega:
 
 | Documento | Qué responde |
 |---|---|
-| [24 — Integración con Firebase (Actividad 3)](./docs/24-integracion-firebase-ev3.md) | La persistencia en la nube: `FirebaseClient`, los repositorios de Firestore (CRUD con `addDoc`/`getDocs`/`where`+`orderBy`), la página *Mis solicitudes*, las variables de entorno, la degradación y el manejo de errores |
+| [24 — Integración con Firebase (Actividad 3)](./docs/24-integracion-firebase-ev3.md) | La persistencia en la nube: `FirebaseClient`, los repositorios de Firestore (CRUD con `addDoc`/`getDocsFromServer`/`where`+`orderBy`), la página *Mis solicitudes*, las variables de entorno, el spinner de carga, y el manejo de errores (error de conexión sin caché) |
 | [23 — Rediseño UI/UX](./docs/23-rediseno-ui-ux.md) | El rediseño completo: tokens con tema día/noche, iconografía propia, las cinco pantallas, el puente simulador → solicitud, qué se decidió NO pintar del mockup y los tres fallos que solo aparecieron en el navegador |
 | [21 — Migración a React](./docs/21-migracion-a-react-ev2.md) | Qué cambió y qué no al pasar de vanilla a React, y por qué |
 | [22 — Identidad visual](./docs/22-identidad-visual.md) | La corrección de paleta previa: por qué se retiraron los seis degradados de producto |
