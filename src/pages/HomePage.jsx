@@ -5,6 +5,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 import { useCreditProducts } from '../hooks/useCreditProducts.js';
 import { Icon } from '../components/Icon.jsx';
 import { Alert } from '../components/Alert.jsx';
+import { Spinner } from '../components/Spinner.jsx';
 import { ProductTile } from '../components/ProductTile.jsx';
 
 /**
@@ -137,11 +138,7 @@ export function HomePage() {
           </Link>
         </div>
 
-        {isLoading && (
-          <Alert variant="empty" role="status">
-            Cargando productos de crédito…
-          </Alert>
-        )}
+        {isLoading && <Spinner label="Cargando productos de crédito…" />}
 
         {error && (
           <Alert variant="error" icon="info" role="alert" title="No pudimos cargar la información">

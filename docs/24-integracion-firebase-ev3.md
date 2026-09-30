@@ -68,15 +68,29 @@ no una navegación posterior.
 
 ## 24.5 Degradación y errores
 
-- **Sin `.env`** → `FirebaseClient.isConfigured === false`: catálogo estático,
-  solicitudes en memoria. La app arranca y la suite pasa sin red.
-- **Firestore caído / catálogo ilegible** → el repositorio de productos
-  devuelve el catálogo estático (funcionalidad esencial: mejor local que vacío).
+- **Sin `.env`** → `FirebaseClient.isConfigured === false` (`db === null`):
+  catálogo estático, solicitudes en memoria. La app arranca y la suite pasa sin
+  red. Es degradación de desarrollo, no un fallo.
+- **Colección `productos` vacía** (primer arranque) → se siembra en segundo plano
+  y se devuelve el estático una sola vez. No es un fallo; la siguiente carga lee
+  de Firestore.
+- **Firestore configurado pero la lectura falla o se cuelga** (red desconectada,
+  permisos, API deshabilitada) → los repositorios **relanzan un error** (ya no
+  tapan con datos locales): la interfaz muestra un mensaje de error, no un
+  catálogo "por defecto" que engañaría al usuario. Cada lectura tiene un tope de
+  tiempo (`#withTimeout`, 12 s) que convierte el cuelgue en error visible.
+- **Caché de Firestore**: las lecturas usan `getDocsFromServer()`, no `getDocs()`.
+  `getDocs()` sirve el snapshot cacheado cuando no hay red, así que la app
+  seguiría mostrando productos sin internet. `getDocsFromServer()` fuerza ir al
+  servidor: offline lanza (`unavailable`) y sale el error de conexión. Es lo que
+  exige la prueba de "desconectar internet".
 - **Índice compuesto ausente** en la consulta por correo → se degrada a `where`
   + orden en cliente.
-- **Red desconectada / API deshabilitada** → cada operación tiene un tope de
-  tiempo; el cuelgue se convierte en error visible (toast + estado de error).
-  Es la prueba de "desconectar internet" de la actividad.
+- **Toda espera de una consulta a Firebase** (catálogo, búsqueda, solicitudes)
+  muestra el componente `<Spinner>` (giro animado + etiqueta accesible); el envío
+  de la solicitud usa `btn__spinner` dentro del botón. Al fallar, el spinner deja
+  paso a un `<Alert variant="error">` y a un toast. Es la prueba de "desconectar
+  internet" de la actividad.
 
 ## 24.6 Verificación
 

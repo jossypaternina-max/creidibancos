@@ -10,6 +10,7 @@ import { Breadcrumb } from '../components/Breadcrumb.jsx';
 import { CatalogFilters } from '../components/CatalogFilters.jsx';
 import { CreditCard } from '../components/CreditCard.jsx';
 import { Alert } from '../components/Alert.jsx';
+import { Spinner } from '../components/Spinner.jsx';
 
 /**
  * ProductsPage — página de la ruta `/productos`.
@@ -130,11 +131,7 @@ export function ProductsPage() {
               </p>
             </div>
 
-            {isLoading && (
-              <Alert variant="empty" role="status">
-                Cargando productos de crédito…
-              </Alert>
-            )}
+            {isLoading && <Spinner label="Cargando productos de crédito…" />}
 
             {error && (
               <Alert

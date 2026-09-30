@@ -6,6 +6,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 import { useMyApplications } from '../hooks/useMyApplications.js';
 import { Breadcrumb } from '../components/Breadcrumb.jsx';
 import { Alert } from '../components/Alert.jsx';
+import { Spinner } from '../components/Spinner.jsx';
 
 /**
  * MyApplicationsPage — página de la ruta `/mis-solicitudes`.
@@ -85,12 +86,7 @@ export function MyApplicationsPage() {
         </form>
 
         <div className="section section--tight" aria-live="polite">
-          {isLoading && (
-            <div className="stack stack--tight">
-              <span className="spinner" aria-hidden="true" />
-              <p className="t-muted">Cargando tus solicitudes desde la nube…</p>
-            </div>
-          )}
+          {isLoading && <Spinner label="Cargando tus solicitudes desde la nube…" />}
 
           {!isLoading && error && (
             <Alert variant="error" role="alert" title="No se pudieron cargar tus solicitudes">

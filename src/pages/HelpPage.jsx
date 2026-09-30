@@ -6,6 +6,7 @@ import { useCreditProducts } from '../hooks/useCreditProducts.js';
 import { Breadcrumb } from '../components/Breadcrumb.jsx';
 import { Icon } from '../components/Icon.jsx';
 import { Alert } from '../components/Alert.jsx';
+import { Spinner } from '../components/Spinner.jsx';
 
 /**
  * HelpPage — página de la ruta `/ayuda`.
@@ -91,11 +92,7 @@ export function HelpPage() {
         <div className="section section--tight">
           <h2 className="faq__group-title">Requisitos por producto</h2>
 
-          {isLoading && (
-            <Alert variant="empty" role="status">
-              Cargando productos de crédito…
-            </Alert>
-          )}
+          {isLoading && <Spinner label="Cargando productos de crédito…" />}
 
           {error && (
             <Alert variant="error" role="alert" title="No pudimos cargar la información">

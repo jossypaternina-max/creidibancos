@@ -1,7 +1,7 @@
 import {
   collection,
   addDoc,
-  getDocs,
+  getDocsFromServer,
   query,
   where,
   orderBy,
@@ -18,7 +18,7 @@ import { CreditApplicationFactory } from './factories/CreditApplicationFactory.j
  *
  * Persiste las solicitudes en la colección `solicitudes` de Firestore:
  *  - CREATE: `addDoc()` en `save()`.
- *  - READ:   `getDocs()` en `findAll()` / `findById()`.
+ *  - READ:   `getDocsFromServer()` en `findAll()` / `findById()`.
  *  - QUERY:  `where()` + `orderBy()` en `findByApplicantEmail()`.
  *
  * Guarda, además del documento serializado (`toJSON()`), dos campos de nivel
@@ -105,7 +105,7 @@ export class FirestoreCreditApplicationRepository extends ICreditApplicationRepo
 
     try {
       const snapshot = await this.#withTimeout(
-        getDocs(
+        getDocsFromServer(
           query(
             collection(this.#db, FirestoreCreditApplicationRepository.#COLLECTION),
             where('id', '==', id),
@@ -129,7 +129,7 @@ export class FirestoreCreditApplicationRepository extends ICreditApplicationRepo
 
     try {
       const snapshot = await this.#withTimeout(
-        getDocs(
+        getDocsFromServer(
           query(
             collection(this.#db, FirestoreCreditApplicationRepository.#COLLECTION),
             orderBy('createdAt', 'desc'),
@@ -164,7 +164,7 @@ export class FirestoreCreditApplicationRepository extends ICreditApplicationRepo
 
     try {
       const snapshot = await this.#withTimeout(
-        getDocs(query(col, where('applicantEmail', '==', clean), orderBy('createdAt', 'desc'))),
+        getDocsFromServer(query(col, where('applicantEmail', '==', clean), orderBy('createdAt', 'desc'))),
       );
       return snapshot.docs.map((doc) => CreditApplicationFactory.fromFirestore(doc.id, doc.data()));
     } catch (err) {
@@ -174,7 +174,7 @@ export class FirestoreCreditApplicationRepository extends ICreditApplicationRepo
         this.#logger?.warn('Firestore: falta índice compuesto; ordenando en cliente', {
           message: err?.message,
         });
-        const snapshot = await this.#withTimeout(getDocs(query(col, where('applicantEmail', '==', clean))));
+        const snapshot = await this.#withTimeout(getDocsFromServer(query(col, where('applicantEmail', '==', clean))));
         return snapshot.docs
           .map((doc) => CreditApplicationFactory.fromFirestore(doc.id, doc.data()))
           .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());

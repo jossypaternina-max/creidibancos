@@ -7,10 +7,16 @@
 > (recurso técnico que inicializa Firestore desde variables de entorno; no
 > implementa puerto, es la tercera excepción legítima de esta capa),
 > `persistence/FirestoreCreditProductRepository.js` (adaptador de
-> `ICreditProductRepository`: `getDocs` + siembra automática) y
+> `ICreditProductRepository`: `getDocsFromServer` + siembra automática) y
 > `persistence/FirestoreCreditApplicationRepository.js` (adaptador de
-> `ICreditApplicationRepository`: `addDoc`, `getDocs`, `where`+`orderBy`). Los
-> adaptadores estático y `localStorage` quedan como respaldo/legado. Detalle en
+> `ICreditApplicationRepository`: `addDoc`, `getDocsFromServer`,
+> `where`+`orderBy`). Ambas lecturas usan `getDocsFromServer` (no `getDocs`)
+> para saltarse la caché local de Firestore: sin red la lectura falla y la
+> interfaz muestra un error de conexión en vez de datos cacheados. Cada lectura
+> lleva un tope de tiempo (`#withTimeout`, 12 s) y **relanza** el fallo — ya no
+> se degrada al catálogo estático cuando Firebase está configurado. Los
+> adaptadores estático y `localStorage` quedan como respaldo/legado (solo cuando
+> Firebase no está configurado). Detalle en
 > [24](./24-integracion-firebase-ev3.md).
 
 ## 11.1 Qué va en esta capa

@@ -293,6 +293,7 @@ Dónde está declarado cada nombre propio del proyecto.
 | `SimulatorForm` | Componente React | `src/components/SimulatorForm.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `SimulatorPage` | Página React | `src/pages/SimulatorPage.jsx` | [21](./21-migracion-a-react-ev2.md) |
 | `SortSelect` | Componente React | `src/components/SortSelect.jsx` | [21](./21-migracion-a-react-ev2.md) |
+| `Spinner` | Componente React | `src/components/Spinner.jsx` | [24](./24-integracion-firebase-ev3.md) |
 | `StaticAmountRangeProvider` | Adaptador | `src/infrastructure/persistence/StaticAmountRangeProvider.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `StaticCreditProductDataSource` | Datasource | `src/infrastructure/persistence/datasources/StaticCreditProductDataSource.js` | [11](./11-adaptadores-de-infraestructura.md) |
 | `SubmitCreditApplicationUseCase` | Caso de uso | `src/application/usecases/SubmitCreditApplicationUseCase.js` | [10](./10-casos-de-uso-y-dtos.md) |
